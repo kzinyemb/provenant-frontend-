@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam: Short Answers | VerifyHuman</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root { --prof-blue: #0078d4; --bg-exam: #f4f7f6; }
+        body { background-color: var(--bg-exam); font-family: 'Inter', sans-serif; display: flex; flex-direction: column; height: 100vh; margin: 0; }
+        
+        /* Configuration Panel */
+        #config-panel { background: #fff; border-bottom: 2px solid var(--prof-blue); padding: 20px 40px; display: flex; gap: 20px; align-items: center; justify-content: center; flex-wrap: wrap; }
+        .config-input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; min-width: 200px; }
+        
+        /* Header & Branding */
+        .uni-header { text-align: center; margin-bottom: 40px; border-bottom: 1px solid #ddd; padding-bottom: 20px; width: 100%; max-width: 850px; }
+        #display-uni { font-size: 24px; font-weight: 800; color: #1a1a1b; text-transform: uppercase; margin: 0; }
+        #display-dept { font-size: 16px; color: #666; margin: 5px 0 0 0; }
+
+        .container { flex-grow: 1; overflow-y: auto; padding: 40px; display: flex; flex-direction: column; align-items: center; }
+        .question-card { background: white; width: 100%; max-width: 850px; padding: 35px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 25px; border-left: 6px solid var(--prof-blue); }
+        .prof-q-input { width: 100%; border: none; font-size: 1.3rem; font-weight: 700; outline: none; margin-bottom: 15px; }
+        .student-a-input { width: 100%; min-height: 150px; border: 1px solid #eee; border-radius: 8px; padding: 15px; font-family: 'Times New Roman', serif; background: #fafafa; outline-color: var(--brand-accent); }
+
+        .btn-action { background: var(--brand-dark); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: 600; margin: 10px; transition: 0.3s; }
+        .btn-action:hover { opacity: 0.8; transform: translateY(-2px); }
+        .btn-submit { background: var(--brand-accent); color: var(--brand-dark); }
+    </style>
+</head>
+<body>
+
+<div id="config-panel">
+    <div style="font-weight: bold; color: var(--prof-blue); border-right: 2px solid #eee; padding-right: 15px;">UNIVERSITY BRANDING</div>
+    <input type="text" id="input-uni" class="config-input" placeholder="University Name (e.g. NYU)" oninput="updateBranding()">
+    <input type="text" id="input-dept" class="config-input" placeholder="Department (e.g. Computer Science)" oninput="updateBranding()">
+    <input type="email" id="input-email" class="config-input" placeholder="Submission Email (Professor's Email)">
+    <button onclick="document.getElementById('config-panel').style.display='none'" style="font-size: 11px; cursor: pointer;">Lock Branding</button>
+</div>
+
+<div class="quick-access" style="background: var(--brand-dark); color: white; padding: 10px 30px; display: flex; align-items: center; gap: 15px;">
+    <div onclick="location.href='index.html'" style="cursor:pointer">🏠</div>
+    <div style="background: var(--brand-accent); padding: 2px 12px; border-radius: 50px; font-size: 11px; color: #000; font-weight: bold;">Integrity Score: <span id="global-score">0%</span></div>
+    <span style="margin-left:auto; font-size: 12px; font-weight:bold;">Forensic Short-Answer Mode</span>
+</div>
+
+<div class="container" id="workspace">
+    <div class="uni-header" id="uni-branding">
+        <h1 id="display-uni">UNIVERSITY NAME</h1>
+        <h3 id="display-dept">Department / Course Name</h3>
+    </div>
+
+    <div id="questions-list" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+        <div class="question-card">
+            <span style="color:var(--prof-blue); font-weight:800; font-size:12px;">QUESTION 1</span>
+            <input type="text" class="prof-q-input" placeholder="Enter Question...">
+            <div class="student-a-input" contenteditable="true" oninput="trackExam()">Type your answer here...</div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px;">
+        <button class="btn-action" onclick="addQuestion()">+ Add Question</button>
+        <button class="btn-action btn-submit" onclick="submitExam()">Submit Final Exam</button>
+    </div>
+</div>
+
+<script>
+    let qCount = 1;
+    let keys = 0;
+
+    function updateBranding() {
+        const uni = document.getElementById('input-uni').value;
+        const dept = document.getElementById('input-dept').value;
+        document.getElementById('display-uni').innerText = uni || "UNIVERSITY NAME";
+        document.getElementById('display-dept').innerText = dept || "Department / Course Name";
+    }
+
+    function addQuestion() {
+        qCount++;
+        const card = document.createElement('div');
+        card.className = 'question-card';
+        card.innerHTML = `
+            <span style="color:var(--prof-blue); font-weight:800; font-size:12px;">QUESTION ${qCount}</span>
+            <input type="text" class="prof-q-input" placeholder="Enter Question...">
+            <div class="student-a-input" contenteditable="true" oninput="trackExam()"></div>
+        `;
+        document.getElementById('questions-list').appendChild(card);
+    }
+
+    function trackExam() {
+        keys++;
+        const text = document.getElementById('questions-list').innerText;
+        const score = text.length > 0 ? Math.min(100, (keys / text.length) * 100) : 0;
+        document.getElementById('global-score').innerText = Math.floor(score) + "%";
+    }
+
+    function submitExam() {
+        const email = document.getElementById('input-email').value;
+        const uni = document.getElementById('display-uni').innerText;
+        const score = document.getElementById('global-score').innerText;
+
+        if (!email) {
+            alert("Professor configuration missing: No submission email found.");
+            return;
+        }
+
+        const forensicID = `VH-${Math.floor(Math.random()*999999)}`;
+        
+        alert(`SUBMISSION CONFIRMED\n\nInstitution: ${uni}\nForensic ID: ${forensicID}\nIntegrity Score: ${score}\n\nYour PDF is downloading. Please email it to: ${email}`);
+        
+        // Export to PDF
+        const element = document.getElementById('workspace');
+        html2pdf().from(element).save(`${uni}_Exam_${forensicID}.pdf`);
+    }
+
+    function exportPDF() {
+        const element = document.getElementById('workspace');
+        html2pdf().from(element).save('ShortAnswer_Exam.pdf');
+    }
+</script>
+</body>
+</html>
