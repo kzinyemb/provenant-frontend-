@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forensic Workspace | VerifyHuman</title>
+    <title>Writers Forensic Workspace | VerifyHuman™</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="style.css">
@@ -45,10 +45,10 @@
 <body>
 
 <div class="quick-access">
-    <div onclick="location.href='index.html'" style="cursor:pointer" title="Exit">🏠</div>
+    <div onclick="location.href='index.html'" style="cursor:pointer" title="Refresh Home Panel">🏠</div>
     <div onclick="manualSave()" id="save-icon" style="cursor:pointer" title="Save Now">💾</div>
     <div style="background: var(--brand-accent); padding: 2px 12px; border-radius: 50px; font-weight: 800; font-size: 11px;">Human Integrity: <span id="trust-score">0%</span></div>
-    <span id="doc-name" style="margin-left:auto; font-weight:bold; font-size:12px; cursor:pointer;" onclick="renameDoc()">Untitled Report</span>
+    <span id="doc-name" style="margin-left:auto; font-weight:bold; font-size:12px; cursor:pointer;" onclick="renameDoc()">Untitled Manuscript</span>
 </div>
 
 <div class="tabs">
@@ -118,22 +118,22 @@
 </div>
 
 <div class="workspace">
-    <div id="word-view" class="paper" contenteditable="true" oninput="handleInput()">Start typing...</div>
+    <div id="word-view" class="paper" contenteditable="true" oninput="handleInput()">Start composing text or narrative content loops...</div>
     
     <div id="data-view-container" style="display:none; width: 100%; max-width: 800px; background: white; padding: 40px; border-radius: 15px;">
-        <h2>Velocity Forensics</h2>
+        <h2>Velocity Forensics™</h2>
         <div style="height: 350px;"><canvas id="wpmChart"></canvas></div>
     </div>
 
     <div id="citation-view">
         <button onclick="toggleCitations()" style="float:right; cursor:pointer;">✖ Close</button>
-        <h2 style="text-align:center">VerifyHuman Citation Guides</h2>
+        <h2 style="text-align:center">VerifyHuman™ Citation Guides</h2>
         <hr>
         <h3>MLA Example</h3>
-        <p style="padding-left: 40px; text-indent: -40px;">Doe, Jane. "The Impact of Human-Centric Writing." <i>VerifyHuman Forensic Workspace</i>, Report VH-9921, 2026. Certified Human Integrity: 98%.</p>
+        <p style="padding-left: 40px; text-indent: -40px;">Doe, Jane. "The Impact of Human-Centric Composition." <i>VerifyHuman™ Forensic Workspace</i>, Report No. VH-9921, 2026. Certified Human Integrity: 98%.</p>
         <br>
         <h3>APA Example</h3>
-        <p style="padding-left: 40px; text-indent: -40px;">Doe, J. (2026). <i>The impact of human-centric writing</i> (Forensic Report No. VH-9921). VerifyHuman Authenticity Services. https://verifyhuman.com/reports/VH-9921</p>
+        <p style="padding-left: 40px; text-indent: -40px;">Doe, J. (2026). <i>The impact of human-centric composition</i> (Forensic Report No. VH-9921). VerifyHuman™ Authenticity Services. https://verifyhuman.com/reports/VH-9921</p>
     </div>
 </div>
 
@@ -176,7 +176,7 @@
 
     function addBadge() {
         const score = document.getElementById('trust-score').innerText;
-        const badgeHTML = `<div contenteditable="false" style="margin-top: 50px; border: 2px solid #00b894; padding: 15px; border-radius: 10px; width: 300px;"><div style="color:#00b894; font-weight:800;">VERIFIED HUMAN</div><div style="font-size:11px;">Integrity Score: ${score}</div><div style="font-size:9px; color:#888;">ID: VH-${Math.floor(Math.random()*1000000)}</div></div><p></p>`;
+        const badgeHTML = `<div contenteditable="false" style="margin-top: 50px; border: 2px solid #00b894; padding: 15px; border-radius: 10px; width: 300px;"><div style="color:#00b894; font-weight:800;">VERIFIED HUMAN Origin</div><div style="font-size:11px;">Composition Trust Metric: ${score}</div><div style="font-size:9px; color:#888;">ID: VH-${Math.floor(Math.random()*1000000)}</div></div><p></p>`;
         editor.innerHTML += badgeHTML;
         autoSave();
     }
@@ -212,7 +212,7 @@
             type: 'line',
             data: {
                 labels: log.slice(-20).map(e => Math.floor(e.t/1000) + 's'),
-                datasets: [{ label: 'Biometric Variance', data: log.slice(-20).map(e => e.t % 500), borderColor: '#00b894' }]
+                datasets: [{ label: 'Biometric Cadence Variance', data: log.slice(-20).map(e => e.t % 500), borderColor: '#3b82f6' }]
             },
             options: { maintainAspectRatio: false }
         });
@@ -225,12 +225,12 @@
     }
 
     function autoSave() { localStorage.setItem('hv_content', editor.innerHTML); }
-    function exportPDF() { html2pdf().from(editor).save('VerifyHuman_Report.pdf'); }
+    function exportPDF() { html2pdf().from(editor).save('VerifyHuman_Manuscript_Report.pdf'); }
     
     function renameDoc() { let n = prompt("Name:"); if(n) document.getElementById('doc-name').innerText = n; }
-    function newDoc() { if(confirm("New doc?")) { localStorage.clear(); location.reload(); } }
-    function deleteDoc() { if(confirm("Delete?")) { localStorage.clear(); location.reload(); } }
-    function createCopy() { const blob = new Blob([editor.innerHTML], {type: "text/html"}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "Copy.html"; a.click(); }
+    function newDoc() { if(confirm("New document?")) { localStorage.clear(); location.reload(); } }
+    function deleteDoc() { if(confirm("Delete document?")) { localStorage.clear(); location.reload(); } }
+    function createCopy() { const blob = new Blob([editor.innerHTML], {type: "text/html"}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "Manuscript_Copy.html"; a.click(); }
 </script>
 </body>
 </html>
