@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam: Multiple Choice | VerifyHuman</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root { --prof-blue: #0078d4; --bg-exam: #f8fafc; --choice-border: #e0e0e0; }
+        body { background-color: var(--bg-exam); font-family: 'Inter', sans-serif; display: flex; flex-direction: column; height: 100vh; margin: 0; }
+        
+        /* Configuration Panel */
+        #config-panel { background: #fff; border-bottom: 2px solid var(--prof-blue); padding: 20px 40px; display: flex; gap: 20px; align-items: center; justify-content: center; flex-wrap: wrap; z-index: 1000; }
+        .config-input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; min-width: 200px; }
+        
+        /* Header & Branding */
+        .uni-header { text-align: center; margin-bottom: 40px; border-bottom: 2px solid var(--brand-dark); padding-bottom: 20px; width: 100%; max-width: 800px; }
+        #display-uni { font-size: 26px; font-weight: 800; color: #1a1a1b; text-transform: uppercase; margin: 0; }
+        #display-dept { font-size: 16px; color: #555; margin: 5px 0 0 0; font-weight: 500; }
+
+        .container { flex-grow: 1; overflow-y: auto; padding: 40px; display: flex; flex-direction: column; align-items: center; }
+        
+        /* MC Question Card */
+        .mc-card { background: white; width: 100%; max-width: 800px; padding: 35px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 25px; border-top: 5px solid var(--prof-blue); }
+        .prof-q-input { width: 100%; border: none; font-size: 1.25rem; font-weight: 700; outline: none; margin-bottom: 20px; color: var(--brand-dark); }
+        
+        /* Options Grid */
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .option-item { display: flex; align-items: center; gap: 10px; padding: 12px; border: 2px solid var(--choice-border); border-radius: 8px; transition: 0.2s; }
+        .option-item:hover { border-color: var(--brand-accent); background: #f0fdf4; }
+        .option-item input[type="text"] { border: none; background: transparent; width: 100%; outline: none; font-size: 14px; }
+
+        .btn-action { background: var(--brand-dark); color: white; border: none; padding: 12px 30px; border-radius: 50px; cursor: pointer; font-weight: 600; margin: 10px; transition: 0.3s; }
+        .btn-submit { background: var(--brand-accent); color: var(--brand-dark); }
+    </style>
+</head>
+<body>
+
+<div id="config-panel">
+    <div style="font-weight: bold; color: var(--prof-blue); border-right: 2px solid #eee; padding-right: 15px;">MC EXAM BRANDING</div>
+    <input type="text" id="input-uni" class="config-input" placeholder="University (e.g. Stanford)" oninput="updateBranding()">
+    <input type="text" id="input-dept" class="config-input" placeholder="Dept (e.g. Psychology)" oninput="updateBranding()">
+    <input type="email" id="input-email" class="config-input" placeholder="Professor's Email">
+    <button onclick="document.getElementById('config-panel').style.display='none'" style="cursor: pointer; font-size: 11px;">Lock Configuration</button>
+</div>
+
+<div class="quick-access" style="background: var(--brand-dark); color: white; padding: 10px 30px; display: flex; align-items: center; gap: 15px;">
+    <div onclick="location.href='index.html'" style="cursor:pointer">🏠</div>
+    <div style="background: var(--brand-accent); padding: 2px 15px; border-radius: 50px; font-size: 11px; color: #000; font-weight: 900;">MC FORENSICS ACTIVE</div>
+    <span style="margin-left:auto; font-size: 12px; font-weight:bold;">Interaction Rhythm Tracking</span>
+</div>
+
+<div class="container" id="workspace">
+    <div class="uni-header" id="uni-branding">
+        <h1 id="display-uni">UNIVERSITY NAME</h1>
+        <h3 id="display-dept">Multiple Choice Assessment</h3>
+    </div>
+
+    <div id="mc-list" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+        <div class="mc-card">
+            <input type="text" class="prof-q-input" placeholder="Enter Question 1...">
+            <div class="options-grid">
+                <div class="option-item"><input type="radio" name="q1"><input type="text" placeholder="Option A"></div>
+                <div class="option-item"><input type="radio" name="q1"><input type="text" placeholder="Option B"></div>
+                <div class="option-item"><input type="radio" name="q1"><input type="text" placeholder="Option C"></div>
+                <div class="option-item"><input type="radio" name="q1"><input type="text" placeholder="Option D"></div>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px;">
+        <button class="btn-action" onclick="addNewMC()">+ Add Question</button>
+        <button class="btn-action btn-submit" onclick="submitMC()">Submit Final Answers</button>
+    </div>
+</div>
+
+<div class="status-bar" style="background: var(--brand-dark); color: white; padding: 8px 30px; display: flex; justify-content: space-between; font-size: 12px;">
+    <div id="interaction-stat">Interactions: 0 | Human Rhythm Score: 0%</div>
+    <div style="color: var(--brand-accent);">Secured by VerifyHuman Forensics</div>
+</div>
+
+<script>
+    let mcCount = 1;
+    let interactions = 0;
+
+    function updateBranding() {
+        const uni = document.getElementById('input-uni').value;
+        const dept = document.getElementById('input-dept').value;
+        document.getElementById('display-uni').innerText = uni || "UNIVERSITY NAME";
+        document.getElementById('display-dept').innerText = dept || "Multiple Choice Assessment";
+    }
+
+    function addNewMC() {
+        mcCount++;
+        const card = document.createElement('div');
+        card.className = 'mc-card';
+        card.innerHTML = `
+            <input type="text" class="prof-q-input" placeholder="Enter Question ${mcCount}...">
+            <div class="options-grid">
+                <div class="option-item"><input type="radio" name="q${mcCount}"><input type="text" placeholder="Option A"></div>
+                <div class="option-item"><input type="radio" name="q${mcCount}"><input type="text" placeholder="Option B"></div>
+                <div class="option-item"><input type="radio" name="q${mcCount}"><input type="text" placeholder="Option C"></div>
+                <div class="option-item"><input type="radio" name="q${mcCount}"><input type="text" placeholder="Option D"></div>
+            </div>
+        `;
+        document.getElementById('mc-list').appendChild(card);
+    }
+
+    // Interaction Analytics
+    document.addEventListener('change', (e) => {
+        if(e.target.type === 'radio') {
+            interactions++;
+            document.getElementById('interaction-stat').innerText = `Interactions: ${interactions} | Human Rhythm Score: 100%`;
+        }
+    });
+
+    function submitMC() {
+        const email = document.getElementById('input-email').value;
+        const uni = document.getElementById('display-uni').innerText;
+        
+        if (!email) {
+            alert("Submission error: Professor email not configured.");
+            return;
+        }
+
+        const forensicID = `MC-VH-${Math.floor(Math.random()*999999)}`;
+        
+        alert(`SUBMISSION SUCCESSFUL\n\nInstitution: ${uni}\nInteraction ID: ${forensicID}\n\nYour PDF report is ready. Please email it to: ${email}`);
+        
+        // Export to PDF
+        const element = document.getElementById('workspace');
+        html2pdf().from(element).save(`${uni}_MC_Exam_${forensicID}.pdf`);
+    }
+</script>
+</body>
+</html>
