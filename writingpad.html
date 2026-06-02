@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Writers Forensic Workspace | VerifyHuman™</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root { --ribbon-bg: #ffffff; --border-color: #edebe9; --bg-workspace: #f4f7f6; }
+        body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; background-color: var(--bg-workspace); font-family: 'Inter', sans-serif; margin: 0; }
+        
+        /* Navigation & Tabs */
+        .quick-access { background: var(--brand-dark); color: white; padding: 8px 20px; display: flex; gap: 15px; align-items: center; z-index: 100; }
+        .tabs { background: var(--brand-dark); display: flex; padding-left: 10px; z-index: 50; }
+        .tab { padding: 10px 20px; color: rgba(255,255,255,0.7); cursor: pointer; font-size: 13px; font-weight: 600; border-radius: 8px 8px 0 0; }
+        .tab.active { background: var(--ribbon-bg); color: var(--brand-dark); }
+
+        /* Ribbon Menu */
+        .ribbon-content { background: var(--ribbon-bg); height: 115px; border-bottom: 1px solid var(--border-color); display: none; padding: 0 20px; align-items: center; gap: 10px; }
+        .ribbon-content.active { display: flex; }
+        .group { display: flex; flex-direction: column; align-items: center; border-right: 1px solid var(--border-color); padding: 0 15px; height: 85%; justify-content: center; }
+        .group-label { font-size: 10px; color: #888; margin-top: 5px; text-transform: uppercase; }
+        .btn-row { display: flex; gap: 4px; align-items: center; }
+        .btn-ribbon { background: none; border: 1px solid transparent; padding: 6px; cursor: pointer; border-radius: 4px; font-size: 12px; color: var(--brand-dark); transition: 0.2s; }
+        .btn-ribbon:hover { background: #f0f0f0; border-color: #ccc; }
+        .btn-big { flex-direction: column; display: flex; min-width: 55px; text-align: center; }
+        .btn-big span { font-size: 20px; }
+
+        /* Workspace & Paper */
+        .workspace { flex-grow: 1; overflow: auto; display: flex; flex-direction: column; align-items: center; padding: 40px; position: relative; }
+        .paper { background: white; width: 8.5in; min-height: 11in; padding: 1in; box-shadow: var(--card-shadow); outline: none; position: relative; line-height: 1.15; transition: 0.3s; }
+        
+        /* Floating Badge Button */
+        .badge-trigger { position: fixed; top: 160px; right: 40px; z-index: 10; display: flex; flex-direction: column; gap: 10px; }
+
+        .status-bar { background: var(--brand-dark); color: white; padding: 6px 20px; font-size: 12px; display: flex; justify-content: space-between; }
+        select { padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px; }
+
+        /* Citation View */
+        #citation-view { display: none; width: 100%; max-width: 8.5in; background: white; padding: 1in; box-shadow: var(--card-shadow); font-family: 'Times New Roman', serif; }
+    </style>
+</head>
+<body>
+
+<div class="quick-access">
+    <div onclick="location.href='index.html'" style="cursor:pointer" title="Exit Storefront Dashboard">🏠</div>
+    <div onclick="manualSave()" id="save-icon" style="cursor:pointer" title="Save Now">💾</div>
+    <div style="background: var(--brand-accent); padding: 2px 12px; border-radius: 50px; font-weight: 800; font-size: 11px;">Human Integrity: <span id="trust-score">0%</span></div>
+    <span id="doc-name" style="margin-left:auto; font-weight:bold; font-size:12px; cursor:pointer;" onclick="renameDoc()">Untitled Manuscript</span>
+</div>
+
+<div class="tabs">
+    <div class="tab" onclick="setView('file')">File</div>
+    <div class="tab active" id="tab-home" onclick="setView('home')">Home</div>
+    <div class="tab" id="tab-data" onclick="setView('data')" style="background:#00b894; color:white">Forensics</div>
+</div>
+
+<div class="ribbon-content" id="file-ribbon">
+    <div class="group">
+        <div class="btn-row">
+            <button class="btn-ribbon btn-big" onclick="newDoc()"><span>📄</span>New</button>
+            <button class="btn-ribbon btn-big" onclick="exportPDF()"><span>📕</span>PDF</button>
+            <button class="btn-ribbon btn-big" onclick="window.print()"><span>🖨️</span>Print</button>
+        </div>
+        <div class="group-label">Document</div>
+    </div>
+    <div class="group">
+        <div class="btn-row">
+            <button class="btn-ribbon btn-big" onclick="createCopy()"><span>👯</span>Copy</button>
+            <button class="btn-ribbon btn-big" onclick="renameDoc()"><span>✏️</span>Rename</button>
+            <button class="btn-ribbon btn-big" onclick="deleteDoc()" style="color:#d83b01"><span>🗑️</span>Delete</button>
+        </div>
+        <div class="group-label">Manage</div>
+    </div>
+    <div class="group">
+        <button class="btn-ribbon btn-big" onclick="toggleCitations()"><span>📚</span>Citations</button>
+        <div class="group-label">Guides</div>
+    </div>
+</div>
+
+<div class="ribbon-content active" id="home-ribbon">
+    <div class="group">
+        <select onchange="document.execCommand('fontName', false, this.value)" style="width: 130px; margin-bottom: 5px;">
+            <option value="Arial">Arial</option>
+            <option value="Calibri">Calibri</option>
+            <option value="Calibri Light">Calibri Light</option>
+            <option value="Times New Roman">Times New Roman</option>
+        </select>
+        <div class="btn-row">
+            <button class="btn-ribbon" onclick="document.execCommand('bold')"><b>B</b></button>
+            <button class="btn-ribbon" onclick="document.execCommand('italic')"><i>I</i></button>
+            <button class="btn-ribbon" onclick="document.execCommand('underline')"><u>U</u></button>
+            <button class="btn-ribbon" onclick="document.execCommand('superscript')">x²</button>
+            <button class="btn-ribbon" onclick="document.execCommand('subscript')">x₂</button>
+        </div>
+        <div class="group-label">Font & Style</div>
+    </div>
+    <div class="group">
+        <div class="btn-row">
+            <button class="btn-ribbon" onclick="document.execCommand('justifyLeft')">Left</button>
+            <button class="btn-ribbon" onclick="document.execCommand('justifyCenter')">Center</button>
+            <button class="btn-ribbon" onclick="document.execCommand('justifyRight')">Right</button>
+        </div>
+        <select onchange="document.getElementById('word-view').style.lineHeight = this.value" style="margin-top:5px;">
+            <option value="1.0">1.0 spacing</option>
+            <option value="1.15">1.15 spacing</option>
+            <option value="1.5">1.5 spacing</option>
+            <option value="2.0">2.0 spacing</option>
+        </select>
+        <div class="group-label">Paragraph</div>
+    </div>
+</div>
+
+<div class="badge-trigger">
+    <button class="action-btn" style="padding: 10px 20px; font-size: 11px;" onclick="addBadge()">Get Certification Badge</button>
+</div>
+
+<div class="workspace">
+    <div id="word-view" class="paper" contenteditable="true" oninput="handleInput()">Start composing text or narrative content loops...</div>
+    
+    <div id="data-view-container" style="display:none; width: 100%; max-width: 800px; background: white; padding: 40px; border-radius: 15px;">
+        <h2>Velocity Forensics</h2>
+        <div style="height: 350px;"><canvas id="wpmChart"></canvas></div>
+    </div>
+
+    <div id="citation-view">
+        <button onclick="toggleCitations()" style="float:right; cursor:pointer;">✖ Close</button>
+        <h2 style="text-align:center">VerifyHuman™ Citation Guides</h2>
+        <hr>
+        <h3>MLA Example</h3>
+        <p style="padding-left: 40px; text-indent: -40px;">Doe, Jane. "The Impact of Human-Centric Composition." <i>VerifyHuman Forensic Workspace</i>, Report VH-9921, 2026. Certified Human Integrity: 98%.</p>
+        <br>
+        <h3>APA Example</h3>
+        <p style="padding-left: 40px; text-indent: -40px;">Doe, J. (2026). <i>The impact of human-centric composition</i> (Forensic Report No. VH-9921). VerifyHuman Authenticity Services. https://verifyhuman.com/reports/VH-9921</p>
+    </div>
+</div>
+
+<div class="status-bar">
+    <div>Words: <span id="word-count">0</span> | Keystrokes: <span id="key-count">0</span></div>
+    <div id="save-status">Auto-save Enabled</div>
+</div>
+
+<script>
+    let log = [], startTime = null, chartInstance = null;
+    const editor = document.getElementById('word-view');
+
+    window.onload = () => {
+        const savedText = localStorage.getItem('hv_content');
+        if (savedText) editor.innerHTML = savedText;
+        updateStats();
+    };
+
+    function handleInput() { updateStats(); autoSave(); calculateTrustScore(); }
+    
+    editor.addEventListener('keydown', (e) => { 
+        if (!startTime) startTime = Date.now(); 
+        log.push({ k: e.key, t: Date.now() - startTime }); 
+    });
+
+    function manualSave() {
+        autoSave();
+        const icon = document.getElementById('save-icon');
+        const status = document.getElementById('save-status');
+        icon.style.color = "#00b894";
+        status.innerText = "All changes saved!";
+        setTimeout(() => { icon.style.color = "white"; status.innerText = "Auto-save Enabled"; }, 2000);
+    }
+
+    function calculateTrustScore() {
+        const text = editor.innerText.trim();
+        let score = text.length > 0 ? Math.min(100, (log.length / text.length) * 100) : 0;
+        document.getElementById('trust-score').innerText = Math.floor(score) + "%";
+    }
+
+    function addBadge() {
+        const score = document.getElementById('trust-score').innerText;
+        const badgeHTML = `<div contenteditable="false" style="margin-top: 50px; border: 2px solid #00b894; padding: 15px; border-radius: 10px; width: 300px;"><div style="color:#00b894; font-weight:800;">VERIFIED HUMAN Origin</div><div style="font-size:11px;">Composition Trust Metric: ${score}</div><div style="font-size:9px; color:#888;">ID: VH-${Math.floor(Math.random()*1000000)}</div></div><p></p>`;
+        editor.innerHTML += badgeHTML;
+        autoSave();
+    }
+
+    function toggleCitations() {
+        const cv = document.getElementById('citation-view');
+        editor.style.display = (cv.style.display === 'block') ? 'block' : 'none';
+        cv.style.display = (cv.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function setView(id) {
+        document.querySelectorAll('.ribbon-content').forEach(r => r.style.display = 'none');
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById('citation-view').style.display = 'none';
+        
+        if(id === 'data') {
+            editor.style.display = 'none';
+            document.getElementById('data-view-container').style.display = 'block';
+            document.getElementById('tab-data').classList.add('active');
+            updateChart();
+        } else {
+            editor.style.display = 'block';
+            document.getElementById('data-view-container').style.display = 'none';
+            document.getElementById(id + '-ribbon').style.display = 'flex';
+            document.getElementById('tab-' + id).classList.add('active');
+        }
+    }
+
+    function updateChart() {
+        const ctx = document.getElementById('wpmChart').getContext('2d');
+        if(chartInstance) chartInstance.destroy();
+        chartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: log.slice(-20).map(e => Math.floor(e.t/1000) + 's'),
+                datasets: [{ label: 'Biometric Cadence Variance', data: log.slice(-20).map(e => e.t % 500), borderColor: '#3b82f6' }]
+            },
+            options: { maintainAspectRatio: false }
+        });
+    }
+
+    function updateStats() { 
+        const t = editor.innerText.trim(); 
+        document.getElementById('word-count').innerText = t===""?0:t.split(/\s+/).length; 
+        document.getElementById('key-count').innerText = log.length; 
+    }
+
+    function autoSave() { localStorage.setItem('hv_content', editor.innerHTML); }
+    function exportPDF() { html2pdf().from(editor).save('VerifyHuman_Manuscript_Report.pdf'); }
+    
+    function renameDoc() { let n = prompt("Name:"); if(n) document.getElementById('doc-name').innerText = n; }
+    function newDoc() { if(confirm("New document?")) { localStorage.clear(); location.reload(); } }
+    function deleteDoc() { if(confirm("Delete document?")) { localStorage.clear(); location.reload(); } }
+    function createCopy() { const blob = new Blob([editor.innerHTML], {type: "text/html"}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "Manuscript_Copy.html"; a.click(); }
+</script>
+</body>
+</html>
