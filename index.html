@@ -554,6 +554,26 @@
             renderPricing(viewMode);
         }
 
+        // Dynamic path parameters forward controller
+        let activeSelectedPlanForCheckout = "";
+
+        function openTrial(planName, planPrice) {
+            activeSelectedPlanForCheckout = encodeURIComponent(planName);
+            document.getElementById('modal-plan-name').innerText = planName;
+            document.getElementById('modal-plan-desc').innerText = planName;
+            document.getElementById('modal-plan-price').innerText = planPrice;
+            
+            // Map the modal actions to dynamically forward parameters to your checkout file address
+            document.getElementById('modal-primary-action').setAttribute('onclick', `location.href='checkout.html?plan=${activeSelectedPlanForCheckout}'`);
+            document.getElementById('modal-secondary-action').setAttribute('onclick', `location.href='checkout.html?plan=${activeSelectedPlanForCheckout}'`);
+            
+            document.getElementById('trial-modal').style.display = 'flex';
+        }
+
+        function closeTrial() {
+            document.getElementById('trial-modal').style.display = 'none';
+        }
+
         // Initialize default view to focus on Writers
         window.onload = function() {
             renderPricing('writer');
