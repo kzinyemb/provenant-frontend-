@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provenant™ | Deepfake Protection for Creators & Influencer Networks</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap">
+    <style>
+        :root {
+            --brand-creator: #e11d48; /* Vibrant Rose */
+            --brand-dark: #0f172a;   /* Deep Slate */
+            --brand-glass: rgba(255, 255, 255, 0.03);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top, #310413 0%, #0f172a 100%);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        section { padding: 80px 20px; max-width: 1200px; margin: 0 auto; }
+
+        .action-btn {
+            background: var(--brand-creator);
+            color: #ffffff;
+            border: none;
+            padding: 16px 36px;
+            border-radius: 50px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            display: inline-block;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(225, 29, 72, 0.3);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(225, 29, 72, 0.5);
+            filter: brightness(1.1);
+        }
+
+        .hero { text-align: center; padding: 100px 20px 60px 20px; }
+        .hero h1 { font-size: 4rem; font-weight: 900; line-height: 1.1; margin-bottom: 25px; letter-spacing: -2px; }
+        .hero p { font-size: 1.2rem; color: var(--text-muted); max-width: 800px; margin: 0 auto 40px auto; }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .feature-card {
+            background: var(--brand-glass);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 35px;
+            text-align: left;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--brand-creator);
+        }
+
+        .feature-card h3 { font-size: 1.4rem; color: #fff; margin-bottom: 15px; }
+        .feature-card p { color: var(--text-muted); font-size: 0.95rem; }
+        .icon { font-size: 2rem; margin-bottom: 15px; display: block; }
+
+        .badge-callout {
+            background: linear-gradient(135deg, rgba(225, 29, 72, 0.1) 0%, rgba(15, 23, 42, 0.6) 100%);
+            border: 1px solid rgba(225, 29, 72, 0.2);
+            border-radius: 24px;
+            padding: 60px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        footer { text-align: center; padding: 60px 20px; border-top: 1px solid rgba(255, 255, 255, 0.05); color: var(--text-muted); font-size: 13px; }
+    </style>
+</head>
+<body>
+
+    <!-- NAV NAVIGATION BAR BACKLINK -->
+    <div style="padding: 20px; max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 10px; cursor: pointer;" onclick="location.href='index.html'">
+            <span style="font-weight: 900; font-size: 24px; letter-spacing: -1px; color: #fff;">PROVEN<span style="color: var(--brand-creator);">ANT</span>™</span>
+        </div>
+        <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600;">← Back to Main Hub</a>
+    </div>
+
+    <!-- HERO PRESENTATION ZONE -->
+    <section class="hero">
+        <h1>Certify Your Media.<br><span style="color: var(--brand-creator); text-shadow: 0 0 40px rgba(225, 29, 72, 0.4);">Authenticate Video Feeds.</span></h1>
+        <p>Protect your brand partnerships and intellectual property from automated copycats. Provenant™ scans raw file exports to generate verified cryptographic origin certifications for premium creators, influencers, and media agencies.</p>
+        <button class="action-btn" onclick="location.href='sandbox.html'">Access Creator Sandbox Portal</button>
+    </section>
+
+    <!-- SYSTEM LAYER OVERVIEW MATRIX -->
+    <section>
+        <div style="text-align: center;">
+            <h2 style="font-size: 2.2rem;">How the Verification Matrix Secures Your Content</h2>
+            <p style="color: var(--text-muted); margin-top: 10px;">Military-grade media forensic logging from local camera sensor to distribution channels.</p>
+        </div>
+
+        <div class="grid-3">
+            <div class="feature-card">
+                <span class="icon">🔍</span>
+                <h3>Frame Auditing</h3>
+                <p>Scans multi-layer frames to track rendering variations, identifying algorithmic inconsistencies caused by deepfake synthetic rendering modules.</p>
+            </div>
+            <div class="feature-card">
+                <span class="icon">🎙️</span>
+                <h3>Vocal Frequency Sweeps</h3>
+                <p>Analyzes voice tracks to identify synthetic audio anomalies or voice clone matching footprints, ensuring audio track authenticity.</p>
+            </div>
+            <div class="feature-card">
+                <span class="icon">📷</span>
+                <h3>C2PA Hardware Tracking</h3>
+                <p>Extracts and seals camera lens metadata variables directly from original capture hardware, maintaining an immutable line of origin.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- COMMERCIAL OUTCOMES SEGMENT -->
+    <section style="padding-top: 20px;">
+        <div class="badge-callout">
+            <h2 style="font-size: 2.5rem; margin-bottom: 20px; color: #fff;">Secure Higher-Paying Brand Deals</h2>
+            <p style="color: var(--text-muted); max-width: 700px; margin: 0 auto 30px auto; font-size: 1.1rem;">Include an embeddable watermark, certified media kit parameters, or cryptographic asset index verification records to give corporate sponsors mathematical proof of asset safety.</p>
+            <button class="action-btn" style="background: transparent; border: 2px solid #fff; box-shadow: none;" onclick="location.href='sandbox.html'">Launch Media Sandbox Run</button>
+        </div>
+    </section>
+
+    <!-- COMPLIANT FOOTER ARCHITECTURE -->
+    <footer>
+        <p>&copy; 2026 Provenant™. All rights reserved. Strategic Media Presenter Node. Security Framework Tier 1.</p>
+    </footer>
+
+</body>
+</html>
