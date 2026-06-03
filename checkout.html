@@ -172,14 +172,14 @@
     </div>
 
     <script>
-        // Initialize Stripe Using your Public Key
-        const stripe = Stripe('pk_test_YOUR_STRIPE_PUBLISHABLE_KEY'); 
+        // Synchronized Stripe Production Infrastructure Initializer
+        const stripe = Stripe('pk_test_51TX6BrIJM7023gnh85hA0NUVPL3bh8Zt3dccx5lBga5oN7PGhP1KzFX7R5crXX07ygIH7AQllpKsw5Re2JTX663S00Cj2QmN5s'); 
 
-        // Dynamic Product Token Mapping Dictionary
+        // Fully Populated Live Stripe Price Matrix mapping 
         const stripePriceMap = {
-            "Writers Tier": "price_YOUR_WRITERS_PRICE_ID",
-            "Editorial Enterprise Suite": "price_YOUR_ENTERPRISE_PRICE_ID",
-            "Academic Suite License": "price_YOUR_ACADEMIC_PRICE_ID"
+            "Writers Tier": "price_1TeJ48IJM7023gnhmmEoEWo1",
+            "Editorial Enterprise Suite": "price_1TeJ59IJM7023gnh5jM9OGYV",
+            "Academic Suite License": "price_1TeJ6TIJM7023gnhZgRYzaGL"
         };
 
         let activePlanName = "Writers Tier";
@@ -188,7 +188,6 @@
             const urlParams = new URLSearchParams(window.location.search);
             const planParam = urlParams.get('plan');
             
-            // Default Fallback mapping metrics
             let planPrice = "$14.99";
             let intervalLabel = "Individual Author Workspace Bundle";
             let structuralInterval = "/mo";
@@ -213,7 +212,6 @@
                 }
             }
 
-            // Bind values to Document Object Nodes
             document.getElementById('summary-plan-name').innerText = "Provenant™ " + activePlanName;
             document.getElementById('summary-billing-interval').innerText = intervalLabel;
             
@@ -221,8 +219,7 @@
                 document.getElementById('summary-base-price').innerText = "Pending";
                 document.getElementById('summary-discount-price').innerText = "N/A";
                 document.getElementById('billing-timeline-disclosure').innerHTML = "Our engineering implementation team will email you a formal corporate pricing proposal loop based directly on your campus enrollment matrix.";
-                
-                // Form modifications for custom enterprise quotes
+                // Hide payment fields for custom contracts
                 document.getElementById('payment-form').style.opacity = "0.5";
                 document.querySelector('.secure-btn').innerText = "Contact Sales Pending";
                 document.querySelector('.secure-btn').disabled = true;
@@ -230,7 +227,6 @@
                 document.getElementById('summary-base-price').innerText = planPrice;
                 document.getElementById('summary-discount-price').innerText = "- " + planPrice;
                 
-                // Automate 30-day expiration string loops
                 const targetTrialExpiration = new Date();
                 targetTrialExpiration.setDate(targetTrialExpiration.getDate() + 30);
                 const genericFormattedDate = targetTrialExpiration.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -239,7 +235,7 @@
             }
         };
 
-        // Stripe Checkout Form Submission Interceptor Link
+        // Stripe Redirect Interceptor Logic 
         document.getElementById('payment-form').onsubmit = function(e) {
             e.preventDefault();
             
@@ -250,17 +246,13 @@
                 return;
             }
 
-            // Push client directly into Stripe's secure hosted billing pipeline
+            // Launch Stripe Hosted subscription workflow layer
             stripe.redirectToCheckout({
                 lineItems: [{ price: priceId, quantity: 1 }],
                 mode: 'subscription',
-                
-                // Injects 30-day free trial limits automatically
                 subscriptionData: {
                     trial_period_days: 30
                 },
-
-                // Change these strings to reflect your live domain maps
                 successUrl: 'https://provenantforensics.com/writingpad.html',
                 cancelUrl: 'https://provenantforensics.com/checkout.html?plan=' + encodeURIComponent(activePlanName),
             }).then(function (result) {
