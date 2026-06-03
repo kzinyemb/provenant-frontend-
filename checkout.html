@@ -135,7 +135,7 @@
                     </div>
                 </div>
                 
-                <button type="submit" class="secure-btn">Complete Setup & Secure Workspace</button>
+                <button type="submit" class="secure-btn">Complete Setup & Activate Workstation</button>
                 
                 <p style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 20px;">
                     🔒 Encrypted, secure checkout layer. You will not be billed until after your 30-day trial period finishes.
@@ -165,35 +165,35 @@
             </div>
 
             <div style="margin-top: 40px; font-size: 12px; color: var(--text-muted); line-height: 1.6;">
-                <p id="billing-timeline-disclosure">After your 30-day sandbox trial ends, your payment method will execute a standard renewal charge of $14.99/mo unless canceled inside management logs.</p>
+                <p id="billing-timeline-disclosure">After your 30-day sandbox trial ends, your payment method will execute a standard renewal charge unless canceled inside management logs.</p>
             </div>
         </div>
     </div>
 
     <script>
-        // Automatic runtime plan matrix parameter loader
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const planParam = urlParams.get('plan');
             
-            // Standard Product Map Variables matching landing matrix points
+            // Default Fallback mapping metrics
             let planName = "Writers Tier";
             let planPrice = "$14.99";
-            let intervalLabel = "Monthly Subscription";
+            let intervalLabel = "Individual Author Workspace Bundle";
             let structuralInterval = "/mo";
 
             if (planParam) {
-                if (planParam.toLowerCase().includes('enterprise') || planParam.toLowerCase().includes('editorial')) {
+                const decodedPlan = decodeURIComponent(planParam);
+                if (decodedPlan === 'Editorial Enterprise Suite') {
                     planName = "Editorial Enterprise Suite";
                     planPrice = "$89.00";
-                    intervalLabel = "Multi-Author Base Workstation";
+                    intervalLabel = "Multi-Author Base Workstation Bundle";
                     structuralInterval = "/mo";
-                } else if (planParam.toLowerCase().includes('academic')) {
+                } else if (decodedPlan === 'Academic Suite') {
                     planName = "Academic Suite License";
                     planPrice = "$12.99";
                     intervalLabel = "Departmental Professor Seat Plan";
                     structuralInterval = "/prof/mo";
-                } else if (planParam.toLowerCase().includes('campus') || planParam.toLowerCase().includes('custom')) {
+                } else if (decodedPlan === 'Institutional Campus Bundle' || decodedPlan === 'Custom') {
                     planName = "Institutional Campus Bundle";
                     planPrice = "Custom Quote";
                     intervalLabel = "District Licensing Agreement";
@@ -201,29 +201,28 @@
                 }
             }
 
-            // Sync visual text blocks across DOM targets
+            // Bind values to Document Object Nodes
             document.getElementById('summary-plan-name').innerText = "Provenant™ " + planName;
             document.getElementById('summary-billing-interval').innerText = intervalLabel;
             
             if (planPrice === "Custom Quote") {
                 document.getElementById('summary-base-price').innerText = "Pending";
                 document.getElementById('summary-discount-price').innerText = "N/A";
-                document.getElementById('billing-timeline-disclosure').innerHTML = "Our engineering implementation team will email you a custom operational pricing proposal loop based on your campus deployment needs.";
+                document.getElementById('billing-timeline-disclosure').innerHTML = "Our engineering implementation team will email you a formal corporate pricing proposal loop based directly on your campus enrollment matrix.";
             } else {
                 document.getElementById('summary-base-price').innerText = planPrice;
                 document.getElementById('summary-discount-price').innerText = "- " + planPrice;
                 
-                // Calculate dynamic dates for trial windows
+                // Automate 30-day expiration string loops
                 const targetTrialExpiration = new Date();
                 targetTrialExpiration.setDate(targetTrialExpiration.getDate() + 30);
-                const localeOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-                const genericFormattedDate = targetTrialExpiration.toLocaleDateString('en-US', localeOptions);
+                const genericFormattedDate = targetTrialExpiration.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
                 
                 document.getElementById('billing-timeline-disclosure').innerHTML = `After your 30-day forensic sandbox trial ends on <b>${genericFormattedDate}</b>, your verified payment vehicle will automatically clear a standard platform renewal step of <b>${planPrice}${structuralInterval}</b> unless paused via billing dashboards.`;
             }
         };
 
-        // Redirection routing handler link mapping
+        // Complete form checkout submission redirect step
         document.getElementById('payment-form').onsubmit = function(e) {
             e.preventDefault();
             alert('Security clearance verified! Your 30-day forensic trial pipeline has initialized successfully. Accessing secure terminal workspace...');
