@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure Checkout | Provenant™ Forensics</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap">
+    <script src="https://js.stripe.com/v3/"></script>
     <style>
         :root {
             --brand-accent: #00b894;
@@ -171,12 +172,23 @@
     </div>
 
     <script>
+        // Initialize Stripe Using your Public Key
+        const stripe = Stripe('pk_test_YOUR_STRIPE_PUBLISHABLE_KEY'); 
+
+        // Dynamic Product Token Mapping Dictionary
+        const stripePriceMap = {
+            "Writers Tier": "price_YOUR_WRITERS_PRICE_ID",
+            "Editorial Enterprise Suite": "price_YOUR_ENTERPRISE_PRICE_ID",
+            "Academic Suite License": "price_YOUR_ACADEMIC_PRICE_ID"
+        };
+
+        let activePlanName = "Writers Tier";
+
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const planParam = urlParams.get('plan');
             
             // Default Fallback mapping metrics
-            let planName = "Writers Tier";
             let planPrice = "$14.99";
             let intervalLabel = "Individual Author Workspace Bundle";
             let structuralInterval = "/mo";
@@ -184,17 +196,17 @@
             if (planParam) {
                 const decodedPlan = decodeURIComponent(planParam);
                 if (decodedPlan === 'Editorial Enterprise Suite') {
-                    planName = "Editorial Enterprise Suite";
+                    activePlanName = "Editorial Enterprise Suite";
                     planPrice = "$89.00";
                     intervalLabel = "Multi-Author Base Workstation Bundle";
                     structuralInterval = "/mo";
                 } else if (decodedPlan === 'Academic Suite') {
-                    planName = "Academic Suite License";
+                    activePlanName = "Academic Suite License";
                     planPrice = "$12.99";
                     intervalLabel = "Departmental Professor Seat Plan";
                     structuralInterval = "/prof/mo";
                 } else if (decodedPlan === 'Institutional Campus Bundle' || decodedPlan === 'Custom') {
-                    planName = "Institutional Campus Bundle";
+                    activePlanName = "Institutional Campus Bundle";
                     planPrice = "Custom Quote";
                     intervalLabel = "District Licensing Agreement";
                     structuralInterval = "";
@@ -202,13 +214,18 @@
             }
 
             // Bind values to Document Object Nodes
-            document.getElementById('summary-plan-name').innerText = "Provenant™ " + planName;
+            document.getElementById('summary-plan-name').innerText = "Provenant™ " + activePlanName;
             document.getElementById('summary-billing-interval').innerText = intervalLabel;
             
             if (planPrice === "Custom Quote") {
                 document.getElementById('summary-base-price').innerText = "Pending";
                 document.getElementById('summary-discount-price').innerText = "N/A";
                 document.getElementById('billing-timeline-disclosure').innerHTML = "Our engineering implementation team will email you a formal corporate pricing proposal loop based directly on your campus enrollment matrix.";
+                
+                // Form modifications for custom enterprise quotes
+                document.getElementById('payment-form').style.opacity = "0.5";
+                document.querySelector('.secure-btn').innerText = "Contact Sales Pending";
+                document.querySelector('.secure-btn').disabled = true;
             } else {
                 document.getElementById('summary-base-price').innerText = planPrice;
                 document.getElementById('summary-discount-price').innerText = "- " + planPrice;
@@ -222,11 +239,35 @@
             }
         };
 
-        // Complete form checkout submission redirect step
+        // Stripe Checkout Form Submission Interceptor Link
         document.getElementById('payment-form').onsubmit = function(e) {
             e.preventDefault();
-            alert('Security clearance verified! Your 30-day forensic trial pipeline has initialized successfully. Accessing secure terminal workspace...');
-            window.location.href = 'writingpad.html';
+            
+            const priceId = stripePriceMap[activePlanName];
+            
+            if (!priceId) {
+                alert("Error resolving payment token asset. Please contact system administrators.");
+                return;
+            }
+
+            // Push client directly into Stripe's secure hosted billing pipeline
+            stripe.redirectToCheckout({
+                lineItems: [{ price: priceId, quantity: 1 }],
+                mode: 'subscription',
+                
+                // Injects 30-day free trial limits automatically
+                subscriptionData: {
+                    trial_period_days: 30
+                },
+
+                // Change these strings to reflect your live domain maps
+                successUrl: 'https://provenantforensics.com/writingpad.html',
+                cancelUrl: 'https://provenantforensics.com/checkout.html?plan=' + encodeURIComponent(activePlanName),
+            }).then(function (result) {
+                if (result.error) {
+                    alert(result.error.message);
+                }
+            });
         };
     </script>
 </body>
