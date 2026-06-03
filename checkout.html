@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Checkout | Provenant™ Forensics</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap">
+    <style>
+        :root {
+            --brand-accent: #00b894;
+            --brand-dark: #0f172a;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --brand-writer: #3b82f6;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .checkout-container {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            width: 100%;
+            max-width: 1000px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Left Side: Payment Form */
+        .payment-form {
+            padding: 60px;
+            background: #1e293b;
+        }
+
+        .payment-form h2 { margin-bottom: 30px; font-size: 1.8rem; }
+
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        input {
+            width: 100%;
+            padding: 14px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input:focus { border-color: var(--brand-writer); }
+
+        .row { display: flex; gap: 20px; }
+
+        .secure-btn {
+            width: 100%;
+            background: var(--brand-writer);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .secure-btn:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5); }
+
+        /* Right Side: Order Summary */
+        .order-summary {
+            padding: 60px;
+            background: rgba(255, 255, 255, 0.02);
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .total { font-size: 1.5rem; font-weight: 800; color: var(--brand-accent); margin-top: 20px; }
+
+        @media (max-width: 850px) {
+            .checkout-container { grid-template-columns: 1fr; }
+            .order-summary { order: -1; padding: 40px; }
+            .payment-form { padding: 40px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="checkout-container">
+        <div class="payment-form">
+            <h2>Payment Details</h2>
+            <form id="payment-form">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="name@domain.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Cardholder Name</label>
+                    <input type="text" placeholder="Full Name" required>
+                </div>
+                <div class="form-group">
+                    <label>Card Information</label>
+                    <input type="text" placeholder="XXXX XXXX XXXX XXXX" required>
+                </div>
+                <div class="row">
+                    <div class="form-group" style="flex: 2;">
+                        <label>Expiry Date</label>
+                        <input type="text" placeholder="MM / YY" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>CVC</label>
+                        <input type="text" placeholder="123" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="secure-btn">Complete Setup & Secure Workspace</button>
+                
+                <p style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 20px;">
+                    🔒 Encrypted, secure checkout layer. You will not be billed until after your 30-day trial period finishes.
+                </p>
+            </form>
+        </div>
+
+        <div class="order-summary">
+            <h3>Order Summary</h3>
+            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 40px;">Review your selection</p>
+            
+            <div class="summary-item">
+                <div>
+                    <div id="summary-plan-name" style="font-weight: 700;">Provenant™ Workspace</div>
+                    <div id="summary-billing-interval" style="font-size: 12px; color: var(--text-muted);">Monthly Subscription Plan</div>
+                </div>
+                <div id="summary-base-price">$14.99</div>
+            </div>
+
+            <div class="summary-item">
+                <div>30-Day Trial Credit</div>
+                <div id="summary-discount-price" style="color: var(--brand-accent);">- $14.99</div>
+            </div>
+
+            <div class="total">
+                <span style="font-size: 14px; color: white;">Due Today:</span> $0.00
+            </div>
+
+            <div style="margin-top: 40px; font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+                <p id="billing-timeline-disclosure">After your 30-day sandbox trial ends, your payment method will execute a standard renewal charge of $14.99/mo unless canceled inside management logs.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Automatic runtime plan matrix parameter loader
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const planParam = urlParams.get('plan');
+            
+            // Standard Product Map Variables matching landing matrix points
+            let planName = "Writers Tier";
+            let planPrice = "$14.99";
+            let intervalLabel = "Monthly Subscription";
+            let structuralInterval = "/mo";
+
+            if (planParam) {
+                if (planParam.toLowerCase().includes('enterprise') || planParam.toLowerCase().includes('editorial')) {
+                    planName = "Editorial Enterprise Suite";
+                    planPrice = "$89.00";
+                    intervalLabel = "Multi-Author Base Workstation";
+                    structuralInterval = "/mo";
+                } else if (planParam.toLowerCase().includes('academic')) {
+                    planName = "Academic Suite License";
+                    planPrice = "$12.99";
+                    intervalLabel = "Departmental Professor Seat Plan";
+                    structuralInterval = "/prof/mo";
+                } else if (planParam.toLowerCase().includes('campus') || planParam.toLowerCase().includes('custom')) {
+                    planName = "Institutional Campus Bundle";
+                    planPrice = "Custom Quote";
+                    intervalLabel = "District Licensing Agreement";
+                    structuralInterval = "";
+                }
+            }
+
+            // Sync visual text blocks across DOM targets
+            document.getElementById('summary-plan-name').innerText = "Provenant™ " + planName;
+            document.getElementById('summary-billing-interval').innerText = intervalLabel;
+            
+            if (planPrice === "Custom Quote") {
+                document.getElementById('summary-base-price').innerText = "Pending";
+                document.getElementById('summary-discount-price').innerText = "N/A";
+                document.getElementById('billing-timeline-disclosure').innerHTML = "Our engineering implementation team will email you a custom operational pricing proposal loop based on your campus deployment needs.";
+            } else {
+                document.getElementById('summary-base-price').innerText = planPrice;
+                document.getElementById('summary-discount-price').innerText = "- " + planPrice;
+                
+                // Calculate dynamic dates for trial windows
+                const targetTrialExpiration = new Date();
+                targetTrialExpiration.setDate(targetTrialExpiration.getDate() + 30);
+                const localeOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+                const genericFormattedDate = targetTrialExpiration.toLocaleDateString('en-US', localeOptions);
+                
+                document.getElementById('billing-timeline-disclosure').innerHTML = `After your 30-day forensic sandbox trial ends on <b>${genericFormattedDate}</b>, your verified payment vehicle will automatically clear a standard platform renewal step of <b>${planPrice}${structuralInterval}</b> unless paused via billing dashboards.`;
+            }
+        };
+
+        // Redirection routing handler link mapping
+        document.getElementById('payment-form').onsubmit = function(e) {
+            e.preventDefault();
+            alert('Security clearance verified! Your 30-day forensic trial pipeline has initialized successfully. Accessing secure terminal workspace...');
+            window.location.href = 'writingpad.html';
+        };
+    </script>
+</body>
+</html>
