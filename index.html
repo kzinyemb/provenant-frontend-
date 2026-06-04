@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -227,20 +228,18 @@
             <div style="display: flex; align-items: center; gap: 15px;">
                 <svg width="60" height="60" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M35 25V75M35 25H60C70 25 75 32 75 42C75 52 70 59 60 59H35" stroke="var(--brand-writer)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" id="logo-geometric-svg"/>
-                    <line x1="20" y1="35" x2="40" y2="35" stroke="var(--brand-writer)" stroke-width="4" stroke-linecap="round" opacity="0.4"/>
-                    <line x1="20" y1="50" x2="40" y2="50" stroke="var(--brand-writer)" stroke-width="4" stroke-linecap="round" opacity="0.7"/>
-                    <line x1="20" y1="65" x2="40" y2="65" stroke="var(--brand-writer)" stroke-width="4" stroke-linecap="round" opacity="1"/>
+                    <line x1="20" x2="40" y1="35" y2="35" stroke="var(--brand-writer)" stroke-width="4" stroke-linecap="round" opacity="0.4"/>
+                    <line x1="20" x2="40" y1="50" y2="50" stroke="var(--brand-writer)" stroke-width="4" stroke-linecap="round" opacity="0.7"/>
+                    <line x1="20" x2="40" y1="65" y2="65" stroke="var(--brand-writer)" stroke-width="4" stroke-linecap="round" opacity="1"/>
                 </svg>
                 <span style="font-weight: 900; font-size: 42px; letter-spacing: -2px; color: #fff;">
                     PROVEN<span id="logo-text-accent" style="color: var(--brand-writer);">ANT</span>™
                 </span>
             </div>
             
-            <!-- Unified Value Proposition Title -->
             <h1 id="hero-headline">The Gold Standard of <br><span style="color: var(--brand-writer); text-shadow: 0 0 30px rgba(59, 130, 246, 0.3);">Human Origin.</span></h1>
         </div>
 
-        <!-- Updated Core Description Text -->
         <p id="hero-description">Your unique rhythm is your signature. Provenant™ certifies work integrity for school districts, universities, and professional writers through biometric cadence analysis.</p>
     </section>
 
@@ -250,21 +249,7 @@
         <button class="switch-btn" data-target="edu" onclick="changeAudienceView('edu')">For Academic Labs</button>
     </div>
 
-    <!-- 3. ADAPTIVE CORE FEATURE/WORKSTATION NAVIGATION ACCESS -->
-    <div id="writer-links-layout" class="pane" style="text-align: center; margin-bottom: 60px;">
-        <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
-            <button class="action-btn" onclick="window.location.href='writingpad.html'" style="background: var(--brand-writer); color: white;">Open Verified Writing Pad</button>
-        </div>
-    </div>
-
-    <div id="edu-links-layout" class="pane hidden-pane" style="text-align: center; margin-bottom: 60px;">
-        <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
-            <button class="action-btn" onclick="window.location.href='exam-short-answers.html'" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);">Deploy Short Answer Exam</button>
-            <button class="action-btn" onclick="window.location.href='exam-multiple-choice.html'" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);">Deploy Multiple Choice Exam</button>
-        </div>
-    </div>
-
-    <!-- 4. DYNAMIC INTERACTIVE PROCESS STEPS MODULE -->
+    <!-- 3. DYNAMIC INTERACTIVE PROCESS STEPS MODULE -->
     <section class="process-section">
         
         <div id="writer-process" class="grid-3 pane">
@@ -338,7 +323,7 @@
         </div>
     </section>
 
-    <!-- 5. SUBSCRIPTION MODULE -->
+    <!-- 4. SUBSCRIPTION MODULE -->
     <section id="plans">
         <div style="text-align: center; margin-bottom: 70px;">
             <h2 style="font-size: 2.8rem; margin-bottom: 15px;">Integrity Plans</h2>
@@ -348,7 +333,7 @@
         <div id="pricing-matrix-container" class="grid-2"></div>
     </section>
 
-    <!-- 6. INDUSTRIAL ENTERPRISE MODULE -->
+    <!-- 5. INDUSTRIAL ENTERPRISE MODULE -->
     <section id="enterprise-tier-zone" style="background: rgba(255,255,255,0.02); border-top: 1px solid rgba(255,255,255,0.05);">
         <div style="display: flex; flex-wrap: wrap; gap: 60px; align-items: center;">
             <div style="flex: 1; min-width: 300px;">
@@ -432,7 +417,6 @@
                     btnStyles = card.isEduFeatured ? "background: var(--brand-accent); color: var(--brand-dark); box-shadow: 0 6px 15px rgba(0,184,148,0.3);" : "background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1);";
                 }
 
-                // Clean routing interval tags for non-numeric custom items
                 let billingInterval = '<span>/mo</span>';
                 if (card.name === 'Academic Suite') {
                     billingInterval = '<span>/prof/mo</span>';
@@ -463,8 +447,6 @@
             const footerLogoAccent = document.querySelector('#footer-text-accent');
             const targetModalAccent = document.querySelector('#modal-plan-name');
 
-            const eduLinks = document.getElementById('edu-links-layout');
-            const writerLinks = document.getElementById('writer-links-layout');
             const eduProcess = document.getElementById('edu-process');
             const writerProcess = document.getElementById('writer-process');
 
@@ -494,8 +476,6 @@
                 document.getElementById('modal-primary-action').style.background = 'var(--brand-accent)';
                 document.getElementById('modal-primary-action').style.color = 'var(--brand-dark)';
 
-                eduLinks.classList.remove('hidden-pane');
-                writerLinks.classList.add('hidden-pane');
                 eduProcess.classList.remove('hidden-pane');
                 writerProcess.classList.add('hidden-pane');
 
@@ -529,10 +509,8 @@
                 document.getElementById('modal-primary-action').style.background = 'var(--brand-writer)';
                 document.getElementById('modal-primary-action').style.color = '#ffffff';
 
-                eduLinks.classList.add('hidden-pane');
-                writerLinks.classList.remove('hidden-pane');
-                eduProcess.classList.add('hidden-pane');
-                writerProcess.classList.remove('hidden-pane');
+                eduProcess.classList.remove('hidden-pane');
+                writerProcess.classList.add('hidden-pane');
 
                 entKicker.innerText = "Agencies & Newsrooms";
                 entKicker.style.color = "var(--brand-writer)";
@@ -554,7 +532,6 @@
             renderPricing(viewMode);
         }
 
-        // Dynamic path parameters forward controller
         let activeSelectedPlanForCheckout = "";
 
         function openTrial(planName, planPrice) {
@@ -563,7 +540,6 @@
             document.getElementById('modal-plan-desc').innerText = planName;
             document.getElementById('modal-plan-price').innerText = planPrice;
             
-            // Map the modal actions to dynamically forward parameters to your checkout file address
             document.getElementById('modal-primary-action').setAttribute('onclick', `location.href='checkout.html?plan=${activeSelectedPlanForCheckout}'`);
             document.getElementById('modal-secondary-action').setAttribute('onclick', `location.href='checkout.html?plan=${activeSelectedPlanForCheckout}'`);
             
@@ -574,7 +550,6 @@
             document.getElementById('trial-modal').style.display = 'none';
         }
 
-        // Initialize default view to focus on Writers
         window.onload = function() {
             renderPricing('writer');
         };
