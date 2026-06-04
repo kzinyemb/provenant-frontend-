@@ -157,11 +157,11 @@
     </div>
 
     <script>
-        // CRITICAL UPDATE: Paste your dashboard "Payment Links" here (look for buy.stripe.com/test_...)
+        // CRITICAL UPDATE: Fully loaded with verified dashboard Test Mode URLs
         const stripePaymentLinks = {
-            "Writers Tier": "https://buy.stripe.com/test_PASTE_YOUR_WRITERS_LINK_HERE",
-            "Editorial Enterprise Suite": "https://buy.stripe.com/test_PASTE_YOUR_ENTERPRISE_LINK_HERE",
-            "Academic Suite": "https://buy.stripe.com/test_PASTE_YOUR_ACADEMIC_LINK_HERE"
+            "Writers Tier": "https://buy.stripe.com/test_dRm14o03s81ocilcxjbo402",
+            "Editorial Enterprise Suite": "https://buy.stripe.com/test_14AaEY17w3L8dmpcxjbo401",
+            "Academic Suite": "https://buy.stripe.com/test_bJe8wQ17w81o2HL54Rbo403"
         };
 
         let activePlanName = "Writers Tier";
@@ -224,8 +224,8 @@
             
             const targetCheckoutUrl = stripePaymentLinks[activePlanName];
             
-            if (!targetCheckoutUrl || targetCheckoutUrl.includes("PASTE_YOUR_")) {
-                alert("Configuration update required: Please add your active buy.stripe.com links into the script registry.");
+            if (!targetCheckoutUrl) {
+                alert("Configuration update required: Missing link array pairing parameter string logic matches.");
                 return;
             }
 
