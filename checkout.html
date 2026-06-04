@@ -175,7 +175,7 @@
         // Initialize Stripe using your verified public test key
         const stripe = Stripe('pk_test_51TX6BrIJM7023gnh85hA0NUVPL3bh8Zt3dccx5lBga5oN7PGhP1KzFX7R5crXX07ygIH7AQllpKsw5Re2JTX663S00Cj2QmN5s'); 
 
-        // Live Stripe Price Matrix mapping 
+        // Confirmed Stripe Price Matrix mapping matching your dashboard catalog
         const stripePriceMap = {
             "Writers Tier": "price_1TeJ48IJM7023gnhmmEoEWo1",
             "Editorial Enterprise Suite": "price_1TeJ59IJM7023gnh5jM9OGYV",
@@ -229,7 +229,6 @@
                 document.getElementById('summary-base-price').innerText = planPrice;
                 document.getElementById('summary-discount-price').innerText = "- " + planPrice;
                 
-                // Automate 30-day expiration string loops
                 const targetTrialExpiration = new Date();
                 targetTrialExpiration.setDate(targetTrialExpiration.getDate() + 30);
                 const genericFormattedDate = targetTrialExpiration.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -254,8 +253,8 @@
                 lineItems: [{ price: priceId, quantity: 1 }],
                 mode: 'subscription',
                 
-                // Injects 30-day free trial limits automatically on the fly
-                subscriptionData: {
+                // FIXED PARSING FORMAT: Uses Stripe's strict underscore syntax requirement
+                subscription_data: {
                     trial_period_days: 30
                 },
 
