@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure Checkout | Provenant™ Forensics</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap">
-    <script src="https://js.stripe.com/v3/"></script>
     <style>
         :root {
             --brand-accent: #00b894;
@@ -111,35 +110,21 @@
 
     <div class="checkout-container">
         <div class="payment-form">
-            <h2>Payment Details</h2>
+            <h2>Account Verification</h2>
             <form id="payment-form">
                 <div class="form-group">
                     <label>Email Address</label>
                     <input type="email" placeholder="name@domain.com" required>
                 </div>
                 <div class="form-group">
-                    <label>Cardholder Name</label>
-                    <input type="text" placeholder="Full Name" required>
-                </div>
-                <div class="form-group">
-                    <label>Card Information</label>
-                    <input type="text" placeholder="XXXX XXXX XXXX XXXX" required>
-                </div>
-                <div class="row">
-                    <div class="form-group" style="flex: 2;">
-                        <label>Expiry Date</label>
-                        <input type="text" placeholder="MM / YY" required>
-                    </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label>CVC</label>
-                        <input type="text" placeholder="123" required>
-                    </div>
+                    <label>Full Name</label>
+                    <input type="text" placeholder="First and Last Name" required>
                 </div>
                 
-                <button type="submit" class="secure-btn">Complete Setup & Activate Workstation</button>
+                <button type="submit" class="secure-btn">Continue to Secure Setup</button>
                 
                 <p style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 20px;">
-                    🔒 Encrypted, secure checkout layer. You will not be billed until after your 30-day trial period finishes.
+                    🔒 Secured by Stripe. You will not be billed during your 30-day forensic trial pipeline.
                 </p>
             </form>
         </div>
@@ -172,14 +157,11 @@
     </div>
 
     <script>
-        // Initialize Stripe using your verified public test key
-        const stripe = Stripe('pk_test_51TX6BrIJM7023gnh85hA0NUVPL3bh8Zt3dccx5lBga5oN7PGhP1KzFX7R5crXX07ygIH7AQllpKsw5Re2JTX663S00Cj2QmN5s'); 
-
-        // Confirmed Stripe Price Matrix mapping matching your dashboard catalog
-        const stripePriceMap = {
-            "Writers Tier": "price_1TeJ48IJM7023gnhmmEoEWo1",
-            "Editorial Enterprise Suite": "price_1TeJ59IJM7023gnh5jM9OGYV",
-            "Academic Suite": "price_1TeJ6TIJM7023gnhZgRYzaGL"
+        // CRITICAL UPDATE: Paste your dashboard "Payment Links" here (look for buy.stripe.com/test_...)
+        const stripePaymentLinks = {
+            "Writers Tier": "https://buy.stripe.com/test_PASTE_YOUR_WRITERS_LINK_HERE",
+            "Editorial Enterprise Suite": "https://buy.stripe.com/test_PASTE_YOUR_ENTERPRISE_LINK_HERE",
+            "Academic Suite": "https://buy.stripe.com/test_PASTE_YOUR_ACADEMIC_LINK_HERE"
         };
 
         let activePlanName = "Writers Tier";
@@ -199,7 +181,7 @@
                     planPrice = "$89.00";
                     intervalLabel = "Multi-Author Base Workstation Bundle";
                     structuralInterval = "/mo";
-                } else if (decodedPlan === 'Academic Suite' || decodedPlan === 'Academic Suite License') {
+                } else if (decodedPlan === 'Academic Suite') {
                     activePlanName = "Academic Suite";
                     planPrice = "$12.99";
                     intervalLabel = "Departmental Professor Seat Plan";
@@ -221,7 +203,6 @@
                 document.getElementById('summary-discount-price').innerText = "N/A";
                 document.getElementById('billing-timeline-disclosure').innerHTML = "Our engineering implementation team will email you a formal corporate pricing proposal loop based directly on your campus enrollment matrix.";
                 
-                // Form modifications for custom enterprise quotes
                 document.getElementById('payment-form').style.opacity = "0.5";
                 document.querySelector('.secure-btn').innerText = "Contact Sales Pending";
                 document.querySelector('.secure-btn').disabled = true;
@@ -237,34 +218,19 @@
             }
         };
 
-        // Stripe Checkout Form Submission Interceptor Link
+        // Form submission seamlessly hands off tracking directly to Stripe's payment links
         document.getElementById('payment-form').onsubmit = function(e) {
             e.preventDefault();
             
-            const priceId = stripePriceMap[activePlanName];
+            const targetCheckoutUrl = stripePaymentLinks[activePlanName];
             
-            if (!priceId) {
-                alert("Error resolving payment token asset for: " + activePlanName + ". Please check string alignments.");
+            if (!targetCheckoutUrl || targetCheckoutUrl.includes("PASTE_YOUR_")) {
+                alert("Configuration update required: Please add your active buy.stripe.com links into the script registry.");
                 return;
             }
 
-            // Push client directly into Stripe's secure hosted billing pipeline
-            stripe.redirectToCheckout({
-                lineItems: [{ price: priceId, quantity: 1 }],
-                mode: 'subscription',
-                
-                // FIXED PARSING FORMAT: Uses Stripe's strict underscore syntax requirement
-                subscription_data: {
-                    trial_period_days: 30
-                },
-
-                successUrl: 'https://provenantforensics.com/writingpad.html',
-                cancelUrl: 'https://provenantforensics.com/checkout.html?plan=' + encodeURIComponent(activePlanName),
-            }).then(function (result) {
-                if (result.error) {
-                    alert(result.error.message);
-                }
-            });
+            // Route the buyer cleanly onto Stripe's customized sandbox checkout page
+            window.location.href = targetCheckoutUrl;
         };
     </script>
 </body>
