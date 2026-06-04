@@ -172,100 +172,10 @@
     </div>
 
     <script>
-        // Synchronized Stripe Production Infrastructure Initializer
-        const stripe = Stripe('pk_test_51TX6BrIJM7023gnh85hA0NUVPL3bh8Zt3dccx5lBga5oN7PGhP1KzFX7R5crXX07ygIH7AQllpKsw5Re2JTX663S00Cj2QmN5s'); 
-
-        // Fully Populated Live Stripe Price Matrix mapping 
-        const stripePriceMap = {
-            "Writers Tier": "price_1TeJ48IJM7023gnhmmEoEWo1",
-            "Editorial Enterprise Suite": "price_1TeJ59IJM7023gnh5jM9OGYV",
-            "Academic Suite License": "price_1TeJ6TIJM7023gnhZgRYzaGL"
-        };
-
-        let activePlanName = "Writers Tier";
-
-        window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const planParam = urlParams.get('plan');
-            
-            let planPrice = "$14.99";
-            let intervalLabel = "Individual Author Workspace Bundle";
-            let structuralInterval = "/mo";
-
-            if (planParam) {
-                const decodedPlan = decodeURIComponent(planParam);
-                if (decodedPlan === 'Editorial Enterprise Suite') {
-                    activePlanName = "Editorial Enterprise Suite";
-                    planPrice = "$89.00";
-                    intervalLabel = "Multi-Author Base Workstation Bundle";
-                    structuralInterval = "/mo";
-                } else if (decodedPlan === 'Academic Suite') {
-                    activePlanName = "Academic Suite License";
-                    planPrice = "$12.99";
-                    intervalLabel = "Departmental Professor Seat Plan";
-                    structuralInterval = "/prof/mo";
-                } else if (decodedPlan === 'Institutional Campus Bundle' || decodedPlan === 'Custom') {
-                    activePlanName = "Institutional Campus Bundle";
-                    planPrice = "Custom Quote";
-                    intervalLabel = "District Licensing Agreement";
-                    structuralInterval = "";
-                }
-            }
-
-            document.getElementById('summary-plan-name').innerText = "Provenant™ " + activePlanName;
-            document.getElementById('summary-billing-interval').innerText = intervalLabel;
-            
-            if (planPrice === "Custom Quote") {
-                document.getElementById('summary-base-price').innerText = "Pending";
-                document.getElementById('summary-discount-price').innerText = "N/A";
-                document.getElementById('billing-timeline-disclosure').innerHTML = "Our engineering implementation team will email you a formal corporate pricing proposal loop based directly on your campus enrollment matrix.";
-                // Hide payment fields for custom contracts
-                document.getElementById('payment-form').style.opacity = "0.5";
-                document.querySelector('.secure-btn').innerText = "Contact Sales Pending";
-                document.querySelector('.secure-btn').disabled = true;
-            } else {
-                document.getElementById('summary-base-price').innerText = planPrice;
-                document.getElementById('summary-discount-price').innerText = "- " + planPrice;
-                
-                const targetTrialExpiration = new Date();
-                targetTrialExpiration.setDate(targetTrialExpiration.getDate() + 30);
-                const genericFormattedDate = targetTrialExpiration.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-                
-                document.getElementById('billing-timeline-disclosure').innerHTML = `After your 30-day forensic sandbox trial ends on <b>${genericFormattedDate}</b>, your verified payment vehicle will automatically clear a standard platform renewal step of <b>${planPrice}${structuralInterval}</b> unless paused via billing dashboards.`;
-            }
-        };
-
-        // Stripe Redirect Interceptor Logic 
-        document.getElementById('payment-form').onsubmit = function(e) {
-            e.preventDefault();
-            
-            const priceId = stripePriceMap[activePlanName];
-            
-            if (!priceId) {
-                alert("Error resolving payment token asset. Please contact system administrators.");
-                return;
-            }
-
-            // Launch Stripe Hosted subscription workflow layer
-            stripe.redirectToCheckout({
-                lineItems: [{ price: priceId, quantity: 1 }],
-                mode: 'subscription',
-                subscriptionData: {
-                    trial_period_days: 30
-                },
-                successUrl: 'https://provenantforensics.com/writingpad.html',
-                cancelUrl: 'https://provenantforensics.com/checkout.html?plan=' + encodeURIComponent(activePlanName),
-            }).then(function (result) {
-                if (result.error) {
-                    alert(result.error.message);
-                }
-            });
-        };
-    <script>
         // Initialize Stripe using your verified public test key
         const stripe = Stripe('pk_test_51TX6BrIJM7023gnh85hA0NUVPL3bh8Zt3dccx5lBga5oN7PGhP1KzFX7R5crXX07ygIH7AQllpKsw5Re2JTX663S00Cj2QmN5s'); 
 
-        // CRITICAL FIX: The keys here now match your landing page parameters exactly
+        // Live Stripe Price Matrix mapping 
         const stripePriceMap = {
             "Writers Tier": "price_1TeJ48IJM7023gnhmmEoEWo1",
             "Editorial Enterprise Suite": "price_1TeJ59IJM7023gnh5jM9OGYV",
@@ -289,8 +199,8 @@
                     planPrice = "$89.00";
                     intervalLabel = "Multi-Author Base Workstation Bundle";
                     structuralInterval = "/mo";
-                } else if (decodedPlan === 'Academic Suite') {
-                    activePlanName = "Academic Suite"; // Fixed matching parameter string
+                } else if (decodedPlan === 'Academic Suite' || decodedPlan === 'Academic Suite License') {
+                    activePlanName = "Academic Suite";
                     planPrice = "$12.99";
                     intervalLabel = "Departmental Professor Seat Plan";
                     structuralInterval = "/prof/mo";
