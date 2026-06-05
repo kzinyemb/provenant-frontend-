@@ -345,13 +345,34 @@
                     <li>📊 <b>Legal Protection:</b> Build ironclad historical trails for liability mitigation.</li>
                 </ul>
             </div>
+            
+            <!-- AJAX INTEGRATED CONTACT CARD -->
             <div style="flex: 1; min-width: 350px; background: var(--brand-glass); padding: 50px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); text-align: center;">
+                
+                <div data-fs-success style="display: none; background: rgba(0, 184, 148, 0.1); border: 1px solid var(--brand-accent); color: var(--brand-accent); padding: 15px; border-radius: 10px; margin-bottom: 20px; font-weight: 700; font-size: 14px;">
+                    ✓ Proposal Received. Our engineering team will contact your administration details loop shortly.
+                </div>
+                <div data-fs-error style="display: none; background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; padding: 15px; border-radius: 10px; margin-bottom: 20px; font-weight: 500; font-size: 14px;">
+                    ⚠️ Submission error. Please verify your connection or parameters.
+                </div>
+
                 <h3 id="ent-form-title">Protect Your Agency</h3>
                 <p id="ent-form-desc" style="color: var(--text-muted); margin-bottom: 30px;">Get custom pricing models for multi-author journalism teams.</p>
-                <form style="display: flex; flex-direction: column; gap: 15px;">
-                    <input type="text" id="ent-input-field-1" placeholder="Agency / Newsroom Name">
-                    <input type="email" id="ent-input-field-2" placeholder="Corporate Email">
-                    <button type="button" class="action-btn" id="ent-form-submit-btn" style="background: var(--brand-writer); color: white;">Request Enterprise Pricing</button>
+                
+                <form id="institutional-lead-form" style="display: flex; flex-direction: column; gap: 15px;">
+                    <div style="text-align: left; display: flex; flex-direction: column;">
+                        <input type="text" name="Institution Name" id="ent-input-field-1" placeholder="Agency / Newsroom Name" data-fs-field required style="margin-bottom: 0;">
+                        <span data-fs-error="Institution Name" style="color: #ef4444; font-size: 11px; margin-top: 5px; font-weight: bold;"></span>
+                    </div>
+
+                    <div style="text-align: left; display: flex; flex-direction: column;">
+                        <input type="email" name="Academic Email" id="ent-input-field-2" placeholder="Corporate Email" data-fs-field required style="margin-bottom: 0;">
+                        <span data-fs-error="Academic Email" style="color: #ef4444; font-size: 11px; margin-top: 5px; font-weight: bold;"></span>
+                    </div>
+                    
+                    <button type="submit" data-fs-submit-btn class="action-btn" id="ent-form-submit-btn" style="background: var(--brand-writer); color: white; width: 100%;">
+                        Request Enterprise Pricing
+                    </button>
                 </form>
             </div>
         </div>
@@ -519,6 +540,7 @@
                     <li>🛡️ <b>Client-Side Portals:</b> Shared workspaces showing verifiable work delivery histories.</li>
                     <li>🔑 <b>API Access keys:</b> Tie core identity verification streams straight into headless CMS endpoints.</li>
                     <li>📊 <b>Legal Protection:</b> Build ironclad historical trails for liability mitigation.</li>
+                </ul>
                 `;
                 entFormTitle.innerText = "Protect Your Agency";
                 entFormDesc.innerText = "Get custom pricing models for multi-author journalism teams.";
@@ -536,6 +558,18 @@
 
         function openTrial(planName, planPrice) {
             activeSelectedPlanForCheckout = encodeURIComponent(planName);
+            
+            // CHECK IF THE SELECTION IS THE CUSTOM SITE LICENSE
+            if (planPrice === "Custom" || planName === "Institutional Campus Bundle") {
+                // Smoothly scroll the professor straight down to your enterprise contact form
+                document.getElementById('enterprise-tier-zone').scrollIntoView({ behavior: 'smooth' });
+                
+                // Flash focus highlight effect onto the institutional fields
+                document.getElementById('ent-input-field-1').focus();
+                return; 
+            }
+
+            // Otherwise, let standard self-serve Stripe links open normal modals
             document.getElementById('modal-plan-name').innerText = planName;
             document.getElementById('modal-plan-desc').innerText = planName;
             document.getElementById('modal-plan-price').innerText = planPrice;
@@ -554,5 +588,12 @@
             renderPricing('writer');
         };
     </script>
+
+    <!-- FORMSPREE ASYNCHRONOUS ENGINE SCRIPTS -->
+    <script>
+        window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
+        formspree('initForm', { formElement: '#institutional-lead-form', formId: 'xrevepea' });
+    </script>
+    <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 </body>
 </html>
