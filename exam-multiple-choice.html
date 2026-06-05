@@ -45,13 +45,23 @@
     <button onclick="document.getElementById('config-panel').style.display='none'" style="cursor: pointer; font-size: 11px;">Lock Configuration</button>
 </div>
 
-<div class="quick-access" style="background: var(--brand-dark); color: white; padding: 10px 30px; display: flex; align-items: center; gap: 15px;">
+<div class="quick-access" style="background: #0f172a; color: white; padding: 10px 30px; display: flex; align-items: center; gap: 15px;">
     <div onclick="location.href='index.html'" style="cursor:pointer">🏠</div>
-    <div style="background: var(--brand-accent); padding: 2px 15px; border-radius: 50px; font-size: 11px; color: #000; font-weight: 900;">MC FORENSICS ACTIVE</div>
+    <div style="background: #00b894; padding: 2px 15px; border-radius: 50px; font-size: 11px; color: #000; font-weight: 900;">MC FORENSICS ACTIVE</div>
     <span style="margin-left:auto; font-size: 12px; font-weight:bold;">Interaction Rhythm Tracking</span>
 </div>
 
 <div class="container" id="workspace">
+
+    <div style="display: flex; gap: 20px; border-bottom: 1px solid #ddd; padding-bottom: 15px; margin-bottom: 35px; width: 100%; max-width: 800px;">
+        <a href="exam-short-answers.html" style="text-decoration: none; color: #666; font-weight: 500; padding-bottom: 13px; font-size: 15px; transition: color 0.3s;" onmouseover="this.style.color='var(--prof-blue)'" onmouseout="this.style.color='#666'">
+            📝 Short Answer Builder
+        </a>
+        <a href="exam-multiple-choice.html" style="text-decoration: none; color: var(--prof-blue); font-weight: 700; border-bottom: 2px solid var(--prof-blue); padding-bottom: 13px; font-size: 15px;">
+            🔘 Multiple Choice Builder
+        </a>
+    </div>
+
     <div class="uni-header" id="uni-branding">
         <h1 id="display-uni">UNIVERSITY NAME</h1>
         <h3 id="display-dept">Multiple Choice Assessment</h3>
@@ -75,9 +85,9 @@
     </div>
 </div>
 
-<div class="status-bar" style="background: var(--brand-dark); color: white; padding: 8px 30px; display: flex; justify-content: space-between; font-size: 12px;">
+<div class="status-bar" style="background: #0f172a; color: white; padding: 8px 30px; display: flex; justify-content: space-between; font-size: 12px;">
     <div id="interaction-stat">Interactions: 0 | Human Rhythm Score: 0%</div>
-    <div style="color: var(--brand-accent);">Secured by VerifyHuman Forensics</div>
+    <div style="color: #00b894;">Secured by VerifyHuman Forensics</div>
 </div>
 
 <script>
