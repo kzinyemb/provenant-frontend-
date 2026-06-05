@@ -39,13 +39,23 @@
     <button onclick="document.getElementById('config-panel').style.display='none'" style="font-size: 11px; cursor: pointer;">Lock Branding</button>
 </div>
 
-<div class="quick-access" style="background: var(--brand-dark); color: white; padding: 10px 30px; display: flex; align-items: center; gap: 15px;">
+<div class="quick-access" style="background: #0f172a; color: white; padding: 10px 30px; display: flex; align-items: center; gap: 15px;">
     <div onclick="location.href='index.html'" style="cursor:pointer">🏠</div>
-    <div style="background: var(--brand-accent); padding: 2px 12px; border-radius: 50px; font-size: 11px; color: #000; font-weight: bold;">Integrity Score: <span id="global-score">0%</span></div>
+    <div style="background: #00b894; padding: 2px 12px; border-radius: 50px; font-size: 11px; color: #000; font-weight: bold;">Integrity Score: <span id="global-score">0%</span></div>
     <span style="margin-left:auto; font-size: 12px; font-weight:bold;">Forensic Short-Answer Mode</span>
 </div>
 
 <div class="container" id="workspace">
+
+    <div style="display: flex; gap: 20px; border-bottom: 1px solid #ddd; padding-bottom: 15px; margin-bottom: 35px; width: 100%; max-width: 850px;">
+        <a href="exam-short-answers.html" style="text-decoration: none; color: var(--prof-blue); font-weight: 700; border-bottom: 2px solid var(--prof-blue); padding-bottom: 13px; font-size: 15px;">
+            📝 Short Answer Builder
+        </a>
+        <a href="exam-multiple-choice.html" style="text-decoration: none; color: #666; font-weight: 500; padding-bottom: 13px; font-size: 15px; transition: color 0.3s;" onmouseover="this.style.color='var(--prof-blue)'" onmouseout="this.style.color='#666'">
+            🔘 Multiple Choice Builder
+        </a>
+    </div>
+
     <div class="uni-header" id="uni-branding">
         <h1 id="display-uni">UNIVERSITY NAME</h1>
         <h3 id="display-dept">Department / Course Name</h3>
