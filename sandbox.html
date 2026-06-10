@@ -202,7 +202,7 @@
         .media-preview-canvas.format-vertical { width: 180px; height: 280px; border-radius: 16px; }
         .media-preview-canvas.format-landscape { width: 100%; height: 240px; }
 
-        /* ULTRA-COMPACT SECURE DIAMOND SOCIAL STAMP */
+        /* COMPACT SHINY DYNAMIC KITE/DIAMOND SOCIAL STAMP BUILDER */
         .moveable-seal-badge {
             position: absolute;
             top: 25px;
@@ -210,72 +210,65 @@
             z-index: 9999;
             cursor: move;
             
-            width: 56px;
-            height: 56px;
+            /* Precision geometric shell sizes for space restrictions */
+            width: 74px;
+            height: 74px;
             
             background: linear-gradient(135deg, rgba(9, 13, 22, 0.95) 0%, rgba(21, 29, 45, 0.9) 100%);
             border: 1px solid rgba(255, 230, 0, 0.45);
-            box-shadow: 0 4px 12px rgba(255, 230, 0, 0.25), inset 0 1px 1px rgba(255,255,255,0.05);
+            box-shadow: 0 6px 15px rgba(255, 230, 0, 0.2), inset 0 1px 1px rgba(255,255,255,0.05);
             user-select: none;
             backdrop-filter: blur(12px);
             
+            /* Vertical text layout architecture stacked row parameters */
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 1px;
+            gap: 2px;
             text-align: center;
             
-            /* Native Kite Shape Mask Transformation */
+            /* Sharp Native Kite Shape Mask Transformation */
             clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
         }
 
-        /* Typography elements stacked vertically inside the micro matrix shell */
+        /* Typography elements stacked vertically inside the matrix shell */
         .moveable-seal-badge .seal-text-line {
             color: var(--neon-yellow);
             font-family: 'Inter', sans-serif;
-            font-size: 5.5px;
+            font-size: 7px;
             font-weight: 900;
-            letter-spacing: 0.2px;
+            letter-spacing: 0.4px;
             line-height: 1.1;
             text-transform: uppercase;
         }
 
         .moveable-seal-badge .seal-text-line.highlight {
-            font-size: 6.5px;
+            font-size: 8px;
             color: #ffffff;
-            text-shadow: 0 0 4px rgba(255, 230, 0, 0.6);
+            font-weight: 900;
+            text-shadow: 0 0 6px rgba(255, 230, 0, 0.6);
             animation: radiantGlowPulse 2s infinite ease-in-out;
         }
 
         @keyframes radiantGlowPulse {
-            0%, 100% { opacity: 0.9; text-shadow: 0 0 3px rgba(255, 230, 0, 0.5); }
-            50% { opacity: 1; text-shadow: 0 0 8px rgba(255, 230, 0, 0.8); }
+            0%, 100% { opacity: 0.9; text-shadow: 0 0 4px rgba(255, 230, 0, 0.5); }
+            50% { opacity: 1; text-shadow: 0 0 10px rgba(255, 230, 0, 0.9), 0 0 15px rgba(255, 230, 0, 0.4); }
         }
 
-        /* Active Download Trigger Button Sub-Banners */
+        /* Ready Status Indicator Sub-Banners */
         .status-ready-tag {
-            margin-top: 15px;
+            margin-top: 10px;
             background: rgba(0, 184, 148, 0.1);
             border: 1px solid var(--success-green);
             color: var(--success-green);
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-size: 11px;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
             font-weight: 800;
             letter-spacing: 0.5px;
             display: none;
-            cursor: pointer;
-            outline: none;
-            transition: all 0.2s ease;
             animation: fadeIn 0.3s ease;
-        }
-
-        .status-ready-tag:hover {
-            background: var(--success-green);
-            color: var(--brand-dark);
-            box-shadow: 0 4px 12px rgba(0, 184, 148, 0.3);
-            transform: translateY(-1px);
         }
 
         .output-placeholder { color: var(--text-muted); font-size: 0.85rem; text-align: center; }
@@ -340,7 +333,7 @@
                         </div>
                     </div>
 
-                    <button class="status-ready-tag" id="ready-banner" onclick="executeAssetDownload()">📥 Download Certified Asset Kit</button>
+                    <div class="status-ready-tag" id="ready-banner">📦 ASSET DECK COMPILING SYSTEM READY</div>
                 </div>
             </div>
 
@@ -566,16 +559,14 @@
                         mediaCanvas.style.display = 'block';
                         
                         readyBanner.style.display = 'inline-block';
+                        readyBanner.innerHTML = target.format === 'format-vertical' ? '✨ VID READY — CERTIFIED REEL DECK COMPRESSED' : '✨ PIC READY — LANDSCAPE EXPORT PIPELINE OK';
                     }
                 }
             }
             printNextLine();
         }
 
-        function executeAssetDownload() {
-            alert("📥 Success! Your high-resolution deliverable has been compiled with secure origin tags and downloaded directly to your local file explorer storage path.");
-        }
-
+        // DRAG AND DROP RUNTIME WORKSPACE HANDLERS
         let offsetX, offsetY;
 
         function dragSeal(e) {
