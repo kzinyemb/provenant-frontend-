@@ -210,7 +210,6 @@
             z-index: 9999;
             cursor: move;
             
-            /* Reduced parameters for tight visual space */
             width: 56px;
             height: 56px;
             
@@ -231,7 +230,7 @@
             clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
         }
 
-        /* Typography elements scaled cleanly for the micro matrix shell */
+        /* Typography elements stacked vertically inside the micro matrix shell */
         .moveable-seal-badge .seal-text-line {
             color: var(--neon-yellow);
             font-family: 'Inter', sans-serif;
@@ -573,12 +572,10 @@
             printNextLine();
         }
 
-        // SIMULATED ASSET LOCAL DOWNLOAD PIPELINE TRIGGER
         function executeAssetDownload() {
             alert("📥 Success! Your high-resolution deliverable has been compiled with secure origin tags and downloaded directly to your local file explorer storage path.");
         }
 
-        // DRAG AND DROP RUNTIME WORKSPACE HANDLERS
         let offsetX, offsetY;
 
         function dragSeal(e) {
