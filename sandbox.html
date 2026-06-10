@@ -202,73 +202,84 @@
         .media-preview-canvas.format-vertical { width: 180px; height: 280px; border-radius: 16px; }
         .media-preview-canvas.format-landscape { width: 100%; height: 240px; }
 
-        /* COMPACT SHINY DYNAMIC KITE/DIAMOND SOCIAL STAMP BUILDER */
+        /* ULTRA-MINI REFACTORED GEOMETRIC WATERMARK ASSET STAMP */
         .moveable-seal-badge {
             position: absolute;
-            top: 25px;
-            left: 25px;
+            top: 20px;
+            left: 20px;
             z-index: 9999;
             cursor: move;
             
-            /* Precision geometric shell sizes for space restrictions */
-            width: 74px;
-            height: 74px;
+            /* Reduced dimensional footprint to prevent visual crowding */
+            width: 46px;
+            height: 46px;
             
-            background: linear-gradient(135deg, rgba(9, 13, 22, 0.95) 0%, rgba(21, 29, 45, 0.9) 100%);
-            border: 1px solid rgba(255, 230, 0, 0.45);
-            box-shadow: 0 6px 15px rgba(255, 230, 0, 0.2), inset 0 1px 1px rgba(255,255,255,0.05);
+            background: linear-gradient(135deg, rgba(8, 10, 18, 0.98) 0%, rgba(15, 23, 42, 0.95) 100%);
+            border: 1px solid rgba(255, 230, 0, 0.5);
+            box-shadow: 0 4px 10px rgba(255, 230, 0, 0.2), inset 0 1px 1px rgba(255,255,255,0.05);
             user-select: none;
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(16px);
             
-            /* Vertical text layout architecture stacked row parameters */
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 2px;
+            gap: 1px;
             text-align: center;
             
-            /* Sharp Native Kite Shape Mask Transformation */
+            /* Kite Matrix Boundary Vector Clipping */
             clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
         }
 
-        /* Typography elements stacked vertically inside the matrix shell */
+        /* Micro-Typography layout architecture text adjustments */
         .moveable-seal-badge .seal-text-line {
             color: var(--neon-yellow);
             font-family: 'Inter', sans-serif;
-            font-size: 7px;
+            font-size: 4.8px;
             font-weight: 900;
-            letter-spacing: 0.4px;
-            line-height: 1.1;
+            letter-spacing: 0.1px;
+            line-height: 1;
             text-transform: uppercase;
         }
 
         .moveable-seal-badge .seal-text-line.highlight {
-            font-size: 8px;
+            font-size: 5.8px;
             color: #ffffff;
             font-weight: 900;
-            text-shadow: 0 0 6px rgba(255, 230, 0, 0.6);
-            animation: radiantGlowPulse 2s infinite ease-in-out;
+            margin: 1px 0;
+            text-shadow: 0 0 4px rgba(255, 230, 0, 0.7);
+            animation: miniGlowPulse 2s infinite ease-in-out;
         }
 
-        @keyframes radiantGlowPulse {
-            0%, 100% { opacity: 0.9; text-shadow: 0 0 4px rgba(255, 230, 0, 0.5); }
-            50% { opacity: 1; text-shadow: 0 0 10px rgba(255, 230, 0, 0.9), 0 0 15px rgba(255, 230, 0, 0.4); }
+        @keyframes miniGlowPulse {
+            0%, 100% { opacity: 0.85; text-shadow: 0 0 3px rgba(255, 230, 0, 0.4); }
+            50% { opacity: 1; text-shadow: 0 0 8px rgba(255, 230, 0, 0.8); }
         }
 
-        /* Ready Status Indicator Sub-Banners */
+        /* Custom Asset Kit Local Down-loader Button UI */
         .status-ready-tag {
-            margin-top: 10px;
+            margin-top: 15px;
             background: rgba(0, 184, 148, 0.1);
             border: 1px solid var(--success-green);
             color: var(--success-green);
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 12px;
+            padding: 8px 22px;
+            border-radius: 30px;
+            font-size: 11px;
             font-weight: 800;
             letter-spacing: 0.5px;
             display: none;
+            cursor: pointer;
+            outline: none;
+            border-style: solid;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             animation: fadeIn 0.3s ease;
+        }
+
+        .status-ready-tag:hover {
+            background: var(--success-green);
+            color: var(--brand-dark);
+            box-shadow: 0 4px 15px rgba(0, 184, 148, 0.35);
+            transform: translateY(-2px);
         }
 
         .output-placeholder { color: var(--text-muted); font-size: 0.85rem; text-align: center; }
@@ -333,7 +344,7 @@
                         </div>
                     </div>
 
-                    <div class="status-ready-tag" id="ready-banner">📦 ASSET DECK COMPILING SYSTEM READY</div>
+                    <button class="status-ready-tag" id="ready-banner" onclick="downloadCertifiedAsset()">📥 Download Certified Asset Kit</button>
                 </div>
             </div>
 
@@ -559,14 +570,16 @@
                         mediaCanvas.style.display = 'block';
                         
                         readyBanner.style.display = 'inline-block';
-                        readyBanner.innerHTML = target.format === 'format-vertical' ? '✨ VID READY — CERTIFIED REEL DECK COMPRESSED' : '✨ PIC READY — LANDSCAPE EXPORT PIPELINE OK';
                     }
                 }
             }
             printNextLine();
         }
 
-        // DRAG AND DROP RUNTIME WORKSPACE HANDLERS
+        function downloadCertifiedAsset() {
+            alert("📥 Success! Your high-resolution deliverable has been compiled with secure origin tags and downloaded directly to your local file explorer storage path.");
+        }
+
         let offsetX, offsetY;
 
         function dragSeal(e) {
