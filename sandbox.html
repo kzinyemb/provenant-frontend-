@@ -44,31 +44,20 @@
             margin-bottom: 10px;
         }
 
-        header h1 span {
-            color: var(--brand-creator);
-        }
+        header h1 span { color: var(--brand-creator); }
+        header p { color: var(--text-muted); max-width: 600px; margin: 0 auto; }
 
-        header p {
-            color: var(--text-muted);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* Three-Column Grid Layout Structure */
         .sandbox-grid {
             display: grid;
-            grid-template-columns: 1fr 1.2fr 1fr;
+            grid-template-columns: 1fr 1.3fr 1fr;
             gap: 24px;
             align-items: start;
         }
 
         @media (max-width: 1024px) {
-            .sandbox-grid {
-                grid-template-columns: 1fr;
-            }
+            .sandbox-grid { grid-template-columns: 1fr; }
         }
 
-        /* Card panels */
         .panel {
             background: rgba(30, 41, 59, 0.7);
             border: 1px solid var(--brand-border);
@@ -78,11 +67,7 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
-            min-height: 520px;
-        }
-
-        .panel.center-panel {
-            min-height: 520px;
+            min-height: 560px;
         }
 
         .panel-title {
@@ -94,13 +79,8 @@
             margin-bottom: 5px;
         }
 
-        /* Selection Options */
-        .scenario-selector {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
+        .scenario-selector { display: flex; flex-direction: column; gap: 12px; }
+        
         .scenario-option {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--brand-border);
@@ -121,18 +101,8 @@
             background: rgba(225, 29, 72, 0.1);
         }
 
-        .scenario-option strong {
-            display: block;
-            color: #fff;
-            margin-bottom: 4px;
-            font-size: 0.9rem;
-        }
-
-        .scenario-option p {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            line-height: 1.4;
-        }
+        .scenario-option strong { display: block; color: #fff; margin-bottom: 4px; font-size: 0.9rem; }
+        .scenario-option p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; }
 
         .action-btn {
             background: var(--brand-creator);
@@ -152,10 +122,8 @@
         .action-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(225, 29, 72, 0.4);
-            filter: brightness(1.1);
         }
 
-        /* Interactive Upload Zone Styling */
         .upload-box {
             border: 2px dashed rgba(255, 255, 255, 0.15);
             background: rgba(255, 255, 255, 0.01);
@@ -167,7 +135,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-platform: center;
+            justify-content: center;
             gap: 8px;
             margin-top: auto;
         }
@@ -177,31 +145,12 @@
             background: rgba(225, 29, 72, 0.03);
         }
 
-        .upload-box svg {
-            color: var(--text-muted);
-            transition: color 0.25s ease;
-        }
+        .upload-box svg { color: var(--text-muted); transition: color 0.25s ease; }
+        .upload-box:hover svg, .upload-box.dragover svg { color: var(--brand-creator); }
+        .upload-box span { font-size: 0.85rem; font-weight: 500; color: #fff; }
+        .upload-box p { font-size: 0.75rem; color: var(--text-muted); }
+        .hidden-input { display: none; }
 
-        .upload-box:hover svg, .upload-box.dragover svg {
-            color: var(--brand-creator);
-        }
-
-        .upload-box span {
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #fff;
-        }
-
-        .upload-box p {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .hidden-input {
-            display: none;
-        }
-
-        /* Terminal Console */
         .terminal {
             background: #090d16;
             border: 1px solid rgba(255, 255, 255, 0.05);
@@ -209,140 +158,93 @@
             padding: 15px;
             font-family: 'Fira Code', monospace;
             font-size: 0.8rem;
-            height: 200px;
+            height: 140px;
             overflow-y: auto;
             color: #38bdf8;
             text-align: left;
         }
 
-        .terminal-line {
-            margin-bottom: 6px;
-            line-height: 1.4;
-            white-space: pre-wrap;
-        }
-
+        .terminal-line { margin-bottom: 6px; line-height: 1.4; white-space: pre-wrap; }
         .terminal-line.neutral { color: var(--text-muted); }
         .terminal-line.bypass { color: #eab308; }
         .terminal-line.success { color: var(--success-green); }
         .terminal-line.danger { color: #f43f5e; }
 
-        /* Output Display Area */
+        /* LIVE STUDIO WORKSPACE SCREEN CANVASES */
         .output-zone {
             flex-grow: 1;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             border: 2px dashed var(--brand-border);
             border-radius: 12px;
             padding: 15px;
-            background: rgba(0,0,0,0.1);
-            min-height: 200px;
-            position: relative; /* Essential context hook for child watermarks */
+            background: rgba(0,0,0,0.2);
+            min-height: 320px;
+            position: relative;
             overflow: hidden;
         }
 
-        .output-placeholder {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            text-align: center;
-        }
-
-        /* Dynamic Badge Result Card */
-        .badge-card {
-            text-align: center;
-            animation: fadeIn 0.4s ease forwards;
-            max-width: 320px;
+        .media-preview-canvas {
+            width: 100%;
+            height: 280px;
+            border-radius: 8px;
+            background-size: cover;
+            background-position: center;
             position: relative;
-            z-index: 10;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.8);
+            display: none;
         }
 
-        .seal-graphics {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            margin-bottom: 12px;
-        }
+        /* Responsive frame scaling presets */
+        .media-preview-canvas.format-vertical { width: 180px; height: 280px; border-radius: 16px; }
+        .media-preview-canvas.format-landscape { width: 100%; height: 240px; }
 
-        .seal-graphics.pass {
-            background: rgba(0, 184, 148, 0.1);
-            border: 3px double var(--success-green);
-            color: var(--success-green);
-        }
-
-        .seal-graphics.fail {
-            background: rgba(244, 63, 94, 0.1);
-            border: 3px double #f43f5e;
-            color: #f43f5e;
-        }
-
-        .badge-card h4 {
-            font-size: 1.15rem;
-            margin-bottom: 4px;
-            color: #fff;
-        }
-
-        .badge-card p {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-bottom: 12px;
-        }
-
-        .download-stub {
-            font-size: 0.7rem;
-            color: var(--brand-creator);
-            text-transform: uppercase;
+        /* DRAGGABLE CRYPTOGRAPHIC SEAL STYLING */
+        .moveable-seal-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 9999;
+            cursor: move;
+            background: rgba(15, 23, 42, 0.9);
+            border: 2px solid var(--success-green);
+            color: #ffffff;
+            padding: 8px 12px;
+            border-radius: 30px;
+            font-size: 11px;
             font-weight: 700;
-            letter-spacing: 1px;
-            border: 1px solid rgba(225, 29, 72, 0.3);
-            padding: 5px 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            user-select: none;
+            backdrop-filter: blur(4px);
+            transition: border-color 0.2s ease;
+        }
+
+        .moveable-seal-badge:active { border-color: var(--brand-creator); }
+        .moveable-seal-badge span { color: var(--success-green); font-size: 14px; }
+
+        /* Ready Status Indicator Sub-Banners */
+        .status-ready-tag {
+            margin-top: 10px;
+            background: rgba(0, 184, 148, 0.1);
+            border: 1px solid var(--success-green);
+            color: var(--success-green);
+            padding: 6px 16px;
             border-radius: 20px;
-            display: inline-block;
-            background: rgba(225, 29, 72, 0.05);
-        }
-
-        /* USER PLACEMENT WATERMARK LAYERS */
-        .ig-watermark-gate {
-            position: absolute;
-            top: 25px; /* Scaled cleanly down for center viewport panel simulation boxes */
-            right: 25px;
-            z-index: 999;
-            opacity: 0.85;
-            pointer-events: none;
-            background: rgba(0, 184, 148, 0.15);
-            border: 1px solid var(--success-green);
-            color: var(--success-green);
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 10px;
-            font-weight: bold;
-            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            display: none;
             animation: fadeIn 0.3s ease;
         }
 
-        .yt-watermark-gate {
-            position: absolute;
-            bottom: 25px; /* Scaled cleanly down for center viewport panel simulation boxes */
-            right: 25px;
-            z-index: 999;
-            opacity: 0.8;
-            background: rgba(0, 184, 148, 0.15);
-            border: 1px solid var(--success-green);
-            color: var(--success-green);
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 10px;
-            font-weight: bold;
-            font-family: 'Fira Code', monospace;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
+        .output-placeholder { color: var(--text-muted); font-size: 0.85rem; text-align: center; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -362,12 +264,10 @@
                         <strong>raw_camera.jpg</strong>
                         <p>Straight output from mirrorless lens. Full original metadata layers preserved intact.</p>
                     </div>
-                    
                     <div class="scenario-option" data-id="instagram_filter" onclick="selectScenario('instagram_filter')">
                         <strong>instagram_filter.jpg</strong>
                         <p>Run through a VSCO preset, compressed, and stripped of all EXIF metadata by social infrastructure layers.</p>
                     </div>
-
                     <div class="scenario-option" data-id="generative_bg" onclick="selectScenario('generative_bg')">
                         <strong>generative_bg.jpg</strong>
                         <p>Real photo subject blended onto a fully synthetic background environment generated via Stable Diffusion.</p>
@@ -386,16 +286,24 @@
             </div>
 
             <div class="panel center-panel">
-                <div class="panel-title">2. Processing Console Logs & Integrity Seal</div>
+                <div class="panel-title">2. Processing Console Logs & Workspace Canvas</div>
                 
                 <div class="terminal" id="console-logs">
                     <div class="terminal-line neutral">> Ready engine deployment hooks. Select a configuration profile or upload your own file to run telemetry checks...</div>
                 </div>
 
-                <div class="output-zone" id="output-zone">
-                    <div class="output-placeholder">
+                <div class="output-zone" id="output-zone" ondragover="allowDrop(event)" ondrop="dropSeal(event)">
+                    <div class="output-placeholder" id="placeholder-text">
                         Run engine verification matrix to compile active status output layers.
                     </div>
+                    
+                    <div class="media-preview-canvas" id="media-canvas">
+                        <div class="moveable-seal-badge" id="moveable-seal" draggable="true" ondragstart="dragSeal(event)">
+                            <span>✓</span> Provenant Human Origin
+                        </div>
+                    </div>
+
+                    <div class="status-ready-tag" id="ready-banner">📦 ASSET DECK COMPILING SYSTEM READY</div>
                 </div>
             </div>
 
@@ -406,17 +314,14 @@
                         <strong>youtube_vlog_master.mp4</strong>
                         <p>Raw edit export for YouTube. Cryptographic C2PA manifest metadata layer fully intact with verified timeline history.</p>
                     </div>
-                    
                     <div class="scenario-option" data-id="instagram_compressed" onclick="selectScenario('instagram_compressed')">
                         <strong>instagram_reel_final.mp4</strong>
                         <p>Video asset parsed out of Instagram CDN. Stripped of structural metadata and compressed heavily by network routing.</p>
                     </div>
-                    
                     <div class="scenario-option" data-id="deepfake_face" onclick="selectScenario('deepfake_face')">
                         <strong>sponsored_review_deepfake.mp4</strong>
                         <p>High-definition video review project with a localized frame-by-frame generative AI identity face-swap modification payload.</p>
                     </div>
-                    
                     <div class="scenario-option" data-id="audio_clone" onclick="selectScenario('audio_clone')">
                         <strong>tiktok_promo_voiceclone.mp4</strong>
                         <p>Visually authentic human capture backed by a synthetic voice track cloned via generative adversarial speech models.</p>
@@ -442,7 +347,8 @@
             raw_camera: {
                 name: 'raw_camera.jpg',
                 aiArtifacts: false,
-                platform: 'image',
+                format: 'format-landscape',
+                previewImg: 'https://images.unsplash.com/photo-1452784444945-3f422708fe5e?q=80&w=600&auto=format&fit=crop',
                 logDetails: [
                     "Verifying cryptographic file header structures...", 
                     "EXIF identity metrics read successfully.", 
@@ -453,20 +359,20 @@
             instagram_filter: {
                 name: 'instagram_filter.jpg',
                 aiArtifacts: false,
-                platform: 'instagram',
+                format: 'format-vertical',
+                previewImg: 'https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?q=80&w=400&auto=format&fit=crop',
                 logDetails: [
                     "Verifying cryptographic file header structures...", 
                     "Warning: Metadata layer missing or stripped.", 
                     "Applying permissive ruleset fallback logic [BYPASS TRIGGERED].", 
                     "Evaluating pixel compression artifacts...", 
-                    "No malicious tracking alterations discovered."
+                    "No alterations discovered."
                 ]
             },
             generative_bg: {
                 name: 'generative_bg.jpg',
                 aiArtifacts: true,
                 type: 'diffusion',
-                platform: 'image',
                 logDetails: [
                     "Verifying cryptographic file header structures...", 
                     "Bypassing metadata layer check.", 
@@ -477,27 +383,26 @@
             youtube_master: {
                 name: 'youtube_vlog_master.mp4',
                 aiArtifacts: false,
-                platform: 'youtube',
+                format: 'format-landscape',
+                previewImg: 'https://images.unsplash.com/photo-1542204172-e7052809a936?q=80&w=600&auto=format&fit=crop',
                 logDetails: [
-                    "Extracting temporal video containers...",
+                    "Extracting video containers...",
                     "Reading C2PA manifest metadata layers...",
                     "Hardware-level sensor token validated successfully.",
                     "Running pixel block movement checking architecture...",
-                    "Analyzing natural frame-to-frame rendering patterns...",
                     "Audio phase consistency check: 100% human match verified."
                 ]
             },
             instagram_compressed: {
                 name: 'instagram_reel_final.mp4',
                 aiArtifacts: false,
-                platform: 'instagram',
+                format: 'format-vertical',
+                previewImg: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=400&auto=format&fit=crop',
                 logDetails: [
-                    "Extracting temporal video containers...",
-                    "Warning: Structural metadata tracks missing or stripped by platform app layers.",
+                    "Extracting video containers...",
+                    "Warning: Structural metadata tracks stripped by app layers.",
                     "Applying adaptive fallback auditing checks [BYPASS HOOKS ACTIVE]...",
-                    "Compensating for severe social media h.264 compression blocks...",
                     "Analyzing pixel blending patterns for face/edge inconsistencies...",
-                    "Scanning voice wave properties across audio tracks...",
                     "No synthetic generation markers matched."
                 ]
             },
@@ -505,11 +410,9 @@
                 name: 'sponsored_review_deepfake.mp4',
                 aiArtifacts: true,
                 type: 'deepfake',
-                platform: 'video',
                 logDetails: [
-                    "Parsing temporal video frame arrays...",
+                    "Parsing video frame arrays...",
                     "Scanning facial feature landing matrices across timeline tracks...",
-                    "Evaluating lighting distribution vectors on human skin contours...",
                     "CRITICAL EXCEPTION: Inconsistent edge blending pattern found at frame boundaries.",
                     "Deceptive deepfake facial alignment signature isolated at index: 0.142"
                 ]
@@ -518,13 +421,11 @@
                 name: 'tiktok_promo_voiceclone.mp4',
                 aiArtifacts: true,
                 type: 'voiceclone',
-                platform: 'video',
                 logDetails: [
-                    "Parsing temporal video frame arrays...",
+                    "Parsing video frame arrays...",
                     "Visual check: Human capture vectors appear authenticated...",
                     "Isolating master audio layer components...",
-                    "Running discrete Fourier transforms for vocal track frequency testing...",
-                    "CRITICAL EXCEPTION: Harmonic gap patterns discovered inside high-frequency spectrum arrays matching synthetic AI voice clones."
+                    "CRITICAL EXCEPTION: Harmonic gap patterns discovered inside spectrum arrays matching synthetic AI voice clones."
                 ]
             }
         };
@@ -537,136 +438,119 @@
             const dynamicOption = document.querySelector(`.scenario-option[data-id="${id}"]`);
             if (dynamicOption) dynamicOption.classList.add('active');
             
+            // Clean interface slate resetting run logs
             document.getElementById('console-logs').innerHTML = `<div class="terminal-line neutral">> Profile configuration switched to [${scenarios[id].name}]. Pipeline ready to execute...</div>`;
-            document.getElementById('output-zone').innerHTML = `<div class="output-placeholder">Run engine verification matrix to compile active status output layers.</div>`;
+            document.getElementById('placeholder-text').style.display = 'block';
+            document.getElementById('media-canvas').style.display = 'none';
+            document.getElementById('ready-banner').style.display = 'none';
         }
 
-        function triggerInput(inputId) {
-            document.getElementById(inputId).click();
-        }
+        function triggerInput(inputId) { document.getElementById(inputId).click(); }
 
         function handleUserUpload(input, type) {
             if (input.files && input.files[0]) {
                 const fileName = input.files[0].name;
+                const userUploadedUrl = URL.createObjectURL(input.files[0]);
                 
                 scenarios['user_custom_file'] = {
                     name: fileName,
                     aiArtifacts: false,
-                    platform: type,
+                    format: type === 'image' ? 'format-landscape' : 'format-vertical',
+                    previewImg: type === 'image' ? userUploadedUrl : 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?q=80&w=600&auto=format&fit=crop',
                     logDetails: [
                         `Ingesting user payload streams: [${fileName}]...`,
                         "Running real-time multi-layer decompression array matrices...",
-                        "Permissive architecture filter parsing active...",
-                        "Evaluating noise floor distributions across physical rendering tracks...",
-                        "Pixel clustering check: Authenticated human environmental capture confirmed."
+                        "Pixel clustering check: Authenticated human capturing vectors confirmed."
                     ]
                 };
 
                 document.querySelectorAll('.scenario-option').forEach(opt => opt.classList.remove('active'));
                 currentScenarioId = 'user_custom_file';
-                document.getElementById('console-logs').innerHTML = `<div class="terminal-line success">> Ingested external stream user data: [${fileName}]. Custom file framework staged successfully.</div>`;
-                document.getElementById('output-zone').innerHTML = `<div class="output-placeholder">Staged. Click verification button above to process your file.</div>`;
+                document.getElementById('console-logs').innerHTML = `<div class="terminal-line success">> Ingested custom file: [${fileName}]. Ready to run diagnostics.</div>`;
+                document.getElementById('placeholder-text').style.display = 'block';
+                document.getElementById('media-canvas').style.display = 'none';
+                document.getElementById('ready-banner').style.display = 'none';
             }
         }
 
-        document.querySelectorAll('.upload-box').forEach(box => {
-            box.addEventListener('dragover', (e) => { e.preventDefault(); box.classList.add('dragover'); });
-            box.addEventListener('dragleave', () => box.classList.remove('dragover'));
-            box.addEventListener('drop', (e) => {
-                e.preventDefault();
-                box.classList.remove('dragover');
-                const type = box.id === 'image-upload' ? 'image' : 'video';
-                const inputId = type === 'image' ? 'image-file-input' : 'video-file-input';
-                const inputElement = document.getElementById(inputId);
-                
-                if (e.dataTransfer.files.length > 0) {
-                    inputElement.files = e.dataTransfer.files;
-                    handleUserUpload(inputElement, type);
-                }
-            });
-        });
-
-        function runAnalysis(fallbackType) {
+        function runAnalysis() {
             const consoleBox = document.getElementById('console-logs');
-            const outputZone = document.getElementById('output-zone');
+            const placeholder = document.getElementById('placeholder-text');
+            const mediaCanvas = document.getElementById('media-canvas');
+            const readyBanner = document.getElementById('ready-banner');
             const target = scenarios[currentScenarioId] || { logDetails: [], aiArtifacts: false };
             
             consoleBox.innerHTML = '';
-            outputZone.innerHTML = '<div class="output-placeholder">Ingesting stream payloads and processing telemetry matrices...</div>';
+            placeholder.style.display = 'block';
+            placeholder.innerHTML = 'Ingesting stream payloads and compiling telemetry metrics...';
+            mediaCanvas.style.display = 'none';
+            readyBanner.style.display = 'none';
 
             let step = 0;
-            
             function printNextLine() {
                 if (step < target.logDetails.length) {
                     const lineText = target.logDetails[step];
                     let lineClass = 'neutral';
-                    
-                    if (lineText.includes('Warning') || lineText.includes('BYPASS')) {
-                        lineClass = 'bypass';
-                    } else if (lineText.includes('CRITICAL')) {
-                        lineClass = 'danger';
-                    } else if (lineText.includes('validated') || lineText.includes('verified') || lineText.includes('successfully') || lineText.includes('confirmed')) {
-                        lineClass = 'success';
-                    }
+                    if (lineText.includes('Warning') || lineText.includes('BYPASS')) lineClass = 'bypass';
+                    else if (lineText.includes('CRITICAL')) lineClass = 'danger';
+                    else if (lineText.includes('validated') || lineText.includes('verified') || lineText.includes('successfully') || lineText.includes('confirmed')) lineClass = 'success';
                     
                     consoleBox.innerHTML += `<div class="terminal-line ${lineClass}">> ${lineText}</div>`;
                     consoleBox.scrollTop = consoleBox.scrollHeight;
                     step++;
-                    setTimeout(printNextLine, 450);
+                    setTimeout(printNextLine, 400);
                 } else {
-                    finalizeOutput(target, outputZone, consoleBox, fallbackType);
+                    placeholder.style.display = 'none';
+                    if (target.aiArtifacts) {
+                        consoleBox.innerHTML += `<div class="terminal-line danger">>>> CORE ENGINE VALIDATION REFUSED: Generative signatures found.</div>`;
+                        placeholder.style.display = 'block';
+                        placeholder.innerHTML = `<b style="color:#f43f5e;">⚠️ Verification Failed</b><br><span style="font-size:12px; color:var(--text-muted);">Asset corrupted by synthetic generation overrides. Licensing denied.</span>`;
+                    } else {
+                        consoleBox.innerHTML += `<div class="terminal-line success">>>> SUCCESS: Integrity clear. File cleared of generation overrides.</div>`;
+                        
+                        // Setup render viewport layouts with image tracks
+                        mediaCanvas.className = `media-preview-canvas ${target.format}`;
+                        mediaCanvas.style.backgroundImage = `url('${target.previewImg}')`;
+                        mediaCanvas.style.display = 'block';
+                        
+                        // Trigger bottom social ready tag banner indicator
+                        readyBanner.style.display = 'inline-block';
+                        readyBanner.innerHTML = target.format === 'format-vertical' ? '✨ VID READY — CERTIFIED REEL DECK COMPRESED' : '✨ PIC READY — LANDSCAPE EXPORT PIPELINE OK';
+                    }
                 }
             }
-            
             printNextLine();
         }
 
-        function finalizeOutput(target, outputZone, consoleBox, fallbackType) {
-            const platformType = target.platform || fallbackType;
+        // DRAG AND DROP RUNTIME WORKSPACE HANDLERS
+        let offsetX, offsetY;
 
-            if (target.aiArtifacts) {
-                consoleBox.innerHTML += `<div class="terminal-line danger">>>> CORE ENGINE VALIDATION REFUSED: Generative payload structures matched synthetic hazard profiles.</div>`;
-                
-                let issueType = 'Synthetic Manipulation Detected';
-                if (target.type === 'deepfake') issueType = 'Deceptive Face Swap Overrides';
-                else if (target.type === 'voiceclone') issueType = 'Synthetic Voice Clone Track';
-                else if (target.type === 'diffusion') issueType = 'Synthetic Background Insertion';
-                
-                outputZone.innerHTML = `
-                    <div class="badge-card">
-                        <div class="seal-graphics fail">
-                            <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                        </div>
-                        <h4>Verification Failed</h4>
-                        <p style="color:#f43f5e; font-weight:700;">${issueType}</p>
-                        <p>This asset tracks clear mathematical rendering inconsistencies from generative AI modifications and cannot be authenticated.</p>
-                    </div>
-                `;
-            } else {
-                consoleBox.innerHTML += `<div class="terminal-line success">>>> SUCCESS: Integrity workspace evaluation complete. File cleared of synthetic generation overrides.</div>`;
-                
-                // Construct standard credential result badge
-                let outputMarkup = `
-                    <div class="badge-card">
-                        <div class="seal-graphics pass">
-                            <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                        </div>
-                        <h4>AI-Free Certified</h4>
-                        <p>Asset Validation: 100% Non-Synthetic Content</p>
-                        <div class="download-stub">Ready for Brand Deck / Media Kit</div>
-                    </div>
-                `;
+        function dragSeal(e) {
+            const rect = e.target.getBoundingClientRect();
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+            e.dataTransfer.setData("text/plain", e.target.id);
+        }
 
-                // PROGRAMMATICALLY APPEND CORRESPONDING WATERMARK SAFE ZONE BADGE ON SUCCESS
-                if (platformType === 'instagram') {
-                    outputMarkup += `<div class="ig-watermark-gate">[PROVENANT SEED: IG-SAFE 180x40]</div>`;
-                } else if (platformType === 'youtube') {
-                    outputMarkup += `<div class="yt-watermark-gate">[PROVENANT SEED: YT-SAFE 90x50]</div>`;
-                }
+        function allowDrop(e) { e.preventDefault(); }
 
-                outputZone.innerHTML = outputMarkup;
-            }
-            consoleBox.scrollTop = consoleBox.scrollHeight;
+        function dropSeal(e) {
+            e.preventDefault();
+            const badgeId = e.dataTransfer.getData("text/plain");
+            const badge = document.getElementById(badgeId);
+            const canvas = document.getElementById("media-canvas");
+            const canvasRect = canvas.getBoundingClientRect();
+
+            // Calculate precise drop boundary placement coordinates relative to media viewer box
+            let leftPos = e.clientX - canvasRect.left - offsetX;
+            let topPos = e.clientY - canvasRect.top - offsetY;
+
+            // Boundary Lock Constraints: Stay inside canvas zone limits
+            leftPos = Math.max(0, Math.min(leftPos, canvasRect.width - badge.offsetWidth));
+            topPos = Math.max(0, Math.min(topPos, canvasRect.height - badge.offsetHeight));
+
+            badge.style.left = leftPos + "px";
+            badge.style.top = topPos + "px";
         }
     </script>
 </body>
