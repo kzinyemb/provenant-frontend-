@@ -14,6 +14,7 @@
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --success-green: #00b894;
+            --neon-yellow: #ffe600;   /* High-Visibility Neon Social Yellow */
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -201,44 +202,47 @@
         .media-preview-canvas.format-vertical { width: 180px; height: 280px; border-radius: 16px; }
         .media-preview-canvas.format-landscape { width: 100%; height: 240px; }
 
-        /* NICE SHINY, BRIGHT PERMISSIVE ORIGIN STAMP TIER OVERLAY */
+        /* PREMIUM BRAND NEW DIAMOND WATERMARK SEAL OVERLAY */
         .moveable-seal-badge {
             position: absolute;
-            top: 15px;
-            left: 15px;
+            top: 25px;
+            left: 25px;
             z-index: 9999;
             cursor: move;
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%);
-            border: 1px solid rgba(0, 184, 148, 0.4);
-            color: #ffffff;
-            padding: 4px 10px;
-            border-radius: 30px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%);
+            border: 1px solid rgba(255, 230, 0, 0.35);
+            color: var(--neon-yellow); /* Bright yellow typography loop optimization */
+            padding: 8px 14px;
             font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 0.3px;
+            font-weight: 900;
+            letter-spacing: 0.8px;
             display: flex;
             align-items: center;
-            gap: 5px;
-            box-shadow: 0 4px 12px rgba(0, 184, 148, 0.25), inset 0 1px 1px rgba(255,255,255,0.1);
+            gap: 7px;
+            box-shadow: 0 6px 20px rgba(255, 230, 0, 0.15), inset 0 1px 1px rgba(255,255,255,0.05);
             user-select: none;
             backdrop-filter: blur(12px);
             text-transform: uppercase;
+            
+            /* Sharp Angular Diamond Shell Layout */
+            clip-path: polygon(6% 0%, 100% 0%, 94% 100%, 0% 100%);
         }
 
-        /* Bright Glowing Node Dot */
+        /* Pulsing Diamond Shape Node */
         .moveable-seal-badge .glow-node { 
-            width: 6px;
-            height: 6px;
-            background-color: var(--success-green);
-            border-radius: 50%;
+            width: 7px;
+            height: 7px;
+            background-color: var(--neon-yellow);
+            /* Transform regular circle block into geometric diamond matrix */
+            transform: rotate(45deg); 
             display: inline-block;
-            box-shadow: 0 0 8px #00b894, 0 0 15px #00b894;
-            animation: radiantPulse 1.8s infinite ease-in-out;
+            box-shadow: 0 0 8px var(--neon-yellow), 0 0 15px var(--neon-yellow);
+            animation: diamondPulse 1.5s infinite ease-in-out;
         }
 
-        @keyframes radiantPulse {
-            0%, 100% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 6px #00b894; }
-            50% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 12px #00b894, 0 0 20px #00b894; }
+        @keyframes diamondPulse {
+            0%, 100% { transform: rotate(45deg) scale(0.9); opacity: 0.8; box-shadow: 0 0 6px var(--neon-yellow); }
+            50% { transform: rotate(45deg) scale(1.2); opacity: 1; box-shadow: 0 0 12px var(--neon-yellow), 0 0 22px var(--neon-yellow); }
         }
 
         /* Ready Status Indicator Sub-Banners */
