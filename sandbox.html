@@ -8,7 +8,7 @@
     <style>
         :root {
             --brand-creator: #e11d48; /* Vibrant Rose */
-            --brand-dark: #0f172a;   /* Deep Slate */
+            --brand-dark: #0f172a;    /* Deep Slate */
             --brand-surface: #1e293b; /* Medium Slate */
             --brand-border: rgba(255, 255, 255, 0.1);
             --text-main: #f8fafc;
@@ -81,7 +81,6 @@
             min-height: 520px;
         }
 
-        /* Center panel adjusts slightly for visual balance */
         .panel.center-panel {
             min-height: 520px;
         }
@@ -168,9 +167,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-platform: center;
             gap: 8px;
-            margin-top: auto; /* Push down to balance column space */
+            margin-top: auto;
         }
 
         .upload-box:hover, .upload-box.dragover {
@@ -213,6 +212,7 @@
             height: 200px;
             overflow-y: auto;
             color: #38bdf8;
+            text-align: left;
         }
 
         .terminal-line {
@@ -237,6 +237,8 @@
             padding: 15px;
             background: rgba(0,0,0,0.1);
             min-height: 200px;
+            position: relative; /* Essential context hook for child watermarks */
+            overflow: hidden;
         }
 
         .output-placeholder {
@@ -250,6 +252,8 @@
             text-align: center;
             animation: fadeIn 0.4s ease forwards;
             max-width: 320px;
+            position: relative;
+            z-index: 10;
         }
 
         .seal-graphics {
@@ -299,6 +303,42 @@
             background: rgba(225, 29, 72, 0.05);
         }
 
+        /* USER PLACEMENT WATERMARK LAYERS */
+        .ig-watermark-gate {
+            position: absolute;
+            top: 25px; /* Scaled cleanly down for center viewport panel simulation boxes */
+            right: 25px;
+            z-index: 999;
+            opacity: 0.85;
+            pointer-events: none;
+            background: rgba(0, 184, 148, 0.15);
+            border: 1px solid var(--success-green);
+            color: var(--success-green);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: bold;
+            font-family: 'Fira Code', monospace;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .yt-watermark-gate {
+            position: absolute;
+            bottom: 25px; /* Scaled cleanly down for center viewport panel simulation boxes */
+            right: 25px;
+            z-index: 999;
+            opacity: 0.8;
+            background: rgba(0, 184, 148, 0.15);
+            border: 1px solid var(--success-green);
+            color: var(--success-green);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: bold;
+            font-family: 'Fira Code', monospace;
+            animation: fadeIn 0.3s ease;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.95); }
             to { opacity: 1; transform: scale(1); }
@@ -315,7 +355,6 @@
 
         <div class="sandbox-grid">
             
-            <!-- COLUMN 1: Image Media Environments -->
             <div class="panel">
                 <div class="panel-title">1. Image Media Environments</div>
                 <div class="scenario-selector">
@@ -334,9 +373,8 @@
                         <p>Real photo subject blended onto a fully synthetic background environment generated via Stable Diffusion.</p>
                     </div>
                 </div>
-                <button class="action-btn" onclick="runAnalysis()">Verify Image Target</button>
+                <button class="action-btn" onclick="runAnalysis('image')">Verify Image Target</button>
 
-                <!-- IMAGE UPLOAD BOX -->
                 <div class="upload-box" id="image-upload" onclick="triggerInput('image-file-input')">
                     <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -347,7 +385,6 @@
                 </div>
             </div>
 
-            <!-- COLUMN 2: Processing Console Logs & Integrity Seal -->
             <div class="panel center-panel">
                 <div class="panel-title">2. Processing Console Logs & Integrity Seal</div>
                 
@@ -362,7 +399,6 @@
                 </div>
             </div>
 
-            <!-- COLUMN 3: Video Feed Environments -->
             <div class="panel">
                 <div class="panel-title">3. Video Feed Environments</div>
                 <div class="scenario-selector">
@@ -386,9 +422,8 @@
                         <p>Visually authentic human capture backed by a synthetic voice track cloned via generative adversarial speech models.</p>
                     </div>
                 </div>
-                <button class="action-btn" onclick="runAnalysis()">Verify Video Target</button>
+                <button class="action-btn" onclick="runAnalysis('video')">Verify Video Target</button>
 
-                <!-- VIDEO UPLOAD BOX -->
                 <div class="upload-box" id="video-upload" onclick="triggerInput('video-file-input')">
                     <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
@@ -402,12 +437,12 @@
         </div>
     </div>
 
-    <!-- Data Matrices Processing Script -->
     <script>
         const scenarios = {
             raw_camera: {
                 name: 'raw_camera.jpg',
                 aiArtifacts: false,
+                platform: 'image',
                 logDetails: [
                     "Verifying cryptographic file header structures...", 
                     "EXIF identity metrics read successfully.", 
@@ -418,6 +453,7 @@
             instagram_filter: {
                 name: 'instagram_filter.jpg',
                 aiArtifacts: false,
+                platform: 'instagram',
                 logDetails: [
                     "Verifying cryptographic file header structures...", 
                     "Warning: Metadata layer missing or stripped.", 
@@ -430,6 +466,7 @@
                 name: 'generative_bg.jpg',
                 aiArtifacts: true,
                 type: 'diffusion',
+                platform: 'image',
                 logDetails: [
                     "Verifying cryptographic file header structures...", 
                     "Bypassing metadata layer check.", 
@@ -440,6 +477,7 @@
             youtube_master: {
                 name: 'youtube_vlog_master.mp4',
                 aiArtifacts: false,
+                platform: 'youtube',
                 logDetails: [
                     "Extracting temporal video containers...",
                     "Reading C2PA manifest metadata layers...",
@@ -452,6 +490,7 @@
             instagram_compressed: {
                 name: 'instagram_reel_final.mp4',
                 aiArtifacts: false,
+                platform: 'instagram',
                 logDetails: [
                     "Extracting temporal video containers...",
                     "Warning: Structural metadata tracks missing or stripped by platform app layers.",
@@ -466,6 +505,7 @@
                 name: 'sponsored_review_deepfake.mp4',
                 aiArtifacts: true,
                 type: 'deepfake',
+                platform: 'video',
                 logDetails: [
                     "Parsing temporal video frame arrays...",
                     "Scanning facial feature landing matrices across timeline tracks...",
@@ -478,6 +518,7 @@
                 name: 'tiktok_promo_voiceclone.mp4',
                 aiArtifacts: true,
                 type: 'voiceclone',
+                platform: 'video',
                 logDetails: [
                     "Parsing temporal video frame arrays...",
                     "Visual check: Human capture vectors appear authenticated...",
@@ -492,8 +533,6 @@
 
         function selectScenario(id) {
             currentScenarioId = id;
-            
-            // Remove active tags across both sidebar controllers completely
             document.querySelectorAll('.scenario-option').forEach(opt => opt.classList.remove('active'));
             const dynamicOption = document.querySelector(`.scenario-option[data-id="${id}"]`);
             if (dynamicOption) dynamicOption.classList.add('active');
@@ -502,7 +541,6 @@
             document.getElementById('output-zone').innerHTML = `<div class="output-placeholder">Run engine verification matrix to compile active status output layers.</div>`;
         }
 
-        // Upload interaction management helpers
         function triggerInput(inputId) {
             document.getElementById(inputId).click();
         }
@@ -511,10 +549,10 @@
             if (input.files && input.files[0]) {
                 const fileName = input.files[0].name;
                 
-                // Programmatically append custom user-ingested file context parameters into runtime scenarios structure
                 scenarios['user_custom_file'] = {
                     name: fileName,
                     aiArtifacts: false,
+                    platform: type,
                     logDetails: [
                         `Ingesting user payload streams: [${fileName}]...`,
                         "Running real-time multi-layer decompression array matrices...",
@@ -524,16 +562,13 @@
                     ]
                 };
 
-                // Deselect fixed configuration presets
                 document.querySelectorAll('.scenario-option').forEach(opt => opt.classList.remove('active'));
-                
                 currentScenarioId = 'user_custom_file';
                 document.getElementById('console-logs').innerHTML = `<div class="terminal-line success">> Ingested external stream user data: [${fileName}]. Custom file framework staged successfully.</div>`;
                 document.getElementById('output-zone').innerHTML = `<div class="output-placeholder">Staged. Click verification button above to process your file.</div>`;
             }
         }
 
-        // Add visual drag over cues
         document.querySelectorAll('.upload-box').forEach(box => {
             box.addEventListener('dragover', (e) => { e.preventDefault(); box.classList.add('dragover'); });
             box.addEventListener('dragleave', () => box.classList.remove('dragover'));
@@ -551,10 +586,10 @@
             });
         });
 
-        function runAnalysis() {
+        function runAnalysis(fallbackType) {
             const consoleBox = document.getElementById('console-logs');
             const outputZone = document.getElementById('output-zone');
-            const target = scenarios[currentScenarioId];
+            const target = scenarios[currentScenarioId] || { logDetails: [], aiArtifacts: false };
             
             consoleBox.innerHTML = '';
             outputZone.innerHTML = '<div class="output-placeholder">Ingesting stream payloads and processing telemetry matrices...</div>';
@@ -579,14 +614,16 @@
                     step++;
                     setTimeout(printNextLine, 450);
                 } else {
-                    finalizeOutput(target, outputZone, consoleBox);
+                    finalizeOutput(target, outputZone, consoleBox, fallbackType);
                 }
             }
             
             printNextLine();
         }
 
-        function finalizeOutput(target, outputZone, consoleBox) {
+        function finalizeOutput(target, outputZone, consoleBox, fallbackType) {
+            const platformType = target.platform || fallbackType;
+
             if (target.aiArtifacts) {
                 consoleBox.innerHTML += `<div class="terminal-line danger">>>> CORE ENGINE VALIDATION REFUSED: Generative payload structures matched synthetic hazard profiles.</div>`;
                 
@@ -608,7 +645,8 @@
             } else {
                 consoleBox.innerHTML += `<div class="terminal-line success">>>> SUCCESS: Integrity workspace evaluation complete. File cleared of synthetic generation overrides.</div>`;
                 
-                outputZone.innerHTML = `
+                // Construct standard credential result badge
+                let outputMarkup = `
                     <div class="badge-card">
                         <div class="seal-graphics pass">
                             <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
@@ -618,6 +656,15 @@
                         <div class="download-stub">Ready for Brand Deck / Media Kit</div>
                     </div>
                 `;
+
+                // PROGRAMMATICALLY APPEND CORRESPONDING WATERMARK SAFE ZONE BADGE ON SUCCESS
+                if (platformType === 'instagram') {
+                    outputMarkup += `<div class="ig-watermark-gate">[PROVENANT SEED: IG-SAFE 180x40]</div>`;
+                } else if (platformType === 'youtube') {
+                    outputMarkup += `<div class="yt-watermark-gate">[PROVENANT SEED: YT-SAFE 90x50]</div>`;
+                }
+
+                outputZone.innerHTML = outputMarkup;
             }
             consoleBox.scrollTop = consoleBox.scrollHeight;
         }
