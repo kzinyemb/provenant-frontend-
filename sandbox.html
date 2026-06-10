@@ -198,35 +198,36 @@
             display: none;
         }
 
-        /* Responsive frame scaling presets */
         .media-preview-canvas.format-vertical { width: 180px; height: 280px; border-radius: 16px; }
         .media-preview-canvas.format-landscape { width: 100%; height: 240px; }
 
-        /* DRAGGABLE CRYPTOGRAPHIC SEAL STYLING */
+        /* UPDATED STREAMLINED MICRO-SEAL BADGE */
         .moveable-seal-badge {
             position: absolute;
             top: 20px;
             left: 20px;
             z-index: 9999;
             cursor: move;
-            background: rgba(15, 23, 42, 0.9);
-            border: 2px solid var(--success-green);
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(255,255,255,0.2);
             color: #ffffff;
-            padding: 8px 12px;
-            border-radius: 30px;
+            padding: 6px 12px;
+            border-radius: 20px;
             font-size: 11px;
-            font-weight: 700;
+            font-weight: 600;
             display: flex;
             align-items: center;
             gap: 6px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
             user-select: none;
-            backdrop-filter: blur(4px);
-            transition: border-color 0.2s ease;
+            backdrop-filter: blur(8px);
         }
 
-        .moveable-seal-badge:active { border-color: var(--brand-creator); }
-        .moveable-seal-badge span { color: var(--success-green); font-size: 14px; }
+        .moveable-seal-badge span { 
+            color: var(--success-green); 
+            font-size: 10px; 
+            line-height: 1;
+        }
 
         /* Ready Status Indicator Sub-Banners */
         .status-ready-tag {
@@ -299,7 +300,7 @@
                     
                     <div class="media-preview-canvas" id="media-canvas">
                         <div class="moveable-seal-badge" id="moveable-seal" draggable="true" ondragstart="dragSeal(event)">
-                            <span>✓</span> Provenant Human Origin
+                            <span>●</span> Human Origin
                         </div>
                     </div>
 
@@ -438,7 +439,6 @@
             const dynamicOption = document.querySelector(`.scenario-option[data-id="${id}"]`);
             if (dynamicOption) dynamicOption.classList.add('active');
             
-            // Clean interface slate resetting run logs
             document.getElementById('console-logs').innerHTML = `<div class="terminal-line neutral">> Profile configuration switched to [${scenarios[id].name}]. Pipeline ready to execute...</div>`;
             document.getElementById('placeholder-text').style.display = 'block';
             document.getElementById('media-canvas').style.display = 'none';
@@ -473,7 +473,24 @@
             }
         }
 
-        function runAnalysis() {
+        document.querySelectorAll('.upload-box').forEach(box => {
+            box.addEventListener('dragover', (e) => { e.preventDefault(); box.classList.add('dragover'); });
+            box.addEventListener('dragleave', () => box.classList.remove('dragover'));
+            box.addEventListener('drop', (e) => {
+                e.preventDefault();
+                box.classList.remove('dragover');
+                const type = box.id === 'image-upload' ? 'image' : 'video';
+                const inputId = type === 'image' ? 'image-file-input' : 'video-file-input';
+                const inputElement = document.getElementById(inputId);
+                
+                if (e.dataTransfer.files.length > 0) {
+                    inputElement.files = e.dataTransfer.files;
+                    handleUserUpload(inputElement, type);
+                }
+            });
+        });
+
+        function runAnalysis(fallbackType) {
             const consoleBox = document.getElementById('console-logs');
             const placeholder = document.getElementById('placeholder-text');
             const mediaCanvas = document.getElementById('media-canvas');
@@ -508,14 +525,12 @@
                     } else {
                         consoleBox.innerHTML += `<div class="terminal-line success">>>> SUCCESS: Integrity clear. File cleared of generation overrides.</div>`;
                         
-                        // Setup render viewport layouts with image tracks
                         mediaCanvas.className = `media-preview-canvas ${target.format}`;
                         mediaCanvas.style.backgroundImage = `url('${target.previewImg}')`;
                         mediaCanvas.style.display = 'block';
                         
-                        // Trigger bottom social ready tag banner indicator
                         readyBanner.style.display = 'inline-block';
-                        readyBanner.innerHTML = target.format === 'format-vertical' ? '✨ VID READY — CERTIFIED REEL DECK COMPRESED' : '✨ PIC READY — LANDSCAPE EXPORT PIPELINE OK';
+                        readyBanner.innerHTML = target.format === 'format-vertical' ? '✨ VID READY — CERTIFIED REEL DECK COMPRESSED' : '✨ PIC READY — LANDSCAPE EXPORT PIPELINE OK';
                     }
                 }
             }
@@ -541,11 +556,9 @@
             const canvas = document.getElementById("media-canvas");
             const canvasRect = canvas.getBoundingClientRect();
 
-            // Calculate precise drop boundary placement coordinates relative to media viewer box
             let leftPos = e.clientX - canvasRect.left - offsetX;
             let topPos = e.clientY - canvasRect.top - offsetY;
 
-            // Boundary Lock Constraints: Stay inside canvas zone limits
             leftPos = Math.max(0, Math.min(leftPos, canvasRect.width - badge.offsetWidth));
             topPos = Math.max(0, Math.min(topPos, canvasRect.height - badge.offsetHeight));
 
