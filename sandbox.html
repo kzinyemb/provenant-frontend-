@@ -202,47 +202,58 @@
         .media-preview-canvas.format-vertical { width: 180px; height: 280px; border-radius: 16px; }
         .media-preview-canvas.format-landscape { width: 100%; height: 240px; }
 
-        /* PREMIUM BRAND NEW DIAMOND WATERMARK SEAL OVERLAY */
+        /* COMPACT SHINY DYNAMIC KITE/DIAMOND SOCIAL STAMP BUILDER */
         .moveable-seal-badge {
             position: absolute;
             top: 25px;
             left: 25px;
             z-index: 9999;
             cursor: move;
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%);
-            border: 1px solid rgba(255, 230, 0, 0.35);
-            color: var(--neon-yellow); /* Bright yellow typography loop optimization */
-            padding: 8px 14px;
-            font-size: 10px;
-            font-weight: 900;
-            letter-spacing: 0.8px;
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            box-shadow: 0 6px 20px rgba(255, 230, 0, 0.15), inset 0 1px 1px rgba(255,255,255,0.05);
+            
+            /* Precision geometric shell sizes for space restrictions */
+            width: 74px;
+            height: 74px;
+            
+            background: linear-gradient(135deg, rgba(9, 13, 22, 0.95) 0%, rgba(21, 29, 45, 0.9) 100%);
+            border: 1px solid rgba(255, 230, 0, 0.45);
+            box-shadow: 0 6px 15px rgba(255, 230, 0, 0.2), inset 0 1px 1px rgba(255,255,255,0.05);
             user-select: none;
             backdrop-filter: blur(12px);
-            text-transform: uppercase;
             
-            /* Sharp Angular Diamond Shell Layout */
-            clip-path: polygon(6% 0%, 100% 0%, 94% 100%, 0% 100%);
+            /* Vertical text layout architecture stacked row parameters */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            text-align: center;
+            
+            /* Sharp Native Kite Shape Mask Transformation */
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
         }
 
-        /* Pulsing Diamond Shape Node */
-        .moveable-seal-badge .glow-node { 
-            width: 7px;
-            height: 7px;
-            background-color: var(--neon-yellow);
-            /* Transform regular circle block into geometric diamond matrix */
-            transform: rotate(45deg); 
-            display: inline-block;
-            box-shadow: 0 0 8px var(--neon-yellow), 0 0 15px var(--neon-yellow);
-            animation: diamondPulse 1.5s infinite ease-in-out;
+        /* Typography elements stacked vertically inside the matrix shell */
+        .moveable-seal-badge .seal-text-line {
+            color: var(--neon-yellow);
+            font-family: 'Inter', sans-serif;
+            font-size: 7px;
+            font-weight: 900;
+            letter-spacing: 0.4px;
+            line-height: 1.1;
+            text-transform: uppercase;
         }
 
-        @keyframes diamondPulse {
-            0%, 100% { transform: rotate(45deg) scale(0.9); opacity: 0.8; box-shadow: 0 0 6px var(--neon-yellow); }
-            50% { transform: rotate(45deg) scale(1.2); opacity: 1; box-shadow: 0 0 12px var(--neon-yellow), 0 0 22px var(--neon-yellow); }
+        .moveable-seal-badge .seal-text-line.highlight {
+            font-size: 8px;
+            color: #ffffff;
+            font-weight: 900;
+            text-shadow: 0 0 6px rgba(255, 230, 0, 0.6);
+            animation: radiantGlowPulse 2s infinite ease-in-out;
+        }
+
+        @keyframes radiantGlowPulse {
+            0%, 100% { opacity: 0.9; text-shadow: 0 0 4px rgba(255, 230, 0, 0.5); }
+            50% { opacity: 1; text-shadow: 0 0 10px rgba(255, 230, 0, 0.9), 0 0 15px rgba(255, 230, 0, 0.4); }
         }
 
         /* Ready Status Indicator Sub-Banners */
@@ -316,7 +327,9 @@
                     
                     <div class="media-preview-canvas" id="media-canvas">
                         <div class="moveable-seal-badge" id="moveable-seal" draggable="true" ondragstart="dragSeal(event)">
-                            <div class="glow-node"></div> Human Origin
+                            <div class="seal-text-line">Certified</div>
+                            <div class="seal-text-line highlight">100%</div>
+                            <div class="seal-text-line">Human</div>
                         </div>
                     </div>
 
