@@ -201,32 +201,44 @@
         .media-preview-canvas.format-vertical { width: 180px; height: 280px; border-radius: 16px; }
         .media-preview-canvas.format-landscape { width: 100%; height: 240px; }
 
-        /* UPDATED STREAMLINED MICRO-SEAL BADGE */
+        /* NICE SHINY, BRIGHT PERMISSIVE ORIGIN STAMP TIER OVERLAY */
         .moveable-seal-badge {
             position: absolute;
-            top: 20px;
-            left: 20px;
+            top: 15px;
+            left: 15px;
             z-index: 9999;
             cursor: move;
-            background: rgba(15, 23, 42, 0.85);
-            border: 1px solid rgba(255,255,255,0.2);
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%);
+            border: 1px solid rgba(0, 184, 148, 0.4);
             color: #ffffff;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.3px;
             display: flex;
             align-items: center;
-            gap: 6px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            gap: 5px;
+            box-shadow: 0 4px 12px rgba(0, 184, 148, 0.25), inset 0 1px 1px rgba(255,255,255,0.1);
             user-select: none;
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(12px);
+            text-transform: uppercase;
         }
 
-        .moveable-seal-badge span { 
-            color: var(--success-green); 
-            font-size: 10px; 
-            line-height: 1;
+        /* Bright Glowing Node Dot */
+        .moveable-seal-badge .glow-node { 
+            width: 6px;
+            height: 6px;
+            background-color: var(--success-green);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px #00b894, 0 0 15px #00b894;
+            animation: radiantPulse 1.8s infinite ease-in-out;
+        }
+
+        @keyframes radiantPulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 6px #00b894; }
+            50% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 12px #00b894, 0 0 20px #00b894; }
         }
 
         /* Ready Status Indicator Sub-Banners */
@@ -300,7 +312,7 @@
                     
                     <div class="media-preview-canvas" id="media-canvas">
                         <div class="moveable-seal-badge" id="moveable-seal" draggable="true" ondragstart="dragSeal(event)">
-                            <span>●</span> Human Origin
+                            <div class="glow-node"></div> Human Origin
                         </div>
                     </div>
 
