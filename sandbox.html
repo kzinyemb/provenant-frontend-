@@ -576,10 +576,88 @@
             printNextLine();
         }
 
+        // HARD-BAKED HIGH-RESOLUTION IMAGE COMPILATION ENGINE
         function downloadCertifiedAsset() {
-            alert("📥 Success! Your high-resolution deliverable has been compiled with secure origin tags and downloaded directly to your local file explorer storage path.");
+            const canvas = document.getElementById("media-canvas");
+            const badge = document.getElementById("moveable-seal");
+            
+            // 1. Parse out the underlying image background URL path from our simulator styles
+            const computedStyle = window.getComputedStyle(canvas);
+            const bgUrlStr = computedStyle.backgroundImage.slice(5, -2);
+            
+            if (!bgUrlStr || bgUrlStr === "ne") {
+                alert("⚠️ Ingestion Error: No authenticated image file source could be located on the processing deck.");
+                return;
+            }
+
+            // 2. Spawn a background structural canvas to hard-bake the pixels together
+            const hiddenCanvas = document.createElement("canvas");
+            const ctx = hiddenCanvas.getContext("2d");
+            const baseImg = new Image();
+            
+            // CrossOrigin declaration prevents canvas asset locking loops
+            baseImg.crossOrigin = "anonymous";
+            baseImg.src = bgUrlStr;
+            
+            baseImg.onload = function() {
+                // Set canvas constraints to match your baseline source images perfectly
+                hiddenCanvas.width = baseImg.naturalWidth;
+                hiddenCanvas.height = baseImg.naturalHeight;
+                
+                // Draw step A: Print the base background image down onto the canvas
+                ctx.drawImage(baseImg, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+                
+                // Draw step B: Calculate where the creator dragged the badge inside the workspace window
+                const canvasRect = canvas.getBoundingClientRect();
+                const badgeRect = badge.getBoundingClientRect();
+                
+                // Map the drag coordinates to match high-resolution image scales perfectly
+                const scaleX = hiddenCanvas.width / canvasRect.width;
+                const scaleY = hiddenCanvas.height / canvasRect.height;
+                
+                const targetX = (badgeRect.left - canvasRect.left) * scaleX;
+                const targetY = (badgeRect.top - canvasRect.top) * scaleY;
+                const targetSize = 42 * scaleX; // Keep badge geometry locked proportionally
+                
+                // Draw step C: Render your premium custom angular kite background stamp shape
+                ctx.fillStyle = "rgba(9, 13, 22, 0.96)";
+                ctx.strokeStyle = "#ffe600";
+                ctx.lineWidth = 2 * (scaleX * 0.5); // Proportional border scaling
+                
+                ctx.beginPath();
+                ctx.moveTo(targetX + targetSize / 2, targetY);
+                ctx.lineTo(targetX + targetSize, targetY + targetSize / 2);
+                ctx.lineTo(targetX + targetSize / 2, targetY + targetSize);
+                ctx.lineTo(targetX, targetY + targetSize / 2);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                
+                // Draw step D: Hard-bake your Neon Social Yellow Stacked Certification text parameters
+                ctx.fillStyle = "#ffe600";
+                ctx.textAlign = "center";
+                ctx.font = `900 ${Math.floor(targetSize * 0.09)}px 'Inter', sans-serif`;
+                
+                ctx.fillText("CERTIFIED", targetX + targetSize / 2, targetY + targetSize * 0.35);
+                ctx.fillStyle = "#ffffff";
+                ctx.font = `900 ${Math.floor(targetSize * 0.12)}px 'Inter', sans-serif`;
+                ctx.fillText("100%", targetX + targetSize / 2, targetY + targetSize * 0.56);
+                ctx.fillStyle = "#ffe600";
+                ctx.font = `900 ${Math.floor(targetSize * 0.09)}px 'Inter', sans-serif`;
+                ctx.fillText("HUMAN", targetX + targetSize / 2, targetY + targetSize * 0.74);
+                
+                // 3. Generate a secure download dispatch loop link anchor to push the file to local directories
+                const downloadDispatcher = document.createElement("a");
+                downloadDispatcher.download = "provenant_certified_human_origin.jpg";
+                downloadDispatcher.href = hiddenCanvas.toDataURL("image/jpeg", 0.95);
+                
+                document.body.appendChild(downloadDispatcher);
+                downloadDispatcher.click();
+                document.body.removeChild(downloadDispatcher);
+            };
         }
 
+        // DRAG AND DROP RUNTIME WORKSPACE HANDLERS
         let offsetX, offsetY;
 
         function dragSeal(e) {
