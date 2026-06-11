@@ -210,9 +210,9 @@
             z-index: 9999;
             cursor: move;
             
-            /* Reduced dimensional footprint to prevent visual crowding */
-            width: 46px;
-            height: 46px;
+            /* Precision micro scaling for tight spacing restrictions */
+            width: 42px;
+            height: 42px;
             
             background: linear-gradient(135deg, rgba(8, 10, 18, 0.98) 0%, rgba(15, 23, 42, 0.95) 100%);
             border: 1px solid rgba(255, 230, 0, 0.5);
@@ -224,7 +224,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 1px;
+            gap: 0px;
             text-align: center;
             
             /* Kite Matrix Boundary Vector Clipping */
@@ -235,7 +235,7 @@
         .moveable-seal-badge .seal-text-line {
             color: var(--neon-yellow);
             font-family: 'Inter', sans-serif;
-            font-size: 4.8px;
+            font-size: 4px;
             font-weight: 900;
             letter-spacing: 0.1px;
             line-height: 1;
@@ -243,17 +243,17 @@
         }
 
         .moveable-seal-badge .seal-text-line.highlight {
-            font-size: 5.8px;
+            font-size: 5px;
             color: #ffffff;
             font-weight: 900;
             margin: 1px 0;
-            text-shadow: 0 0 4px rgba(255, 230, 0, 0.7);
+            text-shadow: 0 0 3px rgba(255, 230, 0, 0.7);
             animation: miniGlowPulse 2s infinite ease-in-out;
         }
 
         @keyframes miniGlowPulse {
-            0%, 100% { opacity: 0.85; text-shadow: 0 0 3px rgba(255, 230, 0, 0.4); }
-            50% { opacity: 1; text-shadow: 0 0 8px rgba(255, 230, 0, 0.8); }
+            0%, 100% { opacity: 0.85; text-shadow: 0 0 2px rgba(255, 230, 0, 0.4); }
+            50% { opacity: 1; text-shadow: 0 0 6px rgba(255, 230, 0, 0.8); }
         }
 
         /* Custom Asset Kit Local Down-loader Button UI */
