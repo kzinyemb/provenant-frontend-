@@ -350,7 +350,6 @@
                 <div class="panel-title">3. Video Feed Environments</div>
                 <div class="scenario-selector">
                     <div class="scenario-option" data-id="youtube_master" onclick="selectScenario('youtube_master')">
-                        // Sourcing structural matrix loops
                         <strong>youtube_vlog_master.mp4</strong>
                         <p>Raw edit export for YouTube. Cryptographic C2PA manifest metadata layer fully intact with verified timeline history.</p>
                     </div>
@@ -575,80 +574,122 @@
             printNextLine();
         }
 
-        // ISOLATED TRANSPARENT OVERLAY DOWNLOAD ENGINE
+        // DUAL-MODE COMPILATION ENGINE
         function downloadCertifiedAsset() {
+            const canvas = document.getElementById("media-canvas");
+            const badge = document.getElementById("moveable-seal");
+            
+            const computedStyle = window.getComputedStyle(canvas);
+            const bgUrlStr = computedStyle.backgroundImage.slice(5, -2);
+            
+            if (!bgUrlStr || bgUrlStr === "ne") {
+                alert("⚠️ Ingestion Error: No authenticated image file source could be located on the processing deck.");
+                return;
+            }
+
             const hiddenCanvas = document.createElement("canvas");
             const ctx = hiddenCanvas.getContext("2d");
+            const baseImg = new Image();
             
-            // Generate a clean high-resolution canvas container footprint
-            hiddenCanvas.width = 300;
-            hiddenCanvas.height = 100;
+            baseImg.crossOrigin = "anonymous";
+            baseImg.src = bgUrlStr;
             
-            // Ensure background track starts with 100% alpha transparency
-            ctx.clearRect(0, 0, hiddenCanvas.width, hiddenCanvas.height);
-            
-            // Set capsule parameters proportionally
-            const targetX = 10;
-            const targetY = 10;
-            const targetWidth = 280;
-            const targetHeight = 80;
-            const radius = 16;
-            
-            ctx.save();
-            ctx.beginPath();
-            ctx.moveTo(targetX + radius, targetY);
-            ctx.lineTo(targetX + targetWidth - radius, targetY);
-            ctx.quadraticCurveTo(targetX + targetWidth, targetY, targetX + targetWidth, targetY + radius);
-            ctx.lineTo(targetX + targetWidth, targetY + targetHeight - radius);
-            ctx.quadraticCurveTo(targetX + targetWidth, targetY + targetHeight, targetX + targetWidth - radius, targetY + targetHeight);
-            ctx.lineTo(targetX + radius, targetY + targetHeight);
-            ctx.quadraticCurveTo(targetX, targetY + targetHeight, targetX, targetY + targetHeight - radius);
-            ctx.lineTo(targetX, targetY + radius);
-            ctx.quadraticCurveTo(targetX, targetY, targetX + radius, targetY);
-            ctx.closePath();
-            
-            // Fill with high-visibility pink-to-purple gradient band tracks
-            const gradient = ctx.createLinearGradient(targetX, targetY, targetX + targetWidth, targetY + targetHeight);
-            gradient.addColorStop(0, '#ee2a7b');
-            gradient.addColorStop(1, '#a21caf');
-            ctx.fillStyle = gradient;
-            ctx.fill();
-            
-            ctx.lineWidth = 3;
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.25)";
-            ctx.stroke();
-            ctx.restore();
-            
-            // Render Crisp Stacked Typography Parameters
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            const centerX = targetX + (targetWidth / 2);
-            
-            // Line 1: PROVENANT
-            ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
-            ctx.font = "900 16px 'Inter', sans-serif";
-            ctx.fillText("PROVENANT", centerX, targetY + (targetHeight * 0.24));
-            
-            // Line 2: ACTIVE
-            ctx.fillStyle = "#ffffff";
-            ctx.font = "italic 900 24px 'Inter', sans-serif";
-            ctx.fillText("ACTIVE", centerX, targetY + (targetHeight * 0.52));
-            
-            // Line 3: Verified Human
-            ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-            ctx.font = "600 12px 'Inter', sans-serif";
-            ctx.fillText("VERIFIED HUMAN", centerX, targetY + (targetHeight * 0.78));
-            
-            // Output secure standalone image to user local explorer downloads path
-            const downloadDispatcher = document.createElement("a");
-            downloadDispatcher.download = "provenant_active_overlay.png";
-            downloadDispatcher.href = hiddenCanvas.toDataURL("image/png");
-            
-            document.body.appendChild(downloadDispatcher);
-            downloadDispatcher.click();
-            document.body.removeChild(downloadDispatcher);
-            
-            alert("📥 Asset Export Generated: Standalone transparent verification badge saved to downloads folder. Overlay this file directly onto social media or dating profile pictures!");
+            baseImg.onload = function() {
+                hiddenCanvas.width = baseImg.naturalWidth;
+                hiddenCanvas.height = baseImg.naturalHeight;
+                
+                ctx.drawImage(baseImg, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+                
+                const canvasRect = canvas.getBoundingClientRect();
+                const badgeRect = badge.getBoundingClientRect();
+                
+                const scaleX = hiddenCanvas.width / canvasRect.width;
+                const scaleY = hiddenCanvas.height / canvasRect.height;
+                
+                const targetX = (badgeRect.left - canvasRect.left) * scaleX;
+                const targetY = (badgeRect.top - canvasRect.top) * scaleY;
+                
+                const targetWidth = 85 * scaleX;
+                const targetHeight = 28 * scaleY;
+                const radius = 5 * scaleX;
+                
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(targetX + radius, targetY);
+                ctx.lineTo(targetX + targetWidth - radius, targetY);
+                ctx.quadraticCurveTo(targetX + targetWidth, targetY, targetX + targetWidth, targetY + radius);
+                ctx.lineTo(targetX + targetWidth, targetY + targetHeight - radius);
+                ctx.quadraticCurveTo(targetX + targetWidth, targetY + targetHeight, targetX + targetWidth - radius, targetY + targetHeight);
+                ctx.lineTo(targetX + radius, targetY + targetHeight);
+                ctx.quadraticCurveTo(targetX, targetY + targetHeight, targetX, targetY + targetHeight - radius);
+                ctx.lineTo(targetX, targetY + radius);
+                ctx.quadraticCurveTo(targetX, targetY, targetX + radius, targetY);
+                ctx.closePath();
+                
+                const gradient = ctx.createLinearGradient(targetX, targetY, targetX + targetWidth, targetY + targetHeight);
+                gradient.addColorStop(0, '#ee2a7b');
+                gradient.addColorStop(1, '#a21caf');
+                ctx.fillStyle = gradient;
+                ctx.fill();
+                
+                ctx.lineWidth = 1 * scaleX;
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+                ctx.stroke();
+                ctx.restore();
+                
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                const centerX = targetX + (targetWidth / 2);
+                
+                ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
+                ctx.font = `900 ${Math.floor(targetHeight * 0.22)}px 'Inter', sans-serif`;
+                ctx.fillText("PROVENANT", centerX, targetY + (targetHeight * 0.24));
+                
+                ctx.fillStyle = "#ffffff";
+                ctx.font = `italic 900 ${Math.floor(targetHeight * 0.30)}px 'Inter', sans-serif`;
+                ctx.fillText("ACTIVE", centerX, targetY + (targetHeight * 0.52));
+                
+                ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
+                ctx.font = `500 ${Math.floor(targetHeight * 0.17)}px 'Inter', sans-serif`;
+                ctx.fillText("Verified Human", centerX, targetY + (targetHeight * 0.78));
+                
+                const downloadDispatcher = document.createElement("a");
+                downloadDispatcher.download = "provenant_active_badge.jpg";
+                downloadDispatcher.href = hiddenCanvas.toDataURL("image/jpeg", 0.95);
+                
+                document.body.appendChild(downloadDispatcher);
+                downloadDispatcher.click();
+                document.body.removeChild(downloadDispatcher);
+            };
+        }
+
+        // DRAG AND DROP RUNTIME WORKSPACE HANDLERS
+        let offsetX, offsetY;
+
+        function dragSeal(e) {
+            const rect = e.target.getBoundingClientRect();
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+            e.dataTransfer.setData("text/plain", e.target.id);
+        }
+
+        function allowDrop(e) { e.preventDefault(); }
+
+        function dropSeal(e) {
+            e.preventDefault();
+            const badgeId = e.dataTransfer.getData("text/plain");
+            const badge = document.getElementById(badgeId);
+            const canvas = document.getElementById("media-canvas");
+            const canvasRect = canvas.getBoundingClientRect();
+
+            let leftPos = e.clientX - canvasRect.left - offsetX;
+            let topPos = e.clientY - canvasRect.top - offsetY;
+
+            leftPos = Math.max(0, Math.min(leftPos, canvasRect.width - badge.offsetWidth));
+            topPos = Math.max(0, Math.min(topPos, canvasRect.height - badge.offsetHeight));
+
+            badge.style.left = leftPos + "px";
+            badge.style.top = topPos + "px";
         }
     </script>
 </body>
