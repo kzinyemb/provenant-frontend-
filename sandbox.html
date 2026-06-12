@@ -171,7 +171,7 @@
         .terminal-line.success { color: var(--success-green); }
         .terminal-line.danger { color: #f43f5e; }
 
-        /* LIVE STUDIO WORKSPACE CANVASES */
+        /* LIVE STUDIO WORKSPACE SCREEN CANVASES */
         .output-zone {
             flex-grow: 1;
             display: flex;
@@ -213,33 +213,25 @@
             font-weight: 800;
             letter-spacing: 0.5px;
             display: none;
-            cursor: pointer;
             outline: none;
             border-style: solid;
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             animation: fadeIn 0.3s ease;
         }
 
-        .status-ready-tag:hover {
-            background: var(--success-green);
-            color: var(--brand-dark);
-            box-shadow: 0 4px 15px rgba(0, 184, 148, 0.35);
-            transform: translateY(-2px);
-        }
-
-        /* DYNAMIC DOWN-LOAD PROFILE ASSET TIER AND MOCKUP GRID STYLE SHEETS */
+        /* NEW EXPANDED PROFILE BADGE EXTRACTION DECK ROW SYSTEM */
         .download-badge-section {
             margin-top: 20px;
-            padding: 20px;
-            background: rgba(15, 23, 42, 0.6);
+            padding: 24px;
+            background: rgba(15, 23, 42, 0.85);
             border: 1px dashed rgba(255, 255, 255, 0.15);
-            border-radius: 14px;
+            border-radius: 16px;
             width: 100%;
             display: none;
             flex-direction: column;
             align-items: center;
-            gap: 15px;
-            animation: fadeIn 0.4s ease-out;
+            gap: 20px;
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .download-badge-title {
@@ -251,8 +243,52 @@
             text-align: center;
         }
 
+        /* Matrix Selection Layout Configurations */
+        .badge-matrix-row {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .matrix-pill-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            flex: 1;
+            min-width: 105px;
+            max-width: 130px;
+        }
+
+        .matrix-pill-card:hover, .matrix-pill-card.selected {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--brand-creator);
+            transform: translateY(-2px);
+        }
+
+        .matrix-pill-label {
+            font-size: 9px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .matrix-pill-card.selected .matrix-pill-label {
+            color: #fff;
+        }
+
+        /* Structural Pill Vector Mockups */
         .badge-preview-pill {
-            padding: 4px 12px;
+            padding: 4px 10px;
             border-radius: 6px;
             background: linear-gradient(135deg, #ee2a7b 0%, #a21caf 100%);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -262,57 +298,64 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            width: 120px;
+            width: 100%;
+            min-height: 34px;
         }
 
         .badge-preview-pill .pill-main-text {
             color: #ffffff;
             font-family: 'Inter', sans-serif;
-            font-size: 9px;
+            font-size: 7.5px;
             font-weight: 900;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.4px;
             text-transform: uppercase;
+            line-height: 1;
         }
 
         .badge-preview-pill .pill-highlight-text {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 900;
             color: #ffffff;
             font-style: italic;
-            letter-spacing: 0.8px;
-            margin: 1px 0;
+            letter-spacing: 0.6px;
+            margin: 0.5px 0;
+            line-height: 1;
         }
 
         .badge-preview-pill .pill-sub-text {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 6px;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 5.5px;
             font-weight: 600;
             letter-spacing: 0.2px;
             text-transform: uppercase;
+            line-height: 1;
         }
 
         .download-pill-trigger {
-            background: linear-gradient(135deg, #ee2a7b 0%, #a21caf 100%);
+            background: var(--brand-creator);
             color: #fff;
             border: none;
-            padding: 10px 24px;
+            padding: 12px 32px;
             border-radius: 50px;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 800;
             letter-spacing: 0.5px;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(238, 42, 123, 0.2);
-            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(225, 29, 72, 0.3);
+            transition: all 0.25s ease;
+            width: 100%;
+            max-width: 280px;
+            margin-top: 5px;
         }
 
         .download-pill-trigger:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(238, 42, 123, 0.4);
-            filter: brightness(1.08);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(225, 29, 72, 0.5);
+            filter: brightness(1.1);
         }
 
         .output-placeholder { color: var(--text-muted); font-size: 0.85rem; text-align: center; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -370,13 +413,38 @@
                     <button class="status-ready-tag" id="ready-banner">✨ VERIFICATION LOG ARCHIVE COMPLETE</button>
                     
                     <div class="download-badge-section" id="badge-download-deck">
-                        <div class="download-badge-title">🛡️ Transparent Profile Badge Output</div>
-                        <div class="badge-preview-pill">
-                            <div class="pill-main-text">Provenant</div>
-                            <div class="pill-highlight-text">Active</div>
-                            <div class="pill-sub-text">Verified Human</div>
+                        <div class="download-badge-title">🛡️ Select Transparent Profile Badge Configuration</div>
+                        
+                        <div class="badge-matrix-row">
+                            <div class="matrix-pill-card selected" onclick="selectBadgeVariant(this, 'social')">
+                                <div class="matrix-pill-label">Social Feed</div>
+                                <div class="badge-preview-pill">
+                                    <div class="pill-main-text">Provenant</div>
+                                    <div class="pill-highlight-text">Active</div>
+                                    <div class="pill-sub-text">Verified Human</div>
+                                </div>
+                            </div>
+                            
+                            <div class="matrix-pill-card" onclick="selectBadgeVariant(this, 'dating')">
+                                <div class="matrix-pill-label">Dating App</div>
+                                <div class="badge-preview-pill">
+                                    <div class="pill-main-text">Provenant</div>
+                                    <div class="pill-highlight-text">Authentic</div>
+                                    <div class="pill-sub-text">Real Human</div>
+                                </div>
+                            </div>
+                            
+                            <div class="matrix-pill-card" onclick="selectBadgeVariant(this, 'pro')">
+                                <div class="matrix-pill-label">Professional</div>
+                                <div class="badge-preview-pill">
+                                    <div class="pill-main-text">Provenant</div>
+                                    <div class="pill-highlight-text">Active</div>
+                                    <div class="pill-sub-text">Human Verified</div>
+                                </div>
+                            </div>
                         </div>
-                        <button class="download-pill-trigger" onclick="downloadCertifiedAsset()">📥 Download Standalone Profile Badge</button>
+
+                        <button class="download-pill-trigger" onclick="downloadCertifiedAsset()">📥 Download Transparent Badge</button>
                     </div>
                 </div>
             </div>
@@ -505,6 +573,7 @@
         };
 
         let currentScenarioId = 'raw_camera';
+        let activeBadgeVariant = 'social'; // Tracks current matrix configuration index point
 
         function selectScenario(id) {
             currentScenarioId = id;
@@ -517,6 +586,12 @@
             document.getElementById('media-canvas').style.display = 'none';
             document.getElementById('ready-banner').style.display = 'none';
             document.getElementById('badge-download-deck').style.display = 'none';
+        }
+
+        function selectBadgeVariant(element, variantKey) {
+            activeBadgeVariant = variantKey;
+            document.querySelectorAll('.matrix-pill-card').forEach(card => card.classList.remove('selected'));
+            element.classList.add('selected');
         }
 
         function triggerInput(inputId) { document.getElementById(inputId).click(); }
@@ -621,8 +696,6 @@
             
             hiddenCanvas.width = 300;
             hiddenCanvas.height = 100;
-            
-            // Clear track context parameters to preserve perfect 100% transparent alpha layers
             ctx.clearRect(0, 0, hiddenCanvas.width, hiddenCanvas.height);
             
             const targetX = 10;
@@ -659,23 +732,35 @@
             ctx.textBaseline = "middle";
             const centerX = targetX + (targetWidth / 2);
             
+            // Text Configuration Variable Matrix
+            let line2Text = "ACTIVE";
+            let line3Text = "VERIFIED HUMAN";
+            
+            if (activeBadgeVariant === 'dating') {
+                line2Text = "AUTHENTIC";
+                line3Text = "REAL HUMAN";
+            } else if (activeBadgeVariant === 'pro') {
+                line2Text = "ACTIVE";
+                line3Text = "HUMAN VERIFIED";
+            }
+            
             // Line 1: PROVENANT
             ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
             ctx.font = "900 16px 'Inter', sans-serif";
             ctx.fillText("PROVENANT", centerX, targetY + (targetHeight * 0.24));
             
-            // Line 2: ACTIVE
+            // Line 2: Variant Differentiator Track
             ctx.fillStyle = "#ffffff";
             ctx.font = "italic 900 24px 'Inter', sans-serif";
-            ctx.fillText("ACTIVE", centerX, targetY + (targetHeight * 0.52));
+            ctx.fillText(line2Text, centerX, targetY + (targetHeight * 0.52));
             
-            // Line 3: Verified Human
+            // Line 3: Sub-Tier Validation Tracker
             ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
             ctx.font = "600 12px 'Inter', sans-serif";
-            ctx.fillText("VERIFIED HUMAN", centerX, targetY + (targetHeight * 0.78));
+            ctx.fillText(line3Text, centerX, targetY + (targetHeight * 0.78));
             
             const downloadDispatcher = document.createElement("a");
-            downloadDispatcher.download = "provenant_active_badge.png";
+            downloadDispatcher.download = `provenant_${activeBadgeVariant}_badge.png`;
             downloadDispatcher.href = hiddenCanvas.toDataURL("image/png");
             
             document.body.appendChild(downloadDispatcher);
