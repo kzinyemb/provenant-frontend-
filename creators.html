@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Provenant™ | Deepfake Protection for Creators & Influencer Networks</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap">
     <style>
         :root {
             --brand-creator: #e11d48; /* Vibrant Rose */
@@ -12,6 +12,7 @@
             --brand-glass: rgba(255, 255, 255, 0.03);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
+            --ig-gradient: linear-gradient(45deg, #f9ce34, #ee2a7b, #6228d7);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -78,13 +79,100 @@
         .feature-card p { color: var(--text-muted); font-size: 0.95rem; }
         .icon { font-size: 2rem; margin-bottom: 15px; display: block; }
 
+        /* REFACTORED BADGE CALLOUT SPLIT FLEX GRID CONTAINER */
         .badge-callout {
             background: linear-gradient(135deg, rgba(225, 29, 72, 0.1) 0%, rgba(15, 23, 42, 0.6) 100%);
             border: 1px solid rgba(225, 29, 72, 0.2);
             border-radius: 24px;
             padding: 60px;
-            text-align: center;
             margin-top: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+        }
+
+        .badge-callout-text {
+            flex: 1;
+            text-align: left;
+        }
+
+        .badge-callout-visual-frame {
+            flex: 0 0 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .badge-callout { flex-direction: column; text-align: center; padding: 40px 24px; }
+            .badge-callout-text { text-align: center; }
+            .badge-callout-visual-frame { flex: 1; }
+        }
+
+        /* LIVE PROFILE RING AVATAR WIREFRAME HOOKS */
+        .mock-avatar-container {
+            position: relative;
+            width: 170px;
+            height: 170px;
+            border-radius: 50%;
+            background: var(--ig-gradient);
+            padding: 5px; /* Width of outer gradient track ring */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .mock-avatar-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 4px solid #0f172a; /* Creates the clean inner app gap cut ring */
+            background-image: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=300&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* INTEGRATED HORIZONTAL PROVENANT CAPSULE TAG */
+        .mock-capsule-tag {
+            position: absolute;
+            bottom: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            width: 140px;
+            background: linear-gradient(135deg, #ee2a7b 0%, #a21caf 100%);
+            border: 1.5px solid #0f172a;
+            border-radius: 8px;
+            padding: 5px 12px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .mock-capsule-tag .tag-line-main {
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 0.8px;
+            line-height: 1.1;
+            text-transform: uppercase;
+        }
+
+        .mock-capsule-tag .tag-line-highlight {
+            font-size: 14px;
+            font-weight: 900;
+            font-style: italic;
+            color: #ffffff;
+            letter-spacing: 1px;
+            line-height: 1.1;
+            margin: 1px 0;
+        }
+
+        .mock-capsule-tag .tag-line-sub {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 7.5px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            line-height: 1;
         }
 
         footer { text-align: center; padding: 60px 20px; border-top: 1px solid rgba(255, 255, 255, 0.05); color: var(--text-muted); font-size: 13px; }
@@ -92,7 +180,6 @@
 </head>
 <body>
 
-    <!-- NAV NAVIGATION BAR BACKLINK -->
     <div style="padding: 20px; max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
         <div style="display: flex; align-items: center; gap: 10px; cursor: pointer;" onclick="location.href='index.html'">
             <span style="font-weight: 900; font-size: 24px; letter-spacing: -1px; color: #fff;">PROVEN<span style="color: var(--brand-creator);">ANT</span>™</span>
@@ -100,14 +187,12 @@
         <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600;">← Back to Main Hub</a>
     </div>
 
-    <!-- HERO PRESENTATION ZONE -->
     <section class="hero">
         <h1>Certify Your Media.<br><span style="color: var(--brand-creator); text-shadow: 0 0 40px rgba(225, 29, 72, 0.4);">Authenticate Video Feeds.</span></h1>
         <p>Protect your brand partnerships and intellectual property from automated copycats. Provenant™ scans raw file exports to generate verified cryptographic origin certifications for premium creators, influencers, and media agencies.</p>
         <button class="action-btn" onclick="location.href='sandbox.html'">Access Creator Sandbox Portal</button>
     </section>
 
-    <!-- SYSTEM LAYER OVERVIEW MATRIX -->
     <section>
         <div style="text-align: center;">
             <h2 style="font-size: 2.2rem;">How the Verification Matrix Secures Your Content</h2>
@@ -133,16 +218,27 @@
         </div>
     </section>
 
-    <!-- COMMERCIAL OUTCOMES SEGMENT -->
     <section style="padding-top: 20px;">
         <div class="badge-callout">
-            <h2 style="font-size: 2.5rem; margin-bottom: 20px; color: #fff;">Secure Higher-Paying Brand Deals</h2>
-            <p style="color: var(--text-muted); max-width: 700px; margin: 0 auto 30px auto; font-size: 1.1rem;">Include an embeddable watermark, certified media kit parameters, or cryptographic asset index verification records to give corporate sponsors mathematical proof of asset safety.</p>
-            <button class="action-btn" style="background: transparent; border: 2px solid #fff; box-shadow: none;" onclick="location.href='sandbox.html'">Launch Media Sandbox Run</button>
+            <div class="badge-callout-text">
+                <h2 style="font-size: 2.5rem; margin-bottom: 20px; color: #fff;">Secure Higher-Paying Brand Deals</h2>
+                <p style="color: var(--text-muted); max-width: 650px; margin-bottom: 30px; font-size: 1.1rem;">Include an embeddable watermark, certified media kit parameters, or cryptographic asset index verification records to give corporate sponsors mathematical proof of asset safety.</p>
+                <button class="action-btn" style="background: transparent; border: 2px solid #fff; box-shadow: none;" onclick="location.href='sandbox.html'">Launch Media Sandbox Run</button>
+            </div>
+            
+            <div class="badge-callout-visual-frame">
+                <div class="mock-avatar-container">
+                    <div class="mock-avatar-image"></div>
+                    <div class="mock-capsule-tag">
+                        <div class="tag-line-main">Provenant</div>
+                        <div class="tag-line-highlight">Active</div>
+                        <div class="tag-line-sub">Verified Human</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- COMPLIANT FOOTER ARCHITECTURE -->
     <footer>
         <p>&copy; 2026 Provenant™. All rights reserved. Strategic Media Presenter Node. Security Framework Tier 1.</p>
     </footer>
