@@ -219,7 +219,7 @@
             animation: fadeIn 0.3s ease;
         }
 
-        /* NEW DUAL EXPANDED TWO-LAYER TRUST DOWNLOAD SECTION */
+        /* DUAL EXPANDED TWO-LAYER TRUST DOWNLOAD SECTION Layout Configuration */
         .download-badge-section {
             margin-top: 20px;
             padding: 20px;
@@ -336,7 +336,7 @@
             text-transform: uppercase;
         }
 
-        /* FEED CHECKMARK STAMP GRAPHIC TRACKS */
+        /* FEED CHECKMARK STAMP WIREFRAME SPECIFICATIONS */
         .check-preview-box {
             width: 50px;
             height: 50px;
@@ -357,7 +357,7 @@
             background: var(--brand-creator);
             color: #fff;
             border: none;
-            padding: 10px 20px;
+            padding: 10px 16px;
             border-radius: 50px;
             font-size: 11px;
             font-weight: 800;
@@ -366,6 +366,7 @@
             box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25);
             transition: all 0.2s ease;
             width: 100%;
+            text-align: center;
         }
 
         .download-pill-trigger.btn-green {
@@ -477,7 +478,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
                                     </svg>
                                 </div>
-                                <button class="download-pill-trigger btn-green" onclick="downloadAuthenticatedMedia()">📥 Bake Feed Checkmark</button>
+                                <button class="download-pill-trigger btn-green" onclick="downloadAuthenticatedMedia()">📥 Download Photo with Checkmark</button>
                             </div>
 
                         </div>
@@ -726,7 +727,7 @@
             printNextLine();
         }
 
-        // LAYER 1: EXTRACT SEPARATE TRANSPARENT PROFILE PILL BADGE (.PNG)
+        // LAYER 1 ENGINE: ISOLATED stand-alone BADGE GENERATOR
         function downloadProfileBadge() {
             const hiddenCanvas = document.createElement("canvas");
             const ctx = hiddenCanvas.getContext("2d");
@@ -801,7 +802,7 @@
             document.body.removeChild(downloadDispatcher);
         }
 
-        // LAYER 2: BAKE SECURE GREEN CHECKMARK WATERMARK STAMP ONTO PIXELS (.JPG)
+        // LAYER 2 ENGINE: SECURE IMAGE CORNER HARD-BAKING PIXEL TRACKS
         function downloadAuthenticatedMedia() {
             const canvas = document.getElementById("media-canvas");
             const computedStyle = window.getComputedStyle(canvas);
@@ -823,11 +824,9 @@
                 hiddenCanvas.width = baseImg.naturalWidth;
                 hiddenCanvas.height = baseImg.naturalHeight;
                 
-                // Draw Base Content Image
                 ctx.drawImage(baseImg, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
                 
-                // Scale calculations for lower-right corner bounding box mapping
-                const stampSize = Math.floor(hiddenCanvas.width * 0.08); // 8% size scale padding factor
+                const stampSize = Math.floor(hiddenCanvas.width * 0.08); 
                 const padding = Math.floor(hiddenCanvas.width * 0.03);
                 
                 const stampX = hiddenCanvas.width - stampSize - padding;
@@ -837,7 +836,6 @@
                 const radius = stampSize / 2;
                 
                 ctx.save();
-                // Draw Step 1: Render Translucent Protective Backdrop Mask Circle
                 ctx.beginPath();
                 ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
                 ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
@@ -846,14 +844,12 @@
                 ctx.strokeStyle = "#00b894";
                 ctx.stroke();
                 
-                // Draw Step 2: Render Vector Forensic Shield Security Badge
                 ctx.beginPath();
                 ctx.strokeStyle = "#00b894";
                 ctx.lineWidth = Math.max(2, stampSize * 0.06);
                 ctx.lineCap = "round";
                 ctx.lineJoin = "round";
                 
-                // Draw dynamic vector checkmark pass path
                 const checkScale = stampSize * 0.01;
                 ctx.moveTo(centerX - (5 * checkScale), centerY + (1 * checkScale));
                 ctx.lineTo(centerX - (1 * checkScale), centerY + (5 * checkScale));
