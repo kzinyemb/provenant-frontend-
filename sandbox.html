@@ -219,138 +219,162 @@
             animation: fadeIn 0.3s ease;
         }
 
-        /* NEW EXPANDED PROFILE BADGE EXTRACTION DECK ROW SYSTEM */
+        /* NEW DUAL EXPANDED TWO-LAYER TRUST DOWNLOAD SECTION */
         .download-badge-section {
             margin-top: 20px;
-            padding: 24px;
-            background: rgba(15, 23, 42, 0.85);
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.9);
             border: 1px dashed rgba(255, 255, 255, 0.15);
             border-radius: 16px;
             width: 100%;
             display: none;
             flex-direction: column;
-            align-items: center;
             gap: 20px;
             animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
+        .download-split-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 20px;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .download-split-grid { grid-template-columns: 1fr; }
+        }
+
+        .download-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
         .download-badge-title {
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: #fff;
             text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 6px;
+            width: 100%;
         }
 
-        /* Matrix Selection Layout Configurations */
         .badge-matrix-row {
             display: flex;
             justify-content: center;
-            gap: 14px;
+            gap: 8px;
             width: 100%;
-            flex-wrap: wrap;
         }
 
         .matrix-pill-card {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            padding: 12px;
+            border-radius: 8px;
+            padding: 8px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
+            gap: 6px;
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: all 0.2s ease;
             flex: 1;
-            min-width: 105px;
-            max-width: 130px;
+            text-align: center;
         }
 
         .matrix-pill-card:hover, .matrix-pill-card.selected {
             background: rgba(255, 255, 255, 0.05);
             border-color: var(--brand-creator);
-            transform: translateY(-2px);
         }
 
         .matrix-pill-label {
-            font-size: 9px;
-            font-weight: 700;
+            font-size: 8px;
+            font-weight: 800;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.3px;
         }
 
-        .matrix-pill-card.selected .matrix-pill-label {
-            color: #fff;
-        }
+        .matrix-pill-card.selected .matrix-pill-label { color: #fff; }
 
-        /* Structural Pill Vector Mockups */
         .badge-preview-pill {
-            padding: 4px 10px;
-            border-radius: 6px;
+            padding: 3px 6px;
+            border-radius: 4px;
             background: linear-gradient(135deg, #ee2a7b 0%, #a21caf 100%);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            text-align: center;
             width: 100%;
-            min-height: 34px;
         }
 
         .badge-preview-pill .pill-main-text {
             color: #ffffff;
-            font-family: 'Inter', sans-serif;
-            font-size: 7.5px;
+            font-size: 6px;
             font-weight: 900;
-            letter-spacing: 0.4px;
             text-transform: uppercase;
-            line-height: 1;
         }
 
         .badge-preview-pill .pill-highlight-text {
-            font-size: 10px;
+            font-size: 8px;
             font-weight: 900;
-            color: #ffffff;
             font-style: italic;
-            letter-spacing: 0.6px;
+            color: #ffffff;
             margin: 0.5px 0;
-            line-height: 1;
         }
 
         .badge-preview-pill .pill-sub-text {
-            color: rgba(255, 255, 255, 0.85);
-            font-size: 5.5px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 4.5px;
             font-weight: 600;
-            letter-spacing: 0.2px;
             text-transform: uppercase;
-            line-height: 1;
+        }
+
+        /* FEED CHECKMARK STAMP GRAPHIC TRACKS */
+        .check-preview-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(0, 184, 148, 0.12);
+            border: 2px solid var(--success-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px rgba(0, 184, 148, 0.2);
+        }
+
+        .check-preview-box svg {
+            color: var(--success-green);
         }
 
         .download-pill-trigger {
             background: var(--brand-creator);
             color: #fff;
             border: none;
-            padding: 12px 32px;
+            padding: 10px 20px;
             border-radius: 50px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 800;
             letter-spacing: 0.5px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(225, 29, 72, 0.3);
-            transition: all 0.25s ease;
+            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25);
+            transition: all 0.2s ease;
             width: 100%;
-            max-width: 280px;
-            margin-top: 5px;
+        }
+
+        .download-pill-trigger.btn-green {
+            background: var(--success-green);
+            box-shadow: 0 4px 12px rgba(0, 184, 148, 0.25);
         }
 
         .download-pill-trigger:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(225, 29, 72, 0.5);
+            transform: translateY(-1.5px);
             filter: brightness(1.1);
         }
 
@@ -413,38 +437,50 @@
                     <button class="status-ready-tag" id="ready-banner">✨ VERIFICATION LOG ARCHIVE COMPLETE</button>
                     
                     <div class="download-badge-section" id="badge-download-deck">
-                        <div class="download-badge-title">🛡️ Select Transparent Profile Badge Configuration</div>
-                        
-                        <div class="badge-matrix-row">
-                            <div class="matrix-pill-card selected" onclick="selectBadgeVariant(this, 'social')">
-                                <div class="matrix-pill-label">Social Feed</div>
-                                <div class="badge-preview-pill">
-                                    <div class="pill-main-text">Provenant</div>
-                                    <div class="pill-highlight-text">Active</div>
-                                    <div class="pill-sub-text">Verified Human</div>
+                        <div class="download-split-grid">
+                            
+                            <div class="download-column">
+                                <div class="download-badge-title">Layer 1: Account Profile Badge</div>
+                                <div class="badge-matrix-row">
+                                    <div class="matrix-pill-card selected" onclick="selectBadgeVariant(this, 'social')">
+                                        <div class="matrix-pill-label">Social</div>
+                                        <div class="badge-preview-pill">
+                                            <div class="pill-main-text">Provenant</div>
+                                            <div class="pill-highlight-text">Active</div>
+                                            <div class="pill-sub-text">Verified Human</div>
+                                        </div>
+                                    </div>
+                                    <div class="matrix-pill-card" onclick="selectBadgeVariant(this, 'dating')">
+                                        <div class="matrix-pill-label">Dating</div>
+                                        <div class="badge-preview-pill">
+                                            <div class="pill-main-text">Provenant</div>
+                                            <div class="pill-highlight-text">Authentic</div>
+                                            <div class="pill-sub-text">Real Human</div>
+                                        </div>
+                                    </div>
+                                    <div class="matrix-pill-card" onclick="selectBadgeVariant(this, 'pro')">
+                                        <div class="matrix-pill-label">Pro</div>
+                                        <div class="badge-preview-pill">
+                                            <div class="pill-main-text">Provenant</div>
+                                            <div class="pill-highlight-text">Active</div>
+                                            <div class="pill-sub-text">Human Verified</div>
+                                        </div>
+                                    </div>
                                 </div>
+                                <button class="download-pill-trigger" onclick="downloadProfileBadge()">📥 Download PNG Overlay</button>
                             </div>
                             
-                            <div class="matrix-pill-card" onclick="selectBadgeVariant(this, 'dating')">
-                                <div class="matrix-pill-label">Dating App</div>
-                                <div class="badge-preview-pill">
-                                    <div class="pill-main-text">Provenant</div>
-                                    <div class="pill-highlight-text">Authentic</div>
-                                    <div class="pill-sub-text">Real Human</div>
+                            <div class="download-column">
+                                <div class="download-badge-title">Layer 2: Verified Feed Asset</div>
+                                <div class="check-preview-box">
+                                    <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                                    </svg>
                                 </div>
+                                <button class="download-pill-trigger btn-green" onclick="downloadAuthenticatedMedia()">📥 Bake Feed Checkmark</button>
                             </div>
-                            
-                            <div class="matrix-pill-card" onclick="selectBadgeVariant(this, 'pro')">
-                                <div class="matrix-pill-label">Professional</div>
-                                <div class="badge-preview-pill">
-                                    <div class="pill-main-text">Provenant</div>
-                                    <div class="pill-highlight-text">Active</div>
-                                    <div class="pill-sub-text">Human Verified</div>
-                                </div>
-                            </div>
-                        </div>
 
-                        <button class="download-pill-trigger" onclick="downloadCertifiedAsset()">📥 Download Transparent Badge</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -573,7 +609,7 @@
         };
 
         let currentScenarioId = 'raw_camera';
-        let activeBadgeVariant = 'social'; // Tracks current matrix configuration index point
+        let activeBadgeVariant = 'social';
 
         function selectScenario(id) {
             currentScenarioId = id;
@@ -672,6 +708,7 @@
                     placeholder.style.display = 'none';
                     if (target.aiArtifacts) {
                         consoleBox.innerHTML += `<div class="terminal-line danger">>>> CORE ENGINE VALIDATION REFUSED: Generative signatures found.</div>`;
+                        consoleBox.innerHTML += `<div class="terminal-line danger">> [POLICY ENFORCEMENT] Fraud detection triggered. Unauthorized use of Provenant tokens on synthetic media will result in immediate account revocation.</div>`;
                         placeholder.style.display = 'block';
                         placeholder.innerHTML = `<b style="color:#f43f5e;">⚠️ Verification Failed</b><br><span style="font-size:12px; color:var(--text-muted);">Asset corrupted by synthetic generation overrides. Licensing denied.</span>`;
                     } else {
@@ -689,8 +726,8 @@
             printNextLine();
         }
 
-        // ISOLATED STANDALONE TRANSPARENT OVERLAY PNG DOWNLOAD ENGINE
-        function downloadCertifiedAsset() {
+        // LAYER 1: EXTRACT SEPARATE TRANSPARENT PROFILE PILL BADGE (.PNG)
+        function downloadProfileBadge() {
             const hiddenCanvas = document.createElement("canvas");
             const ctx = hiddenCanvas.getContext("2d");
             
@@ -732,7 +769,6 @@
             ctx.textBaseline = "middle";
             const centerX = targetX + (targetWidth / 2);
             
-            // Text Configuration Variable Matrix
             let line2Text = "ACTIVE";
             let line3Text = "VERIFIED HUMAN";
             
@@ -744,17 +780,14 @@
                 line3Text = "HUMAN VERIFIED";
             }
             
-            // Line 1: PROVENANT
             ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
             ctx.font = "900 16px 'Inter', sans-serif";
             ctx.fillText("PROVENANT", centerX, targetY + (targetHeight * 0.24));
             
-            // Line 2: Variant Differentiator Track
             ctx.fillStyle = "#ffffff";
             ctx.font = "italic 900 24px 'Inter', sans-serif";
             ctx.fillText(line2Text, centerX, targetY + (targetHeight * 0.52));
             
-            // Line 3: Sub-Tier Validation Tracker
             ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
             ctx.font = "600 12px 'Inter', sans-serif";
             ctx.fillText(line3Text, centerX, targetY + (targetHeight * 0.78));
@@ -766,6 +799,76 @@
             document.body.appendChild(downloadDispatcher);
             downloadDispatcher.click();
             document.body.removeChild(downloadDispatcher);
+        }
+
+        // LAYER 2: BAKE SECURE GREEN CHECKMARK WATERMARK STAMP ONTO PIXELS (.JPG)
+        function downloadAuthenticatedMedia() {
+            const canvas = document.getElementById("media-canvas");
+            const computedStyle = window.getComputedStyle(canvas);
+            const bgUrlStr = computedStyle.backgroundImage.slice(5, -2);
+            
+            if (!bgUrlStr || bgUrlStr === "ne") {
+                alert("⚠️ Ingestion Error: No authenticated image source loaded.");
+                return;
+            }
+
+            const hiddenCanvas = document.createElement("canvas");
+            const ctx = hiddenCanvas.getContext("2d");
+            const baseImg = new Image();
+            
+            baseImg.crossOrigin = "anonymous";
+            baseImg.src = bgUrlStr;
+            
+            baseImg.onload = function() {
+                hiddenCanvas.width = baseImg.naturalWidth;
+                hiddenCanvas.height = baseImg.naturalHeight;
+                
+                // Draw Base Content Image
+                ctx.drawImage(baseImg, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+                
+                // Scale calculations for lower-right corner bounding box mapping
+                const stampSize = Math.floor(hiddenCanvas.width * 0.08); // 8% size scale padding factor
+                const padding = Math.floor(hiddenCanvas.width * 0.03);
+                
+                const stampX = hiddenCanvas.width - stampSize - padding;
+                const stampY = hiddenCanvas.height - stampSize - padding;
+                const centerX = stampX + (stampSize / 2);
+                const centerY = stampY + (stampSize / 2);
+                const radius = stampSize / 2;
+                
+                ctx.save();
+                // Draw Step 1: Render Translucent Protective Backdrop Mask Circle
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
+                ctx.fill();
+                ctx.lineWidth = Math.max(1, stampSize * 0.04);
+                ctx.strokeStyle = "#00b894";
+                ctx.stroke();
+                
+                // Draw Step 2: Render Vector Forensic Shield Security Badge
+                ctx.beginPath();
+                ctx.strokeStyle = "#00b894";
+                ctx.lineWidth = Math.max(2, stampSize * 0.06);
+                ctx.lineCap = "round";
+                ctx.lineJoin = "round";
+                
+                // Draw dynamic vector checkmark pass path
+                const checkScale = stampSize * 0.01;
+                ctx.moveTo(centerX - (5 * checkScale), centerY + (1 * checkScale));
+                ctx.lineTo(centerX - (1 * checkScale), centerY + (5 * checkScale));
+                ctx.lineTo(centerX + (6 * checkScale), centerY - (3 * checkScale));
+                ctx.stroke();
+                ctx.restore();
+                
+                const downloadDispatcher = document.createElement("a");
+                downloadDispatcher.download = "provenant_verified_secure_feed.jpg";
+                downloadDispatcher.href = hiddenCanvas.toDataURL("image/jpeg", 0.95);
+                
+                document.body.appendChild(downloadDispatcher);
+                downloadDispatcher.click();
+                document.body.removeChild(downloadDispatcher);
+            };
         }
     </script>
 </body>
