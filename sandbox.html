@@ -15,6 +15,7 @@
             --text-muted: #94a3b8;
             --success-green: #00b894;
             --neon-yellow: #ffe600;   /* High-Visibility Neon Social Yellow */
+            --ig-gradient: linear-gradient(45deg, #f9ce34, #ee2a7b, #6228d7);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -202,7 +203,7 @@
         .media-preview-canvas.format-vertical { width: 180px; height: 280px; border-radius: 16px; }
         .media-preview-canvas.format-landscape { width: 100%; height: 240px; }
 
-        /* ULTRA-MINI REFACTORED GEOMETRIC WATERMARK ASSET STAMP */
+        /* HIGH-VISIBILITY SOCIAL PROVENANCE ACTIVE GRADIENT BADGE SYSTEM */
         .moveable-seal-badge {
             position: absolute;
             top: 20px;
@@ -210,50 +211,57 @@
             z-index: 9999;
             cursor: move;
             
-            /* Precision micro scaling for tight spacing restrictions */
+            /* Precision round token frame dimensions matching micro footprint rules */
             width: 42px;
             height: 42px;
+            border-radius: 50%;
             
-            background: linear-gradient(135deg, rgba(8, 10, 18, 0.98) 0%, rgba(15, 23, 42, 0.95) 100%);
-            border: 1px solid rgba(255, 230, 0, 0.5);
-            box-shadow: 0 4px 10px rgba(255, 230, 0, 0.2), inset 0 1px 1px rgba(255,255,255,0.05);
+            /* Outer Instagram-inspired vibrant gradient track ring background layout */
+            background: var(--ig-gradient);
+            padding: 2px;
+            
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
             user-select: none;
-            backdrop-filter: blur(16px);
-            
+        }
+
+        /* Dark inner capsule mask layer protecting readability */
+        .seal-inner-capsule {
+            width: 100%;
+            height: 100%;
+            background: #090d16;
+            border-radius: 50%;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 0px;
-            text-align: center;
-            
-            /* Kite Matrix Boundary Vector Clipping */
-            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            overflow: hidden;
+            position: relative;
+            gap: 0.5px;
         }
 
-        /* Micro-Typography layout architecture text adjustments */
+        /* Typography elements stacked vertically inside the round track matrix */
         .moveable-seal-badge .seal-text-line {
-            color: var(--neon-yellow);
+            color: rgba(255, 255, 255, 0.95);
             font-family: 'Inter', sans-serif;
             font-size: 4px;
             font-weight: 900;
-            letter-spacing: 0.1px;
+            letter-spacing: 0.2px;
             line-height: 1;
             text-transform: uppercase;
         }
 
         .moveable-seal-badge .seal-text-line.highlight {
-            font-size: 5px;
-            color: #ffffff;
+            font-size: 4.5px;
             font-weight: 900;
-            margin: 1px 0;
-            text-shadow: 0 0 3px rgba(255, 230, 0, 0.7);
-            animation: miniGlowPulse 2s infinite ease-in-out;
-        }
-
-        @keyframes miniGlowPulse {
-            0%, 100% { opacity: 0.85; text-shadow: 0 0 2px rgba(255, 230, 0, 0.4); }
-            50% { opacity: 1; text-shadow: 0 0 6px rgba(255, 230, 0, 0.8); }
+            color: #ee2a7b; /* Locked onto vibrant pink signature index point */
+            background: var(--ig-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0.5px 0;
+            text-shadow: 0 0 3px rgba(238, 42, 123, 0.2);
         }
 
         /* Custom Asset Kit Local Down-loader Button UI */
@@ -338,9 +346,11 @@
                     
                     <div class="media-preview-canvas" id="media-canvas">
                         <div class="moveable-seal-badge" id="moveable-seal" draggable="true" ondragstart="dragSeal(event)">
-                            <div class="seal-text-line">Certified</div>
-                            <div class="seal-text-line highlight">100%</div>
-                            <div class="seal-text-line">Human</div>
+                            <div class="seal-inner-capsule">
+                                <div class="seal-text-line">Proven.</div>
+                                <div class="seal-text-line highlight">Active</div>
+                                <div class="seal-text-line">Human</div>
+                            </div>
                         </div>
                     </div>
 
@@ -576,12 +586,11 @@
             printNextLine();
         }
 
-        // HARD-BAKED HIGH-RESOLUTION IMAGE COMPILATION ENGINE
+        // HARD-BAKED HIGH-RESOLUTION CIRCULAR IMAGE COMPILATION ENGINE
         function downloadCertifiedAsset() {
             const canvas = document.getElementById("media-canvas");
             const badge = document.getElementById("moveable-seal");
             
-            // 1. Parse out the underlying image background URL path from our simulator styles
             const computedStyle = window.getComputedStyle(canvas);
             const bgUrlStr = computedStyle.backgroundImage.slice(5, -2);
             
@@ -590,65 +599,74 @@
                 return;
             }
 
-            // 2. Spawn a background structural canvas to hard-bake the pixels together
             const hiddenCanvas = document.createElement("canvas");
             const ctx = hiddenCanvas.getContext("2d");
             const baseImg = new Image();
             
-            // CrossOrigin declaration prevents canvas asset locking loops
             baseImg.crossOrigin = "anonymous";
             baseImg.src = bgUrlStr;
             
             baseImg.onload = function() {
-                // Set canvas constraints to match your baseline source images perfectly
                 hiddenCanvas.width = baseImg.naturalWidth;
                 hiddenCanvas.height = baseImg.naturalHeight;
                 
-                // Draw step A: Print the base background image down onto the canvas
+                // Draw Step A: Print Base Photo
                 ctx.drawImage(baseImg, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
                 
-                // Draw step B: Calculate where the creator dragged the badge inside the workspace window
+                // Draw Step B: Coordinate Translation Mapping
                 const canvasRect = canvas.getBoundingClientRect();
                 const badgeRect = badge.getBoundingClientRect();
                 
-                // Map the drag coordinates to match high-resolution image scales perfectly
                 const scaleX = hiddenCanvas.width / canvasRect.width;
                 const scaleY = hiddenCanvas.height / canvasRect.height;
                 
                 const targetX = (badgeRect.left - canvasRect.left) * scaleX;
                 const targetY = (badgeRect.top - canvasRect.top) * scaleY;
-                const targetSize = 42 * scaleX; // Keep badge geometry locked proportionally
+                const targetSize = 42 * scaleX; 
+                const radius = targetSize / 2;
+                const centerX = targetX + radius;
+                const centerY = targetY + radius;
                 
-                // Draw step C: Render your premium custom angular kite background stamp shape
-                ctx.fillStyle = "rgba(9, 13, 22, 0.96)";
-                ctx.strokeStyle = "#ffe600";
-                ctx.lineWidth = 2 * (scaleX * 0.5); // Proportional border scaling
+                // Draw Step C: Render Outer Radiant Ring Gradient
+                const gradient = ctx.createLinearGradient(targetX, targetY + targetSize, targetX + targetSize, targetY);
+                gradient.addColorStop(0, '#f9ce34');
+                gradient.addColorStop(0.5, '#ee2a7b');
+                gradient.addColorStop(1, '#6228d7');
                 
                 ctx.beginPath();
-                ctx.moveTo(targetX + targetSize / 2, targetY);
-                ctx.lineTo(targetX + targetSize, targetY + targetSize / 2);
-                ctx.lineTo(targetX + targetSize / 2, targetY + targetSize);
-                ctx.lineTo(targetX, targetY + targetSize / 2);
-                ctx.closePath();
+                ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                ctx.fillStyle = gradient;
                 ctx.fill();
-                ctx.stroke();
                 
-                // Draw step D: Hard-bake your Neon Social Yellow Stacked Certification text parameters
-                ctx.fillStyle = "#ffe600";
+                // Draw Step D: Render Dark Core Capsule Mask
+                const innerRingWidth = 2 * scaleX;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius - innerRingWidth, 0, 2 * Math.PI);
+                ctx.fillStyle = "#090d16";
+                ctx.fill();
+                
+                // Draw Step E: Render Precision Stacked Typography
                 ctx.textAlign = "center";
-                ctx.font = `900 ${Math.floor(targetSize * 0.09)}px 'Inter', sans-serif`;
+                ctx.textBaseline = "middle";
                 
-                ctx.fillText("CERTIFIED", targetX + targetSize / 2, targetY + targetSize * 0.35);
-                ctx.fillStyle = "#ffffff";
+                // Line 1: Proven.
+                ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+                ctx.font = `900 ${Math.floor(targetSize * 0.11)}px 'Inter', sans-serif`;
+                ctx.fillText("PROVEN.", centerX, centerY - (targetSize * 0.22));
+                
+                // Line 2: Active
+                ctx.fillStyle = "#ee2a7b";
                 ctx.font = `900 ${Math.floor(targetSize * 0.12)}px 'Inter', sans-serif`;
-                ctx.fillText("100%", targetX + targetSize / 2, targetY + targetSize * 0.56);
-                ctx.fillStyle = "#ffe600";
-                ctx.font = `900 ${Math.floor(targetSize * 0.09)}px 'Inter', sans-serif`;
-                ctx.fillText("HUMAN", targetX + targetSize / 2, targetY + targetSize * 0.74);
+                ctx.fillText("ACTIVE", centerX, centerY);
                 
-                // 3. Generate a secure download dispatch loop link anchor to push the file to local directories
+                // Line 3: Human
+                ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+                ctx.font = `900 ${Math.floor(targetSize * 0.11)}px 'Inter', sans-serif`;
+                ctx.fillText("HUMAN", centerX, centerY + (targetSize * 0.22));
+                
+                // 3. Dispatch Download Anchor Loop
                 const downloadDispatcher = document.createElement("a");
-                downloadDispatcher.download = "provenant_certified_human_origin.jpg";
+                downloadDispatcher.download = "provenant_active_human_origin.jpg";
                 downloadDispatcher.href = hiddenCanvas.toDataURL("image/jpeg", 0.95);
                 
                 document.body.appendChild(downloadDispatcher);
