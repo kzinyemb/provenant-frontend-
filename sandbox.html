@@ -171,7 +171,7 @@
         .terminal-line.success { color: var(--success-green); }
         .terminal-line.danger { color: #f43f5e; }
 
-        /* LIVE STUDIO WORKSPACE SCREEN CANVASES */
+        /* LIVE STUDIO WORKSPACE CANVASES */
         .output-zone {
             flex-grow: 1;
             display: flex;
@@ -202,59 +202,6 @@
         .media-preview-canvas.format-vertical { width: 180px; height: 280px; border-radius: 16px; }
         .media-preview-canvas.format-landscape { width: 100%; height: 240px; }
 
-        /* NEW FLOATING HORIZONTAL CAPSULE STAMP BADGE */
-        .moveable-seal-badge {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 9999;
-            cursor: move;
-            
-            padding: 4px 10px;
-            border-radius: 6px;
-            background: linear-gradient(135deg, #ee2a7b 0%, #a21caf 100%);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-            user-select: none;
-            
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 1px;
-            text-align: center;
-            min-width: 95px;
-        }
-
-        .moveable-seal-badge .seal-text-line {
-            color: rgba(255, 255, 255, 0.95);
-            font-family: 'Inter', sans-serif;
-            font-size: 7.5px;
-            font-weight: 900;
-            letter-spacing: 0.5px;
-            line-height: 1;
-            text-transform: uppercase;
-        }
-
-        .moveable-seal-badge .seal-text-line.highlight {
-            font-size: 10px;
-            font-weight: 900;
-            color: #ffffff;
-            font-style: italic;
-            letter-spacing: 0.8px;
-            margin: 1px 0;
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        .moveable-seal-badge .seal-text-sub {
-            color: rgba(255, 255, 255, 0.75);
-            font-size: 5.5px;
-            font-weight: 500;
-            letter-spacing: 0.2px;
-            text-transform: capitalize;
-        }
-
         .status-ready-tag {
             margin-top: 15px;
             background: rgba(0, 184, 148, 0.1);
@@ -280,8 +227,92 @@
             transform: translateY(-2px);
         }
 
+        /* DYNAMIC DOWN-LOAD PROFILE ASSET TIER AND MOCKUP GRID STYLE SHEETS */
+        .download-badge-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            width: 100%;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .download-badge-title {
+            font-size: 0.85rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #fff;
+            text-align: center;
+        }
+
+        .badge-preview-pill {
+            padding: 4px 12px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #ee2a7b 0%, #a21caf 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            width: 120px;
+        }
+
+        .badge-preview-pill .pill-main-text {
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .badge-preview-pill .pill-highlight-text {
+            font-size: 11px;
+            font-weight: 900;
+            color: #ffffff;
+            font-style: italic;
+            letter-spacing: 0.8px;
+            margin: 1px 0;
+        }
+
+        .badge-preview-pill .pill-sub-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 6px;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+            text-transform: uppercase;
+        }
+
+        .download-pill-trigger {
+            background: linear-gradient(135deg, #ee2a7b 0%, #a21caf 100%);
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(238, 42, 123, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .download-pill-trigger:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(238, 42, 123, 0.4);
+            filter: brightness(1.08);
+        }
+
         .output-placeholder { color: var(--text-muted); font-size: 0.85rem; text-align: center; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -329,20 +360,24 @@
                     <div class="terminal-line neutral">> Ready engine deployment hooks. Select a configuration profile or upload your own file to run telemetry checks...</div>
                 </div>
 
-                <div class="output-zone" id="output-zone" ondragover="allowDrop(event)" ondrop="dropSeal(event)">
+                <div class="output-zone" id="output-zone">
                     <div class="output-placeholder" id="placeholder-text">
                         Run engine verification matrix to compile active status output layers.
                     </div>
                     
-                    <div class="media-preview-canvas" id="media-canvas">
-                        <div class="moveable-seal-badge" id="moveable-seal" draggable="true" ondragstart="dragSeal(event)">
-                            <div class="seal-text-line">Provenant</div>
-                            <div class="seal-text-line highlight">Active</div>
-                            <div class="seal-text-sub">Verified Human</div>
-                        </div>
-                    </div>
+                    <div class="media-preview-canvas" id="media-canvas"></div>
 
-                    <button class="status-ready-tag" id="ready-banner" onclick="downloadCertifiedAsset()">📥 Download Certified Asset Kit</button>
+                    <button class="status-ready-tag" id="ready-banner">✨ VERIFICATION LOG ARCHIVE COMPLETE</button>
+                    
+                    <div class="download-badge-section" id="badge-download-deck">
+                        <div class="download-badge-title">🛡️ Transparent Profile Badge Output</div>
+                        <div class="badge-preview-pill">
+                            <div class="pill-main-text">Provenant</div>
+                            <div class="pill-highlight-text">Active</div>
+                            <div class="pill-sub-text">Verified Human</div>
+                        </div>
+                        <button class="download-pill-trigger" onclick="downloadCertifiedAsset()">📥 Download Standalone Profile Badge</button>
+                    </div>
                 </div>
             </div>
 
@@ -350,7 +385,6 @@
                 <div class="panel-title">3. Video Feed Environments</div>
                 <div class="scenario-selector">
                     <div class="scenario-option" data-id="youtube_master" onclick="selectScenario('youtube_master')">
-                        // Sourcing structural matrix loops
                         <strong>youtube_vlog_master.mp4</strong>
                         <p>Raw edit export for YouTube. Cryptographic C2PA manifest metadata layer fully intact with verified timeline history.</p>
                     </div>
@@ -482,6 +516,7 @@
             document.getElementById('placeholder-text').style.display = 'block';
             document.getElementById('media-canvas').style.display = 'none';
             document.getElementById('ready-banner').style.display = 'none';
+            document.getElementById('badge-download-deck').style.display = 'none';
         }
 
         function triggerInput(inputId) { document.getElementById(inputId).click(); }
@@ -509,6 +544,7 @@
                 document.getElementById('placeholder-text').style.display = 'block';
                 document.getElementById('media-canvas').style.display = 'none';
                 document.getElementById('ready-banner').style.display = 'none';
+                document.getElementById('badge-download-deck').style.display = 'none';
             }
         }
 
@@ -534,6 +570,7 @@
             const placeholder = document.getElementById('placeholder-text');
             const mediaCanvas = document.getElementById('media-canvas');
             const readyBanner = document.getElementById('ready-banner');
+            const badgeDeck = document.getElementById('badge-download-deck');
             const target = scenarios[currentScenarioId] || { logDetails: [], aiArtifacts: false };
             
             consoleBox.innerHTML = '';
@@ -541,6 +578,7 @@
             placeholder.innerHTML = 'Ingesting stream payloads and compiling telemetry metrics...';
             mediaCanvas.style.display = 'none';
             readyBanner.style.display = 'none';
+            badgeDeck.style.display = 'none';
 
             let step = 0;
             function printNextLine() {
@@ -569,30 +607,29 @@
                         mediaCanvas.style.display = 'block';
                         
                         readyBanner.style.display = 'inline-block';
+                        badgeDeck.style.display = 'flex';
                     }
                 }
             }
             printNextLine();
         }
 
-        // ISOLATED TRANSPARENT OVERLAY DOWNLOAD ENGINE
+        // ISOLATED STANDALONE TRANSPARENT OVERLAY PNG DOWNLOAD ENGINE
         function downloadCertifiedAsset() {
             const hiddenCanvas = document.createElement("canvas");
             const ctx = hiddenCanvas.getContext("2d");
             
-            // Generate a clean high-resolution canvas container footprint
             hiddenCanvas.width = 300;
             hiddenCanvas.height = 100;
             
-            // Ensure background track starts with 100% alpha transparency
+            // Clear track context parameters to preserve perfect 100% transparent alpha layers
             ctx.clearRect(0, 0, hiddenCanvas.width, hiddenCanvas.height);
             
-            // Set capsule parameters proportionally
             const targetX = 10;
             const targetY = 10;
             const targetWidth = 280;
             const targetHeight = 80;
-            const radius = 16;
+            const radius = 14;
             
             ctx.save();
             ctx.beginPath();
@@ -607,19 +644,17 @@
             ctx.quadraticCurveTo(targetX, targetY, targetX + radius, targetY);
             ctx.closePath();
             
-            // Fill with high-visibility pink-to-purple gradient band tracks
             const gradient = ctx.createLinearGradient(targetX, targetY, targetX + targetWidth, targetY + targetHeight);
             gradient.addColorStop(0, '#ee2a7b');
             gradient.addColorStop(1, '#a21caf');
             ctx.fillStyle = gradient;
             ctx.fill();
             
-            ctx.lineWidth = 3;
+            ctx.lineWidth = 2.5;
             ctx.strokeStyle = "rgba(255, 255, 255, 0.25)";
             ctx.stroke();
             ctx.restore();
             
-            // Render Crisp Stacked Typography Parameters
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
             const centerX = targetX + (targetWidth / 2);
@@ -639,16 +674,13 @@
             ctx.font = "600 12px 'Inter', sans-serif";
             ctx.fillText("VERIFIED HUMAN", centerX, targetY + (targetHeight * 0.78));
             
-            // Output secure standalone image to user local explorer downloads path
             const downloadDispatcher = document.createElement("a");
-            downloadDispatcher.download = "provenant_active_overlay.png";
+            downloadDispatcher.download = "provenant_active_badge.png";
             downloadDispatcher.href = hiddenCanvas.toDataURL("image/png");
             
             document.body.appendChild(downloadDispatcher);
             downloadDispatcher.click();
             document.body.removeChild(downloadDispatcher);
-            
-            alert("📥 Asset Export Generated: Standalone transparent verification badge saved to downloads folder. Overlay this file directly onto social media or dating profile pictures!");
         }
     </script>
 </body>
