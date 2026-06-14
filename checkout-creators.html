@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Checkout | Provenant™ Creators</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap">
+    <style>
+        :root {
+            --brand-accent: #00b894;
+            --brand-dark: #0f172a;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --brand-creator: #e11d48; /* Vibrant Rose branding element alignment */
+            --ig-gradient: linear-gradient(45deg, #f9ce34, #ee2a7b, #6228d7);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .checkout-container {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            width: 100%;
+            max-width: 1000px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Left Side: Payment Form Details */
+        .payment-form {
+            padding: 60px;
+            background: #1e293b;
+        }
+
+        .payment-form h2 { margin-bottom: 30px; font-size: 1.8rem; font-weight: 900; }
+
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+        
+        input {
+            width: 100%;
+            padding: 14px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        input:focus { border-color: var(--brand-creator); }
+
+        .row { display: flex; gap: 20px; }
+
+        .secure-btn {
+            width: 100%;
+            background: var(--brand-creator);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s;
+            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);
+        }
+
+        .secure-btn:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(225, 29, 72, 0.5); }
+
+        /* Right Side: Order Summary Module */
+        .order-summary {
+            padding: 60px;
+            background: rgba(255, 255, 255, 0.02);
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .total { font-size: 1.5rem; font-weight: 800; color: var(--brand-accent); margin-top: 20px; }
+
+        @media (max-width: 850px) {
+            .checkout-container { grid-template-columns: 1fr; }
+            .order-summary { order: -1; padding: 40px; }
+            .payment-form { padding: 40px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="checkout-container">
+        <div class="payment-form">
+            <h2>Account Verification</h2>
+            <form id="payment-form">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="creator@domain.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Full Name / Studio Entity</label>
+                    <input type="text" placeholder="First and Last Name or Brand Legal Name" required>
+                </div>
+                
+                <button type="submit" class="secure-btn">Continue to Secure Setup</button>
+                
+                <p style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 20px;">
+                    🔒 Secured by Stripe. You will not be billed during your 30-day forensic trial pipeline.
+                </p>
+            </form>
+        </div>
+
+        <div class="order-summary">
+            <h3>Order Summary</h3>
+            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 40px;">Review your selection</p>
+            
+            <div class="summary-item">
+                <div>
+                    <div id="summary-plan-name" style="font-weight: 700;">Provenant™ Identity Token</div>
+                    <div id="summary-billing-interval" style="font-size: 12px; color: var(--text-muted);">Creator Verification Plan</div>
+                </div>
+                <div id="summary-base-price">$14.00</div>
+            </div>
+
+            <div class="summary-item">
+                <div>30-Day Trial Credit</div>
+                <div id="summary-discount-price" style="color: var(--brand-accent);">- $14.00</div>
+            </div>
+
+            <div class="total">
+                <span style="font-size: 14px; color: white;">Due Today:</span> $0.00
+            </div>
+
+            <div style="margin-top: 40px; font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+                <p id="billing-timeline-disclosure">After your 30-day sandbox trial ends, your payment method will execute a standard renewal charge unless canceled inside management logs.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // LIVE TEST LINKS ALIGNED SPECIFICALLY ONTO HIGH-CONVERTING CREATOR SUITES
+        const stripePaymentLinks = {
+            "Identity Token": "https://buy.stripe.com/test_dRm14o03s81ocilcxjbo402", // Map your test link keys here
+            "Pro Content Suite": "https://buy.stripe.com/test_14AaEY17w3L8dmpcxjbo401"
+        };
+
+        let activePlanName = "Identity Token";
+
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const planParam = urlParams.get('plan');
+            
+            let planPrice = "$14.00";
+            let intervalLabel = "Multi-Platform Identity Badge Protection Plan";
+            let structuralInterval = "/mo";
+
+            if (planParam) {
+                const decodedPlan = decodeURIComponent(planParam);
+                if (decodedPlan === 'Pro Content Suite' || decodedPlan === 'pro') {
+                    activePlanName = "Pro Content Suite";
+                    planPrice = "$39.00";
+                    intervalLabel = "Infinite Checkmark & Content Protection Suite";
+                    structuralInterval = "/mo";
+                }
+            }
+
+            // Bind values directly into Document Object Model nodes
+            document.getElementById('summary-plan-name').innerText = "Provenant™ " + activePlanName;
+            document.getElementById('summary-billing-interval').innerText = intervalLabel;
+            document.getElementById('summary-base-price').innerText = planPrice;
+            document.getElementById('summary-discount-price').innerText = "- " + planPrice;
+            
+            // Generate automated billing milestone timeline disclosures for conversion optimization
+            const targetTrialExpiration = new Date();
+            targetTrialExpiration.setDate(targetTrialExpiration.getDate() + 30);
+            const genericFormattedDate = targetTrialExpiration.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            
+            document.getElementById('billing-timeline-disclosure').innerHTML = `After your 30-day forensic sandbox trial ends on <b>${genericFormattedDate}</b>, your verified payment vehicle will automatically clear a standard platform renewal step of <b>${planPrice}${structuralInterval}</b> unless paused via billing dashboards.`;
+        };
+
+        // Form submission hands off buyer information securely to Stripe infrastructure
+        document.getElementById('payment-form').onsubmit = function(e) {
+            e.preventDefault();
+            
+            const targetCheckoutUrl = stripePaymentLinks[activePlanName];
+            
+            if (!targetCheckoutUrl) {
+                alert("Configuration update required: Missing link array pairing parameters.");
+                return;
+            }
+
+            // Route buyer directly onto Stripe hosted checkout screen arrays
+            window.location.href = targetCheckoutUrl;
+        };
+    </script>
+</body>
+</html>
