@@ -80,7 +80,6 @@
         .feature-card p { color: var(--text-muted); font-size: 0.95rem; }
         .icon { font-size: 2rem; margin-bottom: 15px; display: block; }
 
-        /* REFACTORED BADGE CALLOUT SPLIT FLEX GRID CONTAINER */
         .badge-callout {
             background: linear-gradient(135deg, rgba(225, 29, 72, 0.1) 0%, rgba(15, 23, 42, 0.6) 100%);
             border: 1px solid rgba(225, 29, 72, 0.2);
@@ -111,14 +110,13 @@
             .badge-callout-visual-frame { flex: 1; }
         }
 
-        /* LIVE PROFILE RING AVATAR WIREFRAME HOOKS */
         .mock-avatar-container {
             position: relative;
             width: 170px;
             height: 170px;
             border-radius: 50%;
             background: var(--ig-gradient);
-            padding: 5px; /* Width of outer gradient track ring */
+            padding: 5px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
@@ -126,13 +124,12 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            border: 4px solid #0f172a; /* Creates the clean inner app gap cut ring */
+            border: 4px solid #0f172a;
             background-image: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=300&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
         }
 
-        /* INTEGRATED HORIZONTAL PROVENANT CAPSULE TAG */
         .mock-capsule-tag {
             position: absolute;
             bottom: -14px;
@@ -176,7 +173,6 @@
             line-height: 1;
         }
 
-        /* NEW SUBSCRIPTION PRICING MODULE BLOCKS */
         .pricing-section-container {
             text-align: center;
             padding: 60px 20px 100px 20px;
@@ -186,7 +182,7 @@
             display: flex;
             justify-content: center;
             gap: 30px;
-            margin-top: 50px;
+            margin-top: 40px;
             flex-wrap: wrap;
         }
 
@@ -194,9 +190,9 @@
             background: rgba(30, 41, 59, 0.4);
             border: 1px solid var(--brand-border);
             border-radius: 24px;
-            padding: 40px 30px;
+            padding: 45px 35px;
             width: 100%;
-            max-width: 360px;
+            max-width: 460px;
             text-align: left;
             display: flex;
             flex-direction: column;
@@ -208,14 +204,14 @@
         .pricing-card.popular {
             border-color: var(--brand-creator);
             background: rgba(225, 29, 72, 0.05);
-            box-shadow: 0 10px 30px rgba(225, 29, 72, 0.1);
+            box-shadow: 0 10px 35px rgba(225, 29, 72, 0.15);
         }
 
         .pricing-card.popular::before {
-            content: "MOST POPULAR";
+            content: "30-DAY FREE TRIAL";
             position: absolute;
             top: -12px;
-            left: 30px;
+            left: 35px;
             background: var(--brand-creator);
             color: #fff;
             font-size: 10px;
@@ -225,10 +221,10 @@
             letter-spacing: 1px;
         }
 
-        .pricing-card h4 { font-size: 1.5rem; font-weight: 900; color: #fff; margin-bottom: 10px; }
-        .pricing-card .price { font-size: 2.5rem; font-weight: 900; color: #fff; margin-bottom: 15px; }
-        .pricing-card .price span { font-size: 1rem; color: var(--text-muted); font-weight: 500; }
-        .pricing-card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px; line-height: 1.4; }
+        .pricing-card h4 { font-size: 1.6rem; font-weight: 900; color: #fff; margin-bottom: 8px; }
+        .pricing-card .price { font-size: 2.8rem; font-weight: 900; color: #fff; margin-bottom: 15px; }
+        .pricing-card .price span { font-size: 1.1rem; color: var(--text-muted); font-weight: 500; }
+        .pricing-card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 30px; line-height: 1.4; }
         
         .pricing-features {
             list-style: none;
@@ -240,7 +236,7 @@
         }
 
         .pricing-features li {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: var(--text-main);
             display: flex;
             align-items: center;
@@ -255,33 +251,22 @@
 
         .pricing-btn {
             width: 100%;
-            padding: 14px;
+            padding: 16px;
             border-radius: 50px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            background: rgba(255, 255, 255, 0.02);
+            border: none;
+            background: var(--brand-creator);
             color: #fff;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
             text-align: center;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 15px;
             transition: all 0.25s ease;
-        }
-
-        .pricing-card.popular .pricing-btn {
-            background: var(--brand-creator);
-            border: none;
             box-shadow: 0 4px 15px rgba(225, 29, 72, 0.2);
         }
 
         .pricing-btn:hover {
             transform: translateY(-2px);
-            background: rgba(255, 255, 255, 0.08);
-            border-color: #fff;
-        }
-
-        .pricing-card.popular .pricing-btn:hover {
-            background: var(--brand-creator);
             filter: brightness(1.1);
             box-shadow: 0 6px 20px rgba(225, 29, 72, 0.4);
         }
@@ -351,37 +336,23 @@
     </section>
 
     <section class="pricing-section-container">
-        <h2 style="font-size: 2.5rem; color: #fff;">Choose Your Trust Tier Plan</h2>
-        <p style="color: var(--text-muted); margin-top: 10px; max-width: 600px; margin-left: auto; margin-right: auto;">Get immediate cryptographic protection for your personal brand or multi-channel creator studio networks.</p>
+        <h2 style="font-size: 2.5rem; color: #fff;">Get Protected Instantly</h2>
+        <p style="color: var(--text-muted); margin-top: 10px; max-width: 600px; margin-left: auto; margin-right: auto;">Start your 30-day cryptographic sandbox trial. Access every identity token layout and individual post checkmark tool in one simple plan.</p>
         
         <div class="pricing-grid">
-            <div class="pricing-card">
-                <h4>Identity Token</h4>
-                <div class="price">$14<span>/mo</span></div>
-                <p>Perfect for individual creators and dating profile authentication seeking proof of human identity.</p>
-                <ul class="pricing-features">
-                    <li>Biometric hardware validation scan</li>
-                    <li>Transparent Social Pill Overlay (.PNG)</li>
-                    <li>Dating App Shield Badge Extraction</li>
-                    <li>Professional Network Compliance Tag</li>
-                    <li>Immutable Decentralized Token Registry</li>
-                </ul>
-                <button class="pricing-btn" onclick="location.href='checkout-creators.html?plan=Identity%20Token'">Activate Identity Badge</button>
-            </div>
-
             <div class="pricing-card popular">
-                <h4>Pro Content Suite</h4>
-                <div class="price">$39<span>/mo</span></div>
-                <p>Designed for full-time influencers and agencies requiring continuous asset and feed file protection.</p>
+                <h4>Identity & Content Token Suite</h4>
+                <div class="price">$14<span>/mo</span></div>
+                <p>Complete biometric profile protection backed by our real-time pixel and audio forensic scanning engine.</p>
                 <ul class="pricing-features">
-                    <li>Includes everything in Identity plan</li>
-                    <li>Infinite Image Checkmark Pixels Hard-Baking</li>
-                    <li>Real-time Deepfake Frame Audits</li>
-                    <li>Adversarial Audio Voice-Clone Sweeps</li>
-                    <li>C2PA Cryptographic Metadata Seals</li>
-                    <li>Sponsor Media Kit Compliance Certificates</li>
+                    <li>Transparent Profile Badges (Social, Dating, Pro variants)</li>
+                    <li>Individual Post Verification Checkmark Stamps</li>
+                    <li>Real-time Deepfake Face-Swap Rendering Audits</li>
+                    <li>Adversarial Audio Frequency Voice-Clone Sweeps</li>
+                    <li>C2PA Cryptographic Asset Hardware Metadata Seals</li>
+                    <li>Immutable Decentralized Human Ledger Registration</li>
                 </ul>
-                <button class="pricing-btn" onclick="location.href='checkout-creators.html?plan=Pro%20Content%20Suite'">Upgrade to Pro Feed Suite</button>
+                <button class="pricing-btn" onclick="location.href='checkout-creators.html?plan=Identity%20Token'">Start 30-Day Free Trial</button>
             </div>
         </div>
     </section>
