@@ -39,16 +39,30 @@
             backdrop-filter: blur(10px);
         }
 
+        /* Newsroom Secure Lock Panel */
+        #newsroom-lock-screen {
+            grid-column: span 2;
+            background: #1e293b;
+            padding: 60px;
+            text-align: center;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
         /* Left Side: Payment Form */
         .payment-form {
             padding: 60px;
             background: #1e293b;
         }
 
-        .payment-form h2 { margin-bottom: 30px; font-size: 1.8rem; }
+        .payment-form h2 { margin-bottom: 30px; font-size: 1.8rem; font-weight: 900; }
 
         .form-group { margin-bottom: 20px; }
-        label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
         
         input {
             width: 100%;
@@ -59,11 +73,10 @@
             color: white;
             font-size: 16px;
             outline: none;
+            transition: border-color 0.2s ease;
         }
 
         input:focus { border-color: var(--brand-writer); }
-
-        .row { display: flex; gap: 20px; }
 
         .secure-btn {
             width: 100%;
@@ -101,15 +114,32 @@
 
         @media (max-width: 850px) {
             .checkout-container { grid-template-columns: 1fr; }
-            .order-summary { order: -1; padding: 40px; }
+            #newsroom-lock-screen { grid-column: span 1; padding: 40px; }
+            .order-summary { border-left: none; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding: 40px; order: -1; }
             .payment-form { padding: 40px; }
         }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <div class="checkout-container">
-        <div class="payment-form">
+        
+        <!-- SECURED INTERCEPTION MODAL GATEWAY -->
+        <div id="newsroom-lock-screen">
+            <span style="font-size: 3rem;">🏢</span>
+            <h2 style="font-weight: 900; font-size: 2rem;">Newsroom Authorization Required</h2>
+            <p style="color: var(--text-muted); font-size: 14px; max-width: 480px; margin: 0 auto;">
+                The Editorial Enterprise Suite is restricted to certified organizational newsrooms. Please enter your team provisioning code to clear setup security logs.
+            </p>
+            <input type="password" id="newsroom-passcode-input" placeholder="Enter Newsroom Passcode" style="max-width: 320px; text-align: center; margin-top: 10px;">
+            <button class="secure-btn" onclick="verifyNewsroomToken()" style="max-width: 320px; margin-top: 5px; background: var(--brand-accent); color: var(--brand-dark); box-shadow: 0 4px 12px rgba(0,184,148,0.2);">Verify License Token</button>
+            <a href="index.html" style="color: var(--text-muted); font-size: 12px; text-decoration: none; margin-top: 10px;">← Cancel and Return Home</a>
+        </div>
+
+        <!-- MAIN ACCOUNT INPUT LAYOUT FORM -->
+        <div class="payment-form" id="main-payment-pane">
             <h2>Account Verification</h2>
             <form id="payment-form">
                 <div class="form-group">
@@ -129,7 +159,8 @@
             </form>
         </div>
 
-        <div class="order-summary">
+        <!-- MANIFEST BASKET PRICING MODULE -->
+        <div class="order-summary" id="main-summary-pane">
             <h3>Order Summary</h3>
             <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 40px;">Review your selection</p>
             
@@ -157,12 +188,14 @@
     </div>
 
     <script>
-        // CRITICAL UPDATE: Fully loaded with verified dashboard Test Mode URLs
         const stripePaymentLinks = {
             "Writers Tier": "https://buy.stripe.com/test_dRm14o03s81ocilcxjbo402",
             "Editorial Enterprise Suite": "https://buy.stripe.com/test_14AaEY17w3L8dmpcxjbo401",
             "Academic Suite": "https://buy.stripe.com/test_bJe8wQ17w81o2HL54Rbo403"
         };
+
+        // SHARED LICENSE GATEWAY ACCESS CODE KEY
+        const ENTERPRISE_SECRET_PASSCODE = "NEWSROOM2026"; 
 
         let activePlanName = "Writers Tier";
 
@@ -176,11 +209,17 @@
 
             if (planParam) {
                 const decodedPlan = decodeURIComponent(planParam);
+                
                 if (decodedPlan === 'Editorial Enterprise Suite') {
                     activePlanName = "Editorial Enterprise Suite";
                     planPrice = "$89.00";
                     intervalLabel = "Multi-Author Base Workstation Bundle";
                     structuralInterval = "/mo";
+
+                    // TRIPPED SECURITY ROUTE: Lock workspace presentation if Enterprise selection is parsed
+                    document.getElementById('main-payment-pane').style.display = 'none';
+                    document.getElementById('main-summary-pane').style.display = 'none';
+                    document.getElementById('newsroom-lock-screen').style.display = 'flex';
                 } else if (decodedPlan === 'Academic Suite') {
                     activePlanName = "Academic Suite";
                     planPrice = "$12.99";
@@ -194,7 +233,7 @@
                 }
             }
 
-            // Bind values to Document Object Nodes
+            // Bind values directly onto DOM layout tracking points
             document.getElementById('summary-plan-name').innerText = "Provenant™ " + activePlanName;
             document.getElementById('summary-billing-interval').innerText = intervalLabel;
             
@@ -218,18 +257,33 @@
             }
         };
 
-        // Form submission seamlessly hands off tracking directly to Stripe's payment links
+        // CONDITIONAL ACCESS TOKEN EVALUATION FUNCTION
+        function verifyNewsroomToken() {
+            const userInput = document.getElementById('newsroom-passcode-input').value;
+
+            if (userInput === ENTERPRISE_SECRET_PASSCODE) {
+                // Dissolve blocker panel structures and slide purchase frames back to inline tracks
+                document.getElementById('newsroom-lock-screen').style.display = 'none';
+                document.getElementById('main-payment-pane').style.display = 'block';
+                document.getElementById('main-summary-pane').style.display = 'block';
+                
+                const checkoutContainer = document.querySelector('.checkout-container');
+                if (window.innerWidth > 850) {
+                    checkoutContainer.style.display = 'grid';
+                }
+            } else {
+                alert("⚠️ Access Refused: Invalid organizational license token key. Verify newsroom provisioning credentials.");
+            }
+        }
+
         document.getElementById('payment-form').onsubmit = function(e) {
             e.preventDefault();
-            
             const targetCheckoutUrl = stripePaymentLinks[activePlanName];
             
             if (!targetCheckoutUrl) {
                 alert("Configuration update required: Missing link array pairing parameter string logic matches.");
                 return;
             }
-
-            // Route the buyer cleanly onto Stripe's customized sandbox checkout page
             window.location.href = targetCheckoutUrl;
         };
     </script>
