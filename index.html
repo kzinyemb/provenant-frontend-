@@ -190,10 +190,15 @@
         .terminal-line.success { color: var(--success-green); }
         .terminal-line.danger { color: #f43f5e; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        /* NEW SYSTEM HOOKS FOR SUPPORT MATRIX */
+        .feedback-section-container { text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.05); padding: 80px 20px; }
+        .feedback-card-wrapper { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-top: 40px; }
+        .feedback-node-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); padding: 30px 24px; border-radius: 16px; width: 100%; max-width: 320px; text-align: center; text-decoration: none; transition: all 0.3s ease; }
+        .feedback-node-card:hover { transform: translateY(-3px); background: rgba(255, 255, 255, 0.04); }
+        .feedback-node-card.writer-node:hover { border-color: var(--brand-writer); }
+        .feedback-node-card.edu-node:hover { border-color: var(--brand-accent); }
+        .feedback-node-card h4 { font-size: 1.15rem; color: #fff; margin: 12px 0 6px 0; font-weight: 700; }
+        .feedback-node-card p { font-size: 0.88rem; color: var(--text-muted); }
 
         @media (max-width: 768px) { 
             .hero h1 { font-size: 2.8rem; } 
@@ -357,7 +362,38 @@
         </div>
     </section>
 
-    <footer style="text-align: center; padding: 80px 20px; border-top: 1px solid rgba(255,255,255,0.05);">
+    <!-- NEW INTERACTIVE SUGGESTIONS, REQUESTS, & COMPLAINTS SECTION -->
+    <section class="feedback-section-container">
+        <h2 style="font-size: 2.5rem; color: #fff;">Connect with Compliance</h2>
+        <p style="color: var(--text-muted); margin-top: 10px; max-width: 600px; margin-left: auto; margin-right: auto;">
+            Have a system suggestion, specialized feature infrastructure request, or account complaint? Select an operations link below to outline your parameters.
+        </p>
+
+        <div class="feedback-card-wrapper">
+            <!-- Link 1: Suggestions -->
+            <a href="mailto:provenantforensics@outlook.com?subject=Provenant™%20Platform%20Suggestion&body=Hey%20Provenant™%20Forensics%20Team,%0A%0AI%20have%20a%20suggestion%20regarding the Forensic Integrity Workstation layout:%0A" class="feedback-node-card writer-node">
+                <span style="font-size: 2rem;">💡</span>
+                <h4>Make a Suggestion</h4>
+                <p>Propose changes to our keyboard cadence algorithms or pad workspace styling controls.</p>
+            </a>
+
+            <!-- Link 2: Feature Requests -->
+            <a href="mailto:provenantforensics@outlook.com?subject=Provenant™%20LMS%20Integration%20Request&body=Hey%20Provenant™%20Forensics%20Team,%0A%0AI%20would%20like%20to%20request%20an%20integration tracking pipeline for the following framework/LMS:%0A" class="feedback-node-card edu-node">
+                <span style="font-size: 2rem;">🔌</span>
+                <h4>Request Feature</h4>
+                <p>Request bespoke integrations for private learning environments, headless CMS nodes, or specific LMS tools.</p>
+            </a>
+
+            <!-- Link 3: Complaints & Support Issues -->
+            <a href="mailto:provenantforensics@outlook.com?subject=Provenant™%20Priority%20Support%20/%20Complaint&body=Hey%20Provenant™%20Forensics%20Team,%0A%0AI%20am%20encountering%20the%20following%20issue%20with my active token sandbox or checkout link logic:%0A" class="feedback-node-card" style="border-color: rgba(239, 68, 68, 0.15);">
+                <span style="font-size: 2rem;">⚠️</span>
+                <h4 style="color: #f43f5e;">Report an Issue</h4>
+                <p>Submit a priority support log regarding transactional system bugs, validation errors, or renewal streams.</p>
+            </a>
+        </div>
+    </section>
+
+    <footer>
         <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 20px; opacity: 0.8;">
             <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M35 25V75M35 25H60C70 25 75 32 75 42C75 52 70 59 60 59H35" stroke="var(--brand-writer)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" id="footer-svg-logo"/>
@@ -371,6 +407,7 @@
         </p>
     </footer>
 
+    <!-- MODAL POPUP GATEWAY -->
     <div id="trial-modal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(8px); z-index: 9999; justify-content: center; align-items: center;">
         <div style="background: #1e293b; border: 1px solid rgba(255,255,255,0.1); width: 90%; max-width: 600px; border-radius: 24px; padding: 50px; position: relative; color: white;">
             <button onclick="closeTrial()" style="position: absolute; top: 20px; right: 20px; background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 20px;">✕</button>
@@ -519,6 +556,7 @@
                 `;
                 entFormTitle.innerText = "Protect Your Agency";
                 entFormDesc.innerText = "Get custom pricing models for multi-author journalism teams.";
+                entFormDesc.innerText = "Get custom pricing models for multi-author journalism teams.";
                 entInput1.placeholder = "Agency / Newsroom Name";
                 entInput2.placeholder = "Corporate Email";
                 entSubmitBtn.innerText = "Request Enterprise Pricing";
@@ -534,17 +572,12 @@
         function openTrial(planName, planPrice) {
             activeSelectedPlanForCheckout = encodeURIComponent(planName);
             
-            // CHECK IF THE SELECTION IS THE CUSTOM SITE LICENSE
             if (planPrice === "Custom" || planName === "Institutional Campus Bundle") {
-                // Smoothly scroll the professor straight down to your enterprise contact form
                 document.getElementById('enterprise-tier-zone').scrollIntoView({ behavior: 'smooth' });
-                
-                // Flash focus highlight effect onto the institutional fields
                 document.getElementById('ent-input-field-1').focus();
                 return; 
             }
 
-            // Otherwise, let standard self-serve Stripe links open normal modals
             document.getElementById('modal-plan-name').innerText = planName;
             document.getElementById('modal-plan-desc').innerText = planName;
             document.getElementById('modal-plan-price').innerText = planPrice;
