@@ -130,6 +130,29 @@
             background-position: center;
         }
 
+        /* HARD STAMPED LAYER 2 INDIVIDUAL POST VERIFIED CHECKMARK */
+        .mock-checkmark-badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #0f172a;
+            border: 3px solid #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 12;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }
+
+        .mock-checkmark-badge svg {
+            color: var(--success-green);
+            width: 22px;
+            height: 22px;
+        }
+
         .mock-capsule-tag {
             position: absolute;
             bottom: -14px;
@@ -286,7 +309,6 @@
     <section class="hero">
         <h1>Certify Your Media.<br><span style="color: var(--brand-creator); text-shadow: 0 0 40px rgba(225, 29, 72, 0.4);">Authenticate Video Feeds.</span></h1>
         <p>Protect your brand partnerships and intellectual property from automated copycats. Provenant™ scans raw file exports to generate verified cryptographic origin certifications for premium creators, influencers, and media agencies.</p>
-        <button class="action-btn" onclick="location.href='sandbox.html'">Access Creator Sandbox Portal</button>
     </section>
 
     <section>
@@ -319,12 +341,16 @@
             <div class="badge-callout-text">
                 <h2 style="font-size: 2.5rem; margin-bottom: 20px; color: #fff;">Secure Higher-Paying Brand Deals</h2>
                 <p style="color: var(--text-muted); max-width: 650px; margin-bottom: 30px; font-size: 1.1rem;">Include an embeddable watermark, certified media kit parameters, or cryptographic asset index verification records to give corporate sponsors mathematical proof of asset safety.</p>
-                <button class="action-btn" style="background: transparent; border: 2px solid #fff; box-shadow: none;" onclick="location.href='sandbox.html'">Launch Media Sandbox Run</button>
             </div>
             
             <div class="badge-callout-visual-frame">
                 <div class="mock-avatar-container">
                     <div class="mock-avatar-image"></div>
+                    <div class="mock-checkmark-badge">
+                        <svg fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
                     <div class="mock-capsule-tag">
                         <div class="tag-line-main">Provenant</div>
                         <div class="tag-line-highlight">Active</div>
