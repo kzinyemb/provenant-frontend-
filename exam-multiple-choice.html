@@ -7,12 +7,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <style>
-        :root { --prof-blue: #0078d4; --bg-exam: #f8fafc; --choice-border: #e0e0e0; }
+        :root { --prof-blue: #0078d4; --bg-exam: #f8fafc; --choice-border: #e0e0e0; --brand-accent: #00b894; --brand-dark: #0f172a; }
         body { background-color: var(--bg-exam); font-family: 'Inter', sans-serif; display: flex; flex-direction: column; height: 100vh; margin: 0; }
         
         /* Configuration Panel */
         #config-panel { background: #fff; border-bottom: 2px solid var(--prof-blue); padding: 20px 40px; display: flex; gap: 20px; align-items: center; justify-content: center; flex-wrap: wrap; z-index: 1000; }
-        .config-input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; min-width: 200px; }
+        .config-input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; min-width: 200px; outline: none; }
+        .config-input:focus { border-color: var(--prof-blue); }
         
         /* Header & Branding */
         .uni-header { text-align: center; margin-bottom: 40px; border-bottom: 2px solid var(--brand-dark); padding-bottom: 20px; width: 100%; max-width: 800px; }
@@ -23,7 +24,7 @@
         
         /* MC Question Card */
         .mc-card { background: white; width: 100%; max-width: 800px; padding: 35px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 25px; border-top: 5px solid var(--prof-blue); }
-        .prof-q-input { width: 100%; border: none; font-size: 1.25rem; font-weight: 700; outline: none; margin-bottom: 20px; color: var(--brand-dark); }
+        .prof-q-input { width: 100%; border: none; font-size: 1.25rem; font-weight: 700; outline: none; margin-bottom: 20px; color: var(--brand-dark); background: transparent; }
         
         /* Options Grid */
         .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
@@ -32,7 +33,15 @@
         .option-item input[type="text"] { border: none; background: transparent; width: 100%; outline: none; font-size: 14px; }
 
         .btn-action { background: var(--brand-dark); color: white; border: none; padding: 12px 30px; border-radius: 50px; cursor: pointer; font-weight: 600; margin: 10px; transition: 0.3s; }
+        .btn-action:hover { transform: translateY(-2px); filter: brightness(1.1); }
         .btn-submit { background: var(--brand-accent); color: var(--brand-dark); }
+
+        /* Deploy Dashboard Section UI */
+        .deploy-banner-card { background: #fff; border: 2px dashed var(--prof-blue); border-radius: 16px; padding: 30px; width: 100%; max-width: 800px; margin-top: 25px; display: none; text-align: left; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .link-export-box { display: flex; gap: 10px; margin-top: 15px; width: 100%; }
+        .export-url-input { flex: 1; padding: 12px; background: #f8fafc; border: 1px solid #ccc; border-radius: 8px; color: var(--prof-blue); font-family: monospace; font-size: 13px; outline: none; }
+        .copy-link-btn { background: var(--prof-blue); color: white; border: none; padding: 0 25px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; transition: 0.2s; }
+        .copy-link-btn:hover { filter: brightness(1.1); }
     </style>
 </head>
 <body>
@@ -42,6 +51,7 @@
     <input type="text" id="input-uni" class="config-input" placeholder="University (e.g. Stanford)" oninput="updateBranding()">
     <input type="text" id="input-dept" class="config-input" placeholder="Dept (e.g. Psychology)" oninput="updateBranding()">
     <input type="email" id="input-email" class="config-input" placeholder="Professor's Email">
+    <input type="text" id="input-password" class="config-input" placeholder="Set Student Passcode (Optional)">
     <button onclick="document.getElementById('config-panel').style.display='none'" style="cursor: pointer; font-size: 11px;">Lock Configuration</button>
 </div>
 
@@ -71,17 +81,26 @@
         <div class="mc-card">
             <input type="text" class="prof-q-input" placeholder="Enter Question 1...">
             <div class="options-grid">
-                <div class="option-item"><input type="radio" name="q1"><input type="text" placeholder="Option A"></div>
-                <div class="option-item"><input type="radio" name="q1"><input type="text" placeholder="Option B"></div>
-                <div class="option-item"><input type="radio" name="q1"><input type="text" placeholder="Option C"></div>
-                <div class="option-item"><input type="radio" name="q1"><input type="text" placeholder="Option D"></div>
+                <div class="option-item"><input type="radio" disabled><input type="text" class="opt-val" placeholder="Option A"></div>
+                <div class="option-item"><input type="radio" disabled><input type="text" class="opt-val" placeholder="Option B"></div>
+                <div class="option-item"><input type="radio" disabled><input type="text" class="opt-val" placeholder="Option C"></div>
+                <div class="option-item"><input type="radio" disabled><input type="text" class="opt-val" placeholder="Option D"></div>
             </div>
         </div>
     </div>
 
     <div style="margin-top: 30px;">
         <button class="btn-action" onclick="addNewMC()">+ Add Question</button>
-        <button class="btn-action btn-submit" onclick="submitMC()">Submit Final Answers</button>
+        <button class="btn-action btn-submit" onclick="submitMC()">Compile Student Link</button>
+    </div>
+
+    <div class="deploy-banner-card" id="deploy-card">
+        <h4 style="font-size: 1.1rem; font-weight: 800; color: var(--brand-dark); margin-bottom: 6px;">🚀 Distribution Link Compiled Successfully</h4>
+        <p style="color: #555; font-size: 13px; line-height: 1.4;">Copy the tracking URL payload parameter string underneath and pass it cleanly to your student cohort via email or your active institutional LMS dashboard.</p>
+        <div class="link-export-box">
+            <input type="text" class="export-url-input" id="student-url-output" readonly>
+            <button class="copy-link-btn" onclick="copyStudentLink()">📋 Copy Link</button>
+        </div>
     </div>
 </div>
 
@@ -108,39 +127,62 @@
         card.innerHTML = `
             <input type="text" class="prof-q-input" placeholder="Enter Question ${mcCount}...">
             <div class="options-grid">
-                <div class="option-item"><input type="radio" name="q${mcCount}"><input type="text" placeholder="Option A"></div>
-                <div class="option-item"><input type="radio" name="q${mcCount}"><input type="text" placeholder="Option B"></div>
-                <div class="option-item"><input type="radio" name="q${mcCount}"><input type="text" placeholder="Option C"></div>
-                <div class="option-item"><input type="radio" name="q${mcCount}"><input type="text" placeholder="Option D"></div>
+                <div class="option-item"><input type="radio" disabled><input type="text" class="opt-val" placeholder="Option A"></div>
+                <div class="option-item"><input type="radio" disabled><input type="text" class="opt-val" placeholder="Option B"></div>
+                <div class="option-item"><input type="radio" disabled><input type="text" class="opt-val" placeholder="Option C"></div>
+                <div class="option-item"><input type="radio" disabled><input type="text" class="opt-val" placeholder="Option D"></div>
             </div>
         `;
         document.getElementById('mc-list').appendChild(card);
     }
 
-    // Interaction Analytics
-    document.addEventListener('change', (e) => {
-        if(e.target.type === 'radio') {
-            interactions++;
-            document.getElementById('interaction-stat').innerText = `Interactions: ${interactions} | Human Rhythm Score: 100%`;
-        }
-    });
-
     function submitMC() {
         const email = document.getElementById('input-email').value;
+        const password = document.getElementById('input-password').value;
         const uni = document.getElementById('display-uni').innerText;
+        const dept = document.getElementById('display-dept').innerText;
         
         if (!email) {
             alert("Submission error: Professor email not configured.");
             return;
         }
 
-        const forensicID = `MC-VH-${Math.floor(Math.random()*999999)}`;
+        const cards = document.querySelectorAll('.mc-card');
+        const configuredExamPayload = {
+            meta: { university: uni, department: dept, profEmail: email, examPassword: password },
+            questions: []
+        };
+
+        cards.forEach(card => {
+            const questionTitle = card.querySelector('.prof-q-input').value;
+            const options = [];
+            card.querySelectorAll('.opt-val, [placeholder^="Option"]').forEach(input => {
+                if (input.value) options.push(input.value);
+            });
+
+            if (questionTitle) {
+                configuredExamPayload.questions.push({ question: questionTitle, options: options });
+            }
+        });
+
+        // Pack parameters into a secure base64 string
+        const serializedDataStr = btoa(unescape(encodeURIComponent(JSON.stringify(configuredExamPayload))));
         
-        alert(`SUBMISSION SUCCESSFUL\n\nInstitution: ${uni}\nInteraction ID: ${forensicID}\n\nYour PDF report is ready. Please email it to: ${email}`);
-        
-        // Export to PDF
-        const element = document.getElementById('workspace');
-        html2pdf().from(element).save(`${uni}_MC_Exam_${forensicID}.pdf`);
+        // Target your student delivery page destination routing paths
+        const deploymentTargetBaseUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + "/exam-student-delivery.html";
+        const totalCompiledLink = `${deploymentTargetBaseUrl}?examData=${serializedDataStr}`;
+
+        // Inject pathing parameters and pop the card layout into visibility arrays
+        document.getElementById('student-url-output').value = totalCompiledLink;
+        document.getElementById('deploy-card').style.display = 'block';
+        document.getElementById('deploy-card').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function copyStudentLink() {
+        const targetInput = document.getElementById('student-url-output');
+        targetInput.select();
+        navigator.clipboard.writeText(targetInput.value);
+        alert("✓ Link copied to clipboard! You can now send this URL directly to your class cohort.");
     }
 </script>
 </body>
