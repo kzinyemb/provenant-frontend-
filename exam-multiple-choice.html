@@ -1,47 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6B0NP15RYC"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-6B0NP15RYC');
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exam: Multiple Choice | VerifyHuman</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <style>
-        :root { --prof-blue: #0078d4; --bg-exam: #f8fafc; --choice-border: #e0e0e0; --brand-accent: #00b894; --brand-dark: #0f172a; }
-        body { background-color: var(--bg-exam); font-family: 'Inter', sans-serif; display: flex; flex-direction: column; height: 100vh; margin: 0; }
+        :root { 
+            --prof-blue: #0078d4; 
+            --bg-exam: #f8fafc; 
+            --choice-border: #e0e0e0; 
+            --brand-accent: #00b894; 
+            --brand-dark: #0f172a; 
+        }
+        body { 
+            background-color: var(--bg-exam); 
+            font-family: 'Inter', sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+            margin: 0; 
+        }
         
         /* Configuration Panel */
-        #config-panel { background: #fff; border-bottom: 2px solid var(--prof-blue); padding: 20px 40px; display: flex; gap: 20px; align-items: center; justify-content: center; flex-wrap: wrap; z-index: 1000; }
-        .config-input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; min-width: 200px; outline: none; }
-        .config-input:focus { border-color: var(--prof-blue); }
+        #config-panel { 
+            background: #fff; 
+            border-bottom: 2px solid var(--prof-blue); 
+            padding: 20px 40px; 
+            display: flex; 
+            gap: 20px; 
+            align-items: center; 
+            justify-content: center; 
+            flex-wrap: wrap; 
+            z-index: 1000; 
+        }
+        .config-input { 
+            padding: 8px; 
+            border: 1px solid #ccc; 
+            border-radius: 4px; 
+            font-size: 13px; 
+            min-width: 200px; 
+            outline: none; 
+        }
+        .config-input:focus { 
+            border-color: var(--prof-blue); 
+        }
         
         /* Header & Branding */
-        .uni-header { text-align: center; margin-bottom: 40px; border-bottom: 2px solid var(--brand-dark); padding-bottom: 20px; width: 100%; max-width: 800px; }
-        #display-uni { font-size: 26px; font-weight: 800; color: #1a1a1b; text-transform: uppercase; margin: 0; }
-        #display-dept { font-size: 16px; color: #555; margin: 5px 0 0 0; font-weight: 500; }
+        .uni-header { 
+            text-align: center; 
+            margin-bottom: 40px; 
+            border-bottom: 2px solid var(--brand-dark); 
+            padding-bottom: 20px; 
+            width: 100%; 
+            max-width: 800px; 
+        }
+        #display-uni { 
+            font-size: 26px; 
+            font-weight: 800; 
+            color: #1a1a1b; 
+            text-transform: uppercase; 
+            margin: 0; 
+        }
+        #display-dept { 
+            font-size: 16px; 
+            color: #555; 
+            margin: 5px 0 0 0; 
+            font-weight: 500; 
+        }
 
-        .container { flex-grow: 1; overflow-y: auto; padding: 40px; display: flex; flex-direction: column; align-items: center; }
+        .container { 
+            flex-grow: 1; 
+            overflow-y: auto; 
+            padding: 40px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        }
         
         /* MC Question Card */
-        .mc-card { background: white; width: 100%; max-width: 800px; padding: 35px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 25px; border-top: 5px solid var(--prof-blue); }
-        .prof-q-input { width: 100%; border: none; font-size: 1.25rem; font-weight: 700; outline: none; margin-bottom: 20px; color: var(--brand-dark); background: transparent; }
+        .mc-card { 
+            background: white; 
+            width: 100%; 
+            max-width: 800px; 
+            padding: 35px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
+            margin-bottom: 25px; 
+            border-top: 5px solid var(--prof-blue); 
+        }
+        .prof-q-input { 
+            width: 100%; 
+            border: none; 
+            font-size: 1.25rem; 
+            font-weight: 700; 
+            outline: none; 
+            margin-bottom: 20px; 
+            color: var(--brand-dark); 
+            background: transparent; 
+        }
         
         /* Options Grid */
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .option-item { display: flex; align-items: center; gap: 10px; padding: 12px; border: 2px solid var(--choice-border); border-radius: 8px; transition: 0.2s; }
-        .option-item:hover { border-color: var(--brand-accent); background: #f0fdf4; }
-        .option-item input[type="text"] { border: none; background: transparent; width: 100%; outline: none; font-size: 14px; }
+        .options-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+        }
+        .option-item { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            padding: 12px; 
+            border: 2px solid var(--choice-border); 
+            border-radius: 8px; 
+            transition: 0.2s; 
+        }
+        .option-item:hover { 
+            border-color: var(--brand-accent); 
+            background: #f0fdf4; 
+        }
+        .option-item input[type="text"] { 
+            border: none; 
+            background: transparent; 
+            width: 100%; 
+            outline: none; 
+            font-size: 14px; 
+        }
 
-        .btn-action { background: var(--brand-dark); color: white; border: none; padding: 12px 30px; border-radius: 50px; cursor: pointer; font-weight: 600; margin: 10px; transition: 0.3s; }
-        .btn-action:hover { transform: translateY(-2px); filter: brightness(1.1); }
-        .btn-submit { background: var(--brand-accent); color: var(--brand-dark); }
+        .btn-action { 
+            background: var(--brand-dark); 
+            color: white; 
+            border: none; 
+            padding: 12px 30px; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            margin: 10px; 
+            transition: 0.3s; 
+        }
+        .btn-action:hover { 
+            transform: translateY(-2px); 
+            filter: brightness(1.1); 
+        }
+        .btn-submit { 
+            background: var(--brand-accent); 
+            color: var(--brand-dark); 
+        }
 
         /* Deploy Dashboard Section UI */
-        .deploy-banner-card { background: #fff; border: 2px dashed var(--prof-blue); border-radius: 16px; padding: 30px; width: 100%; max-width: 800px; margin-top: 25px; display: none; text-align: left; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        .link-export-box { display: flex; gap: 10px; margin-top: 15px; width: 100%; }
-        .export-url-input { flex: 1; padding: 12px; background: #f8fafc; border: 1px solid #ccc; border-radius: 8px; color: var(--prof-blue); font-family: monospace; font-size: 13px; outline: none; }
-        .copy-link-btn { background: var(--prof-blue); color: white; border: none; padding: 0 25px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; transition: 0.2s; }
-        .copy-link-btn:hover { filter: brightness(1.1); }
+        .deploy-banner-card { 
+            background: #fff; 
+            border: 2px dashed var(--prof-blue); 
+            border-radius: 16px; 
+            padding: 30px; 
+            width: 100%; 
+            max-width: 800px; 
+            margin-top: 25px; 
+            display: none; 
+            text-align: left; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
+        }
+        .link-export-box { 
+            display: flex; 
+            gap: 10px; 
+            margin-top: 15px; 
+            width: 100%; 
+        }
+        .export-url-input { 
+            flex: 1; 
+            padding: 12px; 
+            background: #f8fafc; 
+            border: 1px solid #ccc; 
+            border-radius: 8px; 
+            color: var(--prof-blue); 
+            font-family: monospace; 
+            font-size: 13px; 
+            outline: none; 
+        }
+        .copy-link-btn { 
+            background: var(--prof-blue); 
+            color: white; 
+            border: none; 
+            padding: 0 25px; 
+            border-radius: 8px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            font-size: 13px; 
+            transition: 0.2s; 
+        }
+        .copy-link-btn:hover { 
+            filter: brightness(1.1); 
+        }
+
+        /* Custom Forensic Toast Elements */
+        #custom-toast {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #0f172a;
+            color: #fff;
+            border-left: 4px solid var(--brand-accent);
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            z-index: 10000;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
     </style>
 </head>
 <body>
@@ -109,9 +290,45 @@
     <div style="color: #00b894;">Secured by VerifyHuman Forensics</div>
 </div>
 
+<!-- Custom Elegant Toast Notification System -->
+<div id="custom-toast">
+    <span id="toast-icon">✓</span>
+    <span id="toast-message">Notification message here</span>
+</div>
+
 <script>
     let mcCount = 1;
     let interactions = 0;
+
+    // Toast Alert Orchestrator
+    function showToast(message, isSuccess = true) {
+        const toast = document.getElementById('custom-toast');
+        const toastMsg = document.getElementById('toast-message');
+        const toastIcon = document.getElementById('toast-icon');
+        
+        toastMsg.innerText = message;
+        if (isSuccess) {
+            toast.style.borderLeftColor = 'var(--brand-accent)';
+            toastIcon.innerText = '✓';
+            toastIcon.style.color = 'var(--brand-accent)';
+        } else {
+            toast.style.borderLeftColor = '#f43f5e';
+            toastIcon.innerText = '⚠️';
+            toastIcon.style.color = '#f43f5e';
+        }
+        
+        toast.style.display = 'flex';
+        // Force Reflow
+        toast.offsetHeight;
+        toast.style.opacity = '1';
+        
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 300);
+        }, 4000);
+    }
 
     function updateBranding() {
         const uni = document.getElementById('input-uni').value;
@@ -134,6 +351,7 @@
             </div>
         `;
         document.getElementById('mc-list').appendChild(card);
+        showToast(`Added Question ${mcCount}`);
     }
 
     function submitMC() {
@@ -143,7 +361,7 @@
         const dept = document.getElementById('display-dept').innerText;
         
         if (!email) {
-            alert("Submission error: Professor email not configured.");
+            showToast("Professor email not configured. Please fill in the details above.", false);
             return;
         }
 
@@ -176,13 +394,25 @@
         document.getElementById('student-url-output').value = totalCompiledLink;
         document.getElementById('deploy-card').style.display = 'block';
         document.getElementById('deploy-card').scrollIntoView({ behavior: 'smooth' });
+        showToast("Distribution Link Generated Successfully!");
     }
 
     function copyStudentLink() {
         const targetInput = document.getElementById('student-url-output');
         targetInput.select();
-        navigator.clipboard.writeText(targetInput.value);
-        alert("✓ Link copied to clipboard! You can now send this URL directly to your class cohort.");
+        targetInput.setSelectionRange(0, 99999); // Mobile compatibility safety wrap
+        
+        try {
+            // Iframe-proof copy procedure override
+            const success = document.execCommand('copy');
+            if (success) {
+                showToast("✓ Link copied to clipboard!");
+            } else {
+                showToast("Fallback: Please highlight the URL box manually.", false);
+            }
+        } catch (err) {
+            showToast("Clipboard blocked inside sandboxed frame.", false);
+        }
     }
 </script>
 </body>
