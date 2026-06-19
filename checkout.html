@@ -13,404 +13,290 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Provenant™ | Deepfake Protection for Creators & Influencer Networks</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap">
+    <title>Secure Checkout | Provenant™ Forensics</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap">
+    
     <style>
         :root {
-            --brand-creator: #e11d48; /* Vibrant Rose */
-            --brand-dark: #0f172a;   /* Deep Slate */
-            --brand-glass: rgba(255, 255, 255, 0.03);
+            --brand-accent: #00b894;
+            --brand-dark: #0f172a;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --success-green: #00b894;
-            --ig-gradient: linear-gradient(45deg, #f9ce34, #ee2a7b, #6228d7);
+            --brand-writer: #3b82f6;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Inter', sans-serif;
-            background: radial-gradient(circle at top, #310413 0%, #0f172a 100%);
-            color: var(--text-main);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-
-        section { padding: 80px 20px; max-width: 1200px; margin: 0 auto; }
-
-        .action-btn {
-            background: var(--brand-creator);
-            color: #ffffff;
-            border: none;
-            padding: 16px 36px;
-            border-radius: 50px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            text-decoration: none;
-            display: inline-block;
-            font-size: 15px;
-            letter-spacing: 0.5px;
-            text-align: center;
-            box-shadow: 0 6px 20px rgba(225, 29, 72, 0.3);
-        }
-
-        .action-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 25px rgba(225, 29, 72, 0.5);
-            filter: brightness(1.1);
-        }
-
-        .hero { text-align: center; padding: 100px 20px 60px 20px; }
-        .hero h1 { font-size: 4rem; font-weight: 900; line-height: 1.1; margin-bottom: 25px; letter-spacing: -2px; }
-        .hero p { font-size: 1.2rem; color: var(--text-muted); max-width: 800px; margin: 0 auto 40px auto; }
-
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 50px;
-        }
-
-        .feature-card {
-            background: var(--brand-glass);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            padding: 35px;
-            text-align: left;
-            transition: transform 0.3s ease, border-color 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--brand-creator);
-        }
-
-        .feature-card h3 { font-size: 1.4rem; color: #fff; margin-bottom: 15px; }
-        .feature-card p { color: var(--text-muted); font-size: 0.95rem; }
-        .icon { font-size: 2rem; margin-bottom: 15px; display: block; }
-
-        .badge-callout {
-            background: linear-gradient(135deg, rgba(225, 29, 72, 0.1) 0%, rgba(15, 23, 42, 0.6) 100%);
-            border: 1px solid rgba(225, 29, 72, 0.2);
-            border-radius: 24px;
-            padding: 60px;
-            margin-top: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 40px;
-        }
-
-        .badge-callout-text {
-            flex: 1;
-            text-align: left;
-        }
-
-        .badge-callout-visual-frame {
-            flex: 0 0 300px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        @media (max-width: 768px) {
-            .badge-callout { flex-direction: column; text-align: center; padding: 40px 24px; }
-            .badge-callout-text { text-align: center; }
-            .badge-callout-visual-frame { flex: 1; }
-        }
-
-        .mock-avatar-container {
-            position: relative;
-            width: 170px;
-            height: 170px;
-            border-radius: 50%;
-            background: var(--ig-gradient);
-            padding: 5px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .mock-avatar-image {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 4px solid #0f172a;
-            background-image: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=300&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-        }
-
-        .mock-checkmark-badge {
-            position: absolute;
-            top: 2px;
-            right: 2px;
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
             background: #0f172a;
-            border: 3px solid #0f172a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 12;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-        }
-
-        .mock-checkmark-badge svg {
-            color: var(--success-green);
-            width: 22px;
-            height: 22px;
-        }
-
-        .mock-capsule-tag {
-            position: absolute;
-            bottom: -14px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-            width: 150px; /* Slightly widened to fit co-branding */
-            background: linear-gradient(135deg, #ee2a7b 0%, #a21caf 100%);
-            border: 1.5px solid #0f172a;
-            border-radius: 8px;
-            padding: 5px 8px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-        }
-
-        .mock-capsule-tag .tag-line-main {
-            color: #ffffff;
-            font-size: 10px;
-            font-weight: 900;
-            letter-spacing: 0.8px;
-            line-height: 1.1;
-            text-transform: uppercase;
-        }
-
-        .mock-capsule-tag .tag-line-highlight {
-            font-size: 11px;
-            font-weight: 900;
-            font-style: italic;
-            color: #ffffff;
-            letter-spacing: 0.5px;
-            line-height: 1.1;
-            margin: 1px 0;
-        }
-
-        .mock-capsule-tag .tag-line-sub {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 7.5px;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-            text-transform: uppercase;
-            line-height: 1;
-        }
-
-        .pricing-section-container {
-            text-align: center;
-            padding: 60px 20px 100px 20px;
-        }
-
-        .pricing-grid {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 40px;
-            flex-wrap: wrap;
-        }
-
-        .pricing-card {
-            background: rgba(30, 41, 59, 0.4);
-            border: 1px solid var(--brand-border);
-            border-radius: 24px;
-            padding: 45px 35px;
-            width: 100%;
-            max-width: 460px;
-            text-align: left;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .pricing-card.popular {
-            border-color: var(--brand-creator);
-            background: rgba(225, 29, 72, 0.05);
-            box-shadow: 0 10px 35px rgba(225, 29, 72, 0.15);
-        }
-
-        .pricing-card.popular::before {
-            content: "30-DAY FREE TRIAL";
-            position: absolute;
-            top: -12px;
-            left: 35px;
-            background: var(--brand-creator);
-            color: #fff;
-            font-size: 10px;
-            font-weight: 900;
-            padding: 4px 14px;
-            border-radius: 20px;
-            letter-spacing: 1px;
-        }
-
-        .pricing-card h4 { font-size: 1.6rem; font-weight: 900; color: #fff; margin-bottom: 8px; }
-        .pricing-card .price { font-size: 2.8rem; font-weight: 900; color: #fff; margin-bottom: 15px; }
-        .pricing-card .price span { font-size: 1.1rem; color: var(--text-muted); font-weight: 500; }
-        .pricing-card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 30px; line-height: 1.4; }
-        
-        .pricing-features {
-            list-style: none;
-            margin-bottom: 40px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            flex-grow: 1;
-        }
-
-        .pricing-features li {
-            font-size: 0.95rem;
             color: var(--text-main);
             display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 10px;
+            min-height: 100vh;
+            padding: 20px;
         }
 
-        .pricing-features li::before {
-            content: "✓";
-            color: var(--success-green);
-            font-weight: 900;
-        }
-
-        .pricing-btn {
+        .checkout-container {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
             width: 100%;
-            padding: 16px;
-            border-radius: 50px;
-            border: none;
-            background: var(--brand-creator);
-            color: #fff;
-            font-weight: 800;
-            cursor: pointer;
+            max-width: 1000px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Newsroom Secure Lock Panel */
+        #newsroom-lock-screen {
+            grid-column: span 2;
+            background: #1e293b;
+            padding: 60px;
             text-align: center;
-            text-decoration: none;
-            font-size: 15px;
-            transition: all 0.25s ease;
-            box-shadow: 0 4px 15px rgba(225, 29, 72, 0.2);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            animation: fadeIn 0.3s ease;
         }
 
-        .pricing-btn:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.1);
-            box-shadow: 0 6px 20px rgba(225, 29, 72, 0.4);
+        /* Left Side: Payment Form */
+        .payment-form {
+            padding: 60px;
+            background: #1e293b;
         }
 
-        footer { text-align: center; padding: 60px 20px; border-top: 1px solid rgba(255, 255, 255, 0.05); color: var(--text-muted); font-size: 13px; }
+        .payment-form h2 { margin-bottom: 30px; font-size: 1.8rem; font-weight: 900; }
+
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+        
+        input {
+            width: 100%;
+            padding: 14px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        input:focus { border-color: var(--brand-writer); }
+
+        .secure-btn {
+            width: 100%;
+            background: var(--brand-writer);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .secure-btn:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5); }
+
+        /* Right Side: Order Summary */
+        .order-summary {
+            padding: 60px;
+            background: rgba(255, 255, 255, 0.02);
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .total { font-size: 1.5rem; font-weight: 800; color: var(--brand-accent); margin-top: 20px; }
+
+        @media (max-width: 850px) {
+            .checkout-container { grid-template-columns: 1fr; }
+            #newsroom-lock-screen { grid-column: span 1; padding: 40px; }
+            .order-summary { border-left: none; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding: 40px; order: -1; }
+            .payment-form { padding: 40px; }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <!-- NAVIGATION BAR -->
-    <div style="padding: 20px; max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
-        <div style="display: flex; align-items: center; gap: 10px; cursor: pointer;" onclick="location.href='index.html'">
-            <span style="font-weight: 900; font-size: 24px; letter-spacing: -1px; color: #fff;">PROVEN<span style="color: var(--brand-creator);">ANT</span>™</span>
+    <div class="checkout-container">
+        
+        <!-- SECURED INTERCEPTION MODAL GATEWAY -->
+        <div id="newsroom-lock-screen">
+            <span style="font-size: 3rem;">🏢</span>
+            <h2 style="font-weight: 900; font-size: 2rem;">Newsroom Authorization Required</h2>
+            <p style="color: var(--text-muted); font-size: 14px; max-width: 480px; margin: 0 auto;">
+                The Editorial Enterprise Suite is restricted to certified organizational newsrooms. Please enter your team provisioning code to clear setup security logs.
+            </p>
+            <input type="password" id="newsroom-passcode-input" placeholder="Enter Newsroom Passcode" style="max-width: 320px; text-align: center; margin-top: 10px;">
+            <button class="secure-btn" onclick="verifyNewsroomToken()" style="max-width: 320px; margin-top: 5px; background: var(--brand-accent); color: var(--brand-dark); box-shadow: 0 4px 12px rgba(0,184,148,0.2);">Verify License Token</button>
+            <a href="index.html" style="color: var(--text-muted); font-size: 12px; text-decoration: none; margin-top: 10px;">← Cancel and Return Home</a>
         </div>
-        <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600;">← Back to Main Hub</a>
+
+        <!-- MAIN ACCOUNT INPUT LAYOUT FORM -->
+        <div class="payment-form" id="main-payment-pane">
+            <h2>Account Verification</h2>
+            <form id="payment-form">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="name@domain.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" placeholder="First and Last Name" required>
+                </div>
+                
+                <button type="submit" class="secure-btn">Continue to Secure Setup</button>
+                
+                <p style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 20px;">
+                    🔒 Secured by Stripe. You will not be billed during your 30-day forensic trial pipeline.
+                </p>
+            </form>
+        </div>
+
+        <!-- MANIFEST BASKET PRICING MODULE -->
+        <div class="order-summary" id="main-summary-pane">
+            <h3>Order Summary</h3>
+            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 40px;">Review your selection</p>
+            
+            <div class="summary-item">
+                <div>
+                    <div id="summary-plan-name" style="font-weight: 700;">Provenant™ Workspace</div>
+                    <div id="summary-billing-interval" style="font-size: 12px; color: var(--text-muted);">Monthly Subscription Plan</div>
+                </div>
+                <div id="summary-base-price">$14.99</div>
+            </div>
+
+            <div class="summary-item">
+                <div>30-Day Trial Credit</div>
+                <div id="summary-discount-price" style="color: var(--brand-accent);">- $14.99</div>
+            </div>
+
+            <div class="total">
+                <span style="font-size: 14px; color: white;">Due Today:</span> $0.00
+            </div>
+
+            <div style="margin-top: 40px; font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+                <p id="billing-timeline-disclosure">After your 30-day sandbox trial ends, your payment method will execute a standard renewal charge unless canceled inside management logs.</p>
+            </div>
+        </div>
     </div>
 
-    <!-- HERO PRESENTATION -->
-    <section class="hero">
-        <h1>Certify Your Media.<br><span style="color: var(--brand-creator); text-shadow: 0 0 40px rgba(225, 29, 72, 0.4);">Authenticate Video Feeds.</span></h1>
-        <p>Protect your brand partnerships and intellectual property from automated copycats. Provenant™ scans raw file exports to generate verified cryptographic origin certifications for premium creators, influencers, and media agencies.</p>
-    </section>
+    <script>
+        const stripePaymentLinks = {
+            "Writers Tier": "https://buy.stripe.com/test_dRm14o03s81ocilcxjbo402",
+            "Editorial Enterprise Suite": "https://buy.stripe.com/test_14AaEY17w3L8dmpcxjbo401",
+            "Academic Suite": "https://buy.stripe.com/test_bJe8wQ17w81o2HL54Rbo403"
+        };
 
-    <!-- MATRIX OVERVIEW -->
-    <section>
-        <div style="text-align: center;">
-            <h2 style="font-size: 2.2rem;">How the Verification Matrix Secures Your Content</h2>
-            <p style="color: var(--text-muted); margin-top: 10px;">Military-grade media forensic logging from local camera sensor to distribution channels.</p>
-        </div>
+        // SHARED LICENSE GATEWAY ACCESS CODE KEY
+        const ENTERPRISE_SECRET_PASSCODE = "NEWSROOM2026"; 
 
-        <div class="grid-3">
-            <div class="feature-card">
-                <span class="icon">🔍</span>
-                <h3>Frame Auditing</h3>
-                <p>Scans multi-layer frames to track rendering variations, identifying algorithmic inconsistencies caused by deepfake synthetic rendering modules.</p>
-            </div>
-            <div class="feature-card">
-                <span class="icon">🎙️</span>
-                <h3>Vocal Frequency Sweeps</h3>
-                <p>Analyzes voice tracks to identify synthetic audio anomalies or voice clone matching footprints, ensuring audio track authenticity.</p>
-            </div>
-            <div class="feature-card">
-                <span class="icon">📷</span>
-                <h3>C2PA Hardware Tracking</h3>
-                <p>Extracts and seals camera lens metadata variables directly from original capture hardware, maintaining an immutable line of origin.</p>
-            </div>
-        </div>
-    </section>
+        let activePlanName = "Writers Tier";
 
-    <!-- COMMERCIAL OUTCOMES -->
-    <section style="padding-top: 20px;">
-        <div class="badge-callout">
-            <div class="badge-callout-text">
-                <h2 style="font-size: 2.5rem; margin-bottom: 20px; color: #fff;">Secure Higher-Paying Brand Deals</h2>
-                <p style="color: var(--text-muted); max-width: 650px; margin-bottom: 30px; font-size: 1.1rem;">Include an embeddable watermark, certified media kit parameters, or cryptographic asset index verification records to give corporate sponsors mathematical proof of asset safety.</p>
-            </div>
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const planParam = urlParams.get('plan');
             
-            <div class="badge-callout-visual-frame">
-                <div class="mock-avatar-container">
-                    <div class="mock-avatar-image"></div>
-                    <div class="mock-checkmark-badge">
-                        <svg fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                    </div>
-                    <div class="mock-capsule-tag">
-                        <div class="tag-line-main">Provenant</div>
-                        <div class="tag-line-highlight">100% Original</div>
-                        <div class="tag-line-sub">Verified Human</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+            let planPrice = "$14.99";
+            let intervalLabel = "Individual Author Workspace Bundle";
+            let structuralInterval = "/mo";
 
-    <!-- CONSOLIDATED PRICE PLAN GATEWAY -->
-    <section class="pricing-section-container">
-        <h2 style="font-size: 2.5rem; color: #fff;">Get Protected Instantly</h2>
-        <p style="color: var(--text-muted); margin-top: 10px; max-width: 600px; margin-left: auto; margin-right: auto;">Start your 30-day cryptographic sandbox trial. Access every identity token layout and individual post checkmark tool in one simple plan.</p>
-        
-        <div class="pricing-grid">
-            <div class="pricing-card popular">
-                <h4>Identity & Content Token Suite</h4>
-                <div class="price">$14<span>/mo</span></div>
-                <p>Complete biometric profile protection backed by our real-time pixel and audio forensic scanning engine.</p>
-                <ul class="pricing-features">
-                    <li>Transparent Profile Badges (Social, Dating, Pro variants)</li>
-                    <li>Individual Post Verification Checkmark Stamps</li>
-                    <li>Real-time Deepfake Face-Swap Rendering Audits</li>
-                    <li>Adversarial Audio Frequency Voice-Clone Sweeps</li>
-                    <li>C2PA Cryptographic Asset Hardware Metadata Seals</li>
-                    <li>Immutable Decentralized Human Ledger Registration</li>
-                </ul>
-                <button class="pricing-btn" onclick="location.href='checkout-creators.html?plan=Identity%20Token'">Start 30-Day Free Trial</button>
-            </div>
-        </div>
-    </section>
+            if (planParam) {
+                const decodedPlan = decodeURIComponent(planParam);
+                
+                if (decodedPlan === 'Editorial Enterprise Suite') {
+                    activePlanName = "Editorial Enterprise Suite";
+                    planPrice = "$89.00";
+                    intervalLabel = "Multi-Author Base Workstation Bundle";
+                    structuralInterval = "/mo";
 
-    <!-- FOOTER WITH OUTLOOK LINKS ATTACHED -->
-    <footer>
-        <div style="margin-bottom: 30px; display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;">
-            <a href="mailto:provenantforensics@outlook.com?subject=Provenant™%20Feature%20Suggestion&body=Hey%20Provenant™%20Team,%0A%0AI%20have%20a%20suggestion%20to%20improve%20the%20creator%20suite:%0A" 
-               style="color: var(--text-muted); text-decoration: none; font-size: 12px; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'">💡 Suggest a Feature</a>
+                    // TRIPPED SECURITY ROUTE: Lock workspace presentation if Enterprise selection is parsed
+                    document.getElementById('main-payment-pane').style.display = 'none';
+                    document.getElementById('main-summary-pane').style.display = 'none';
+                    document.getElementById('newsroom-lock-screen').style.display = 'flex';
+                } else if (decodedPlan === 'Academic Suite') {
+                    activePlanName = "Academic Suite";
+                    planPrice = "$12.99";
+                    intervalLabel = "Departmental Professor Seat Plan";
+                    structuralInterval = "/prof/mo";
+                } else if (decodedPlan === 'Institutional Campus Bundle' || decodedPlan === 'Custom') {
+                    activePlanName = "Institutional Campus Bundle";
+                    planPrice = "Custom Quote";
+                    intervalLabel = "District Licensing Agreement";
+                    structuralInterval = "";
+                }
+            }
+
+            // Bind values directly onto DOM layout tracking points
+            document.getElementById('summary-plan-name').innerText = "Provenant™ " + activePlanName;
+            document.getElementById('summary-billing-interval').innerText = intervalLabel;
             
-            <a href="mailto:provenantforensics@outlook.com?subject=Provenant™%20Integration%20Request&body=Hey%20Provenant™%20Team,%0A%0AI%20would%20like%20to%20request%20protection%20for%20a%20specific%20platform/media%20kit%20format:%0A" 
-               style="color: var(--text-muted); text-decoration: none; font-size: 12px; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'">🔌 Request Integration</a>
-            
-            <a href="mailto:provenantforensics@outlook.com?subject=Provenant™%20Priority%20Support%20/%20Complaint&body=Hey%20Provenant™%20Team,%0A%0AI%20am%20experiencing%20an%20issue%20with%20my%20verification%20loop%20or%20billing%20track:%0A" 
-               style="color: var(--text-muted); text-decoration: none; font-size: 12px; transition: color 0.2s;" onmouseover="this.style.color='#e11d48'" onmouseout="this.style.color='var(--text-muted)'">⚠️ Report an Issue</a>
-        </div>
-        <p>&copy; 2026 Provenant™. All rights reserved. Strategic Media Presenter Node. Security Framework Tier 1.</p>
-    </footer>
+            if (planPrice === "Custom Quote") {
+                document.getElementById('summary-base-price').innerText = "Pending";
+                document.getElementById('summary-discount-price').innerText = "N/A";
+                document.getElementById('billing-timeline-disclosure').innerHTML = "Our engineering implementation team will email you a formal corporate pricing proposal loop based directly on your campus enrollment matrix.";
+                
+                document.getElementById('payment-form').style.opacity = "0.5";
+                document.querySelector('.secure-btn').innerText = "Contact Sales Pending";
+                document.querySelector('.secure-btn').disabled = true;
+            } else {
+                document.getElementById('summary-base-price').innerText = planPrice;
+                document.getElementById('summary-discount-price').innerText = "- " + planPrice;
+                
+                const targetTrialExpiration = new Date();
+                targetTrialExpiration.setDate(targetTrialExpiration.getDate() + 30);
+                const genericFormattedDate = targetTrialExpiration.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                
+                document.getElementById('billing-timeline-disclosure').innerHTML = `After your 30-day forensic sandbox trial ends on <b>${genericFormattedDate}</b>, your verified payment vehicle will automatically clear a standard platform renewal step of <b>${planPrice}${structuralInterval}</b> unless paused via billing dashboards.`;
+            }
+        };
 
+        // CONDITIONAL ACCESS TOKEN EVALUATION FUNCTION
+        function verifyNewsroomToken() {
+            const userInput = document.getElementById('newsroom-passcode-input').value;
+
+            if (userInput === ENTERPRISE_SECRET_PASSCODE) {
+                // Dissolve blocker panel structures and slide purchase frames back to inline tracks
+                document.getElementById('newsroom-lock-screen').style.display = 'none';
+                document.getElementById('main-payment-pane').style.display = 'block';
+                document.getElementById('main-summary-pane').style.display = 'block';
+                
+                const checkoutContainer = document.querySelector('.checkout-container');
+                if (window.innerWidth > 850) {
+                    checkoutContainer.style.display = 'grid';
+                }
+            } else {
+                alert("⚠️ Access Refused: Invalid organizational license token key. Verify newsroom provisioning credentials.");
+            }
+        }
+
+        document.getElementById('payment-form').onsubmit = function(e) {
+            e.preventDefault();
+            const targetCheckoutUrl = stripePaymentLinks[activePlanName];
+            
+            if (!targetCheckoutUrl) {
+                alert("Configuration update required: Missing link array pairing parameter string logic matches.");
+                return;
+            }
+            window.location.href = targetCheckoutUrl;
+        };
+    </script>
 </body>
 </html>
