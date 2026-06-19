@@ -212,6 +212,54 @@
         .media-preview-canvas.format-vertical { width: 180px; height: 280px; border-radius: 16px; }
         .media-preview-canvas.format-landscape { width: 100%; height: 240px; }
 
+        /* LIVE FADING WATERMARK ON MEDIA CANVAS */
+        .canvas-fading-watermark {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1.5px solid var(--success-green);
+            border-radius: 20px;
+            padding: 4px 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Video Scenario Fading Loop Animation class */
+        .canvas-fading-watermark.animated-video-overlay {
+            animation: watermarkFadeInOut 7s infinite ease-in-out;
+        }
+
+        @keyframes watermarkFadeInOut {
+            0% { opacity: 0; transform: translateY(5px); }
+            10% { opacity: 1; transform: translateY(0); }
+            70% { opacity: 1; transform: translateY(0); }
+            80% { opacity: 0; transform: translateY(-5px); }
+            100% { opacity: 0; }
+        }
+
+        .watermark-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--success-green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--success-green);
+        }
+
+        .watermark-text {
+            color: #fff;
+            font-size: 8px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
         .status-ready-tag {
             margin-top: 15px;
             background: rgba(0, 184, 148, 0.1);
@@ -348,19 +396,30 @@
 
         /* FEED CHECKMARK STAMP WIREFRAME SPECIFICATIONS */
         .check-preview-box {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
+            width: 170px;
+            height: 32px;
+            border-radius: 20px;
             background: rgba(0, 184, 148, 0.12);
             border: 2px solid var(--success-green);
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 6px;
+            padding: 0 10px;
             box-shadow: 0 0 15px rgba(0, 184, 148, 0.2);
         }
 
         .check-preview-box svg {
             color: var(--success-green);
+            flex-shrink: 0;
+        }
+
+        .check-preview-text {
+            color: #ffffff;
+            font-size: 8px;
+            font-weight: 900;
+            text-transform: uppercase;
+            white-space: nowrap;
         }
 
         .download-pill-trigger {
@@ -443,7 +502,13 @@
                         Run engine verification matrix to compile active status output layers.
                     </div>
                     
-                    <div class="media-preview-canvas" id="media-canvas"></div>
+                    <div class="media-preview-canvas" id="media-canvas">
+                        <!-- LIVE ADAPTIVE FADING WATERMARK BLOCK -->
+                        <div class="canvas-fading-watermark" id="fading-video-watermark">
+                            <div class="watermark-dot"></div>
+                            <span class="watermark-text" id="watermark-label-text">PROVENANT | 100% ORIGINAL</span>
+                        </div>
+                    </div>
 
                     <button class="status-ready-tag" id="ready-banner">✨ VERIFICATION LOG ARCHIVE COMPLETE</button>
                     
@@ -478,15 +543,16 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button class="download-pill-trigger" onclick="downloadProfileAvatar()">📥 Download Profile Avatar</button>
+                                <button class="download-pill-trigger" onclick="downloadProfileBadge()">📥 Download Profile Avatar</button>
                             </div>
                             
                             <div class="download-column">
                                 <div class="download-badge-title">Layer 2: Verified Feed Asset</div>
                                 <div class="check-preview-box">
-                                    <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
                                     </svg>
+                                    <span class="check-preview-text">PROVENANT | 100% ORIGINAL</span>
                                 </div>
                                 <button class="download-pill-trigger btn-green" onclick="downloadAuthenticatedMedia()">📥 Download Photo with Checkmark</button>
                             </div>
@@ -633,6 +699,11 @@
             document.getElementById('media-canvas').style.display = 'none';
             document.getElementById('ready-banner').style.display = 'none';
             document.getElementById('badge-download-deck').style.display = 'none';
+
+            // Reset visual fading watermark states
+            const watermark = document.getElementById('fading-video-watermark');
+            watermark.style.opacity = "0";
+            watermark.classList.remove('animated-video-overlay');
         }
 
         function selectBadgeVariant(element, variantKey) {
@@ -667,6 +738,9 @@
                 document.getElementById('media-canvas').style.display = 'none';
                 document.getElementById('ready-banner').style.display = 'none';
                 document.getElementById('badge-download-deck').style.display = 'none';
+                
+                // Clear any leftover animation on user uploads
+                document.getElementById('fading-video-watermark').classList.remove('animated-video-overlay');
             }
         }
 
@@ -694,6 +768,7 @@
             const readyBanner = document.getElementById('ready-banner');
             const badgeDeck = document.getElementById('badge-download-deck');
             const target = scenarios[currentScenarioId] || { logDetails: [], aiArtifacts: false };
+            const watermark = document.getElementById('fading-video-watermark');
             
             consoleBox.innerHTML = '';
             placeholder.style.display = 'block';
@@ -701,6 +776,8 @@
             mediaCanvas.style.display = 'none';
             readyBanner.style.display = 'none';
             badgeDeck.style.display = 'none';
+            watermark.classList.remove('animated-video-overlay');
+            watermark.style.opacity = "0";
 
             let step = 0;
             function printNextLine() {
@@ -731,14 +808,25 @@
                         
                         readyBanner.style.display = 'inline-block';
                         badgeDeck.style.display = 'flex';
+
+                        // If it is a video asset, trigger the fading video watermark animation loop!
+                        if (currentScenarioId.includes('mp4') || currentScenarioId === 'youtube_master' || currentScenarioId === 'instagram_compressed') {
+                            watermark.style.opacity = "0";
+                            // Trigger reflow to restart animation safely
+                            void watermark.offsetWidth; 
+                            watermark.classList.add('animated-video-overlay');
+                        } else {
+                            // If it's a static image, the watermark stays completely visible as a static stamp
+                            watermark.style.opacity = "1";
+                        }
                     }
                 }
             }
             printNextLine();
         }
 
-        // DYNAMIC PROFILE PICTURE EXPORT ENGINE (Workaround 1)
-        function downloadProfileAvatar() {
+        // DYNAMIC PROFILE PICTURE EXPORT ENGINE (Layer 1 Profile Picture Generation)
+        function downloadProfileBadge() {
             const canvas = document.getElementById("media-canvas");
             const computedStyle = window.getComputedStyle(canvas);
             const bgUrlStr = computedStyle.backgroundImage.slice(5, -2);
@@ -812,26 +900,25 @@
                 ctx.fillStyle = "#0f172a"; // Deep slate background match
                 ctx.fill();
                 ctx.strokeStyle = "#00b894"; // Emerald success border
-                ctx.lineWidth = 6;
+                ctx.lineWidth = 4;
                 ctx.stroke();
                 ctx.restore();
-                
-                // Draw white checkmark inside green badge
+
+                // Draw checkmark lines inside the circle
                 ctx.save();
                 ctx.beginPath();
                 ctx.strokeStyle = "#00b894";
-                ctx.lineWidth = 8;
+                ctx.lineWidth = 6;
                 ctx.lineCap = "round";
                 ctx.lineJoin = "round";
-                ctx.moveTo(badgeX - 16, badgeY + 2);
-                ctx.lineTo(badgeX - 3, badgeY + 18);
-                ctx.lineTo(badgeX + 18, badgeY - 12);
+                ctx.moveTo(badgeX - 15, badgeY);
+                ctx.lineTo(badgeX - 3, badgeY + 12);
+                ctx.lineTo(badgeX + 15, badgeY - 12);
                 ctx.stroke();
                 ctx.restore();
                 
-                // Step 4: Dispatch high-resolution PNG download
                 const downloadDispatcher = document.createElement("a");
-                downloadDispatcher.download = `provenant_verified_${activeBadgeVariant}_avatar.png`;
+                downloadDispatcher.download = `provenant_${activeBadgeVariant}_avatar_pic.png`;
                 downloadDispatcher.href = hiddenCanvas.toDataURL("image/png");
                 
                 document.body.appendChild(downloadDispatcher);
@@ -840,7 +927,7 @@
             };
         }
 
-        // LAYER 2 ENGINE: SECURE IMAGE CORNER HARD-BAKING PIXEL TRACKS
+        // LAYER 2 ENGINE: SECURE IMAGE CORNER HARD-BAKING HIGH-TECH CAPSULE STAMP
         function downloadAuthenticatedMedia() {
             const canvas = document.getElementById("media-canvas");
             const computedStyle = window.getComputedStyle(canvas);
@@ -862,41 +949,73 @@
                 hiddenCanvas.width = baseImg.naturalWidth;
                 hiddenCanvas.height = baseImg.naturalHeight;
                 
+                // Draw original user image onto hidden canvas track
                 ctx.drawImage(baseImg, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
                 
-                const stampSize = Math.floor(hiddenCanvas.width * 0.08); 
+                // Setup Dynamic Pill dimensions based on image size to prevent scaling pixelation
+                const pillHeight = Math.floor(hiddenCanvas.height * 0.048); 
+                const pillWidth = Math.floor(pillHeight * 5.8); // Adjusted width to cleanly host the brand name
                 const padding = Math.floor(hiddenCanvas.width * 0.03);
                 
-                const stampX = hiddenCanvas.width - stampSize - padding;
-                const stampY = hiddenCanvas.height - stampSize - padding;
-                const centerX = stampX + (stampSize / 2);
-                const centerY = stampY + (stampSize / 2);
-                const radius = stampSize / 2;
+                const pillX = hiddenCanvas.width - pillWidth - padding;
+                const pillY = hiddenCanvas.height - pillHeight - padding;
+                const radius = pillHeight / 2;
                 
+                // Draw rounded capsule container path in the bottom right corner
                 ctx.save();
                 ctx.beginPath();
-                ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-                ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
+                ctx.arc(pillX + radius, pillY + radius, radius, Math.PI / 2, 3 * Math.PI / 2);
+                ctx.lineTo(pillX + pillWidth - radius, pillY);
+                ctx.arc(pillX + pillWidth - radius, pillY + radius, radius, 3 * Math.PI / 2, Math.PI / 2);
+                ctx.closePath();
+                
+                ctx.fillStyle = "rgba(15, 23, 42, 0.92)"; // Sleek semi-transparent dark slate backdrop
                 ctx.fill();
-                ctx.lineWidth = Math.max(1, stampSize * 0.04);
-                ctx.strokeStyle = "#00b894";
-                ctx.stroke();
-                
-                ctx.beginPath();
-                ctx.strokeStyle = "#00b894";
-                ctx.lineWidth = Math.max(2, stampSize * 0.06);
-                ctx.lineCap = "round";
-                ctx.lineJoin = "round";
-                
-                const checkScale = stampSize * 0.01;
-                ctx.moveTo(centerX - (5 * checkScale), centerY + (1 * checkScale));
-                ctx.lineTo(centerX - (1 * checkScale), centerY + (5 * checkScale));
-                ctx.lineTo(centerX + (6 * checkScale), centerY - (3 * checkScale));
+                ctx.lineWidth = Math.max(1.5, pillHeight * 0.045);
+                ctx.strokeStyle = "#00b894"; // Emerald green border
                 ctx.stroke();
                 ctx.restore();
                 
+                // Draw green verified checkmark bubble inside the left of the capsule
+                const checkCenterX = pillX + radius;
+                const checkCenterY = pillY + radius;
+                const checkRadius = radius * 0.65;
+                
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(checkCenterX, checkCenterY, checkRadius, 0, 2 * Math.PI);
+                ctx.fillStyle = "rgba(0, 184, 148, 0.15)";
+                ctx.fill();
+                ctx.lineWidth = Math.max(1, pillHeight * 0.035);
+                ctx.strokeStyle = "#00b894";
+                ctx.stroke();
+                
+                // Draw small crisp checkmark vector
+                ctx.beginPath();
+                ctx.strokeStyle = "#00b894";
+                ctx.lineWidth = Math.max(2, pillHeight * 0.06);
+                ctx.lineCap = "round";
+                ctx.lineJoin = "round";
+                
+                const scale = checkRadius * 0.11;
+                ctx.moveTo(checkCenterX - (4 * scale), checkCenterY + (1 * scale));
+                ctx.lineTo(checkCenterX - (1 * scale), checkCenterY + (4 * scale));
+                ctx.lineTo(checkCenterX + (5 * scale), checkCenterY - (3 * scale));
+                ctx.stroke();
+                ctx.restore();
+                
+                // Write "PROVENANT | 100% ORIGINAL" brand metadata nicely under the checkmark context loop
+                ctx.save();
+                ctx.fillStyle = "#ffffff";
+                ctx.font = `900 ${Math.floor(pillHeight * 0.36)}px 'Inter', sans-serif`;
+                ctx.textAlign = "left";
+                ctx.textBaseline = "middle";
+                ctx.fillText("PROVENANT | 100% ORIGINAL", pillX + (radius * 2.1), pillY + radius);
+                ctx.restore();
+                
+                // Dispatch high-resolution JPEG download
                 const downloadDispatcher = document.createElement("a");
-                downloadDispatcher.download = "provenant_verified_secure_feed.jpg";
+                downloadDispatcher.download = "provenant_verified_original_feed.jpg";
                 downloadDispatcher.href = hiddenCanvas.toDataURL("image/jpeg", 0.95);
                 
                 document.body.appendChild(downloadDispatcher);
