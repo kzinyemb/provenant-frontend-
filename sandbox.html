@@ -451,7 +451,7 @@
                         <div class="download-split-grid">
                             
                             <div class="download-column">
-                                <div class="download-badge-title">Layer 1: Account Profile Badge</div>
+                                <div class="download-badge-title">Layer 1: Instagram Avatar Stamp</div>
                                 <div class="badge-matrix-row">
                                     <div class="matrix-pill-card selected" onclick="selectBadgeVariant(this, 'social')">
                                         <div class="matrix-pill-label">Social</div>
@@ -478,7 +478,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button class="download-pill-trigger" onclick="downloadProfileBadge()">📥 Download PNG Overlay</button>
+                                <button class="download-pill-trigger" onclick="downloadProfileAvatar()">📥 Download Profile Avatar</button>
                             </div>
                             
                             <div class="download-column">
@@ -737,79 +737,107 @@
             printNextLine();
         }
 
-        // LAYER 1 ENGINE: ISOLATED stand-alone BADGE GENERATOR
-        function downloadProfileBadge() {
+        // DYNAMIC PROFILE PICTURE EXPORT ENGINE (Workaround 1)
+        function downloadProfileAvatar() {
+            const canvas = document.getElementById("media-canvas");
+            const computedStyle = window.getComputedStyle(canvas);
+            const bgUrlStr = computedStyle.backgroundImage.slice(5, -2);
+            
+            if (!bgUrlStr || bgUrlStr === "ne") {
+                alert("⚠️ Error: Please run an engine scan on a valid image scenario first.");
+                return;
+            }
+
             const hiddenCanvas = document.createElement("canvas");
             const ctx = hiddenCanvas.getContext("2d");
             
-            hiddenCanvas.width = 300;
-            hiddenCanvas.height = 100;
-            ctx.clearRect(0, 0, hiddenCanvas.width, hiddenCanvas.height);
+            // Generate high-resolution 600x600 square-wrapped profile photo
+            hiddenCanvas.width = 600;
+            hiddenCanvas.height = 600;
             
-            const targetX = 10;
-            const targetY = 10;
-            const targetWidth = 280;
-            const targetHeight = 80;
-            const radius = 14;
+            const baseImg = new Image();
+            baseImg.crossOrigin = "anonymous";
+            baseImg.src = bgUrlStr;
             
-            ctx.save();
-            ctx.beginPath();
-            ctx.moveTo(targetX + radius, targetY);
-            ctx.lineTo(targetX + targetWidth - radius, targetY);
-            ctx.quadraticCurveTo(targetX + targetWidth, targetY, targetX + targetWidth, targetY + radius);
-            ctx.lineTo(targetX + targetWidth, targetY + targetHeight - radius);
-            ctx.quadraticCurveTo(targetX + targetWidth, targetY + targetHeight, targetX + targetWidth - radius, targetY + targetHeight);
-            ctx.lineTo(targetX + radius, targetY + targetHeight);
-            ctx.quadraticCurveTo(targetX, targetY + targetHeight, targetX, targetY + targetHeight - radius);
-            ctx.lineTo(targetX, targetY + radius);
-            ctx.quadraticCurveTo(targetX, targetY, targetX + radius, targetY);
-            ctx.closePath();
-            
-            const gradient = ctx.createLinearGradient(targetX, targetY, targetX + targetWidth, targetY + targetHeight);
-            gradient.addColorStop(0, '#ee2a7b');
-            gradient.addColorStop(1, '#a21caf');
-            ctx.fillStyle = gradient;
-            ctx.fill();
-            
-            ctx.lineWidth = 2.5;
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.25)";
-            ctx.stroke();
-            ctx.restore();
-            
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            const centerX = targetX + (targetWidth / 2);
-            
-            let line2Text = "ACTIVE";
-            let line3Text = "VERIFIED HUMAN";
-            
-            if (activeBadgeVariant === 'dating') {
-                line2Text = "AUTHENTIC";
-                line3Text = "REAL HUMAN";
-            } else if (activeBadgeVariant === 'pro') {
-                line2Text = "ACTIVE";
-                line3Text = "HUMAN VERIFIED";
-            }
-            
-            ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
-            ctx.font = "900 16px 'Inter', sans-serif";
-            ctx.fillText("PROVENANT", centerX, targetY + (targetHeight * 0.24));
-            
-            ctx.fillStyle = "#ffffff";
-            ctx.font = "italic 900 24px 'Inter', sans-serif";
-            ctx.fillText(line2Text, centerX, targetY + (targetHeight * 0.52));
-            
-            ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-            ctx.font = "600 12px 'Inter', sans-serif";
-            ctx.fillText(line3Text, centerX, targetY + (targetHeight * 0.78));
-            
-            const downloadDispatcher = document.createElement("a");
-            downloadDispatcher.download = `provenant_${activeBadgeVariant}_badge.png`;
-            downloadDispatcher.href = hiddenCanvas.toDataURL("image/png");
-            
-            document.body.appendChild(downloadDispatcher);
-            downloadDispatcher.click();
-            document.body.removeChild(downloadDispatcher);
+            baseImg.onload = function() {
+                const centerX = 300;
+                const centerY = 300;
+                const avatarRadius = 240; // Clean margin inside square boundaries
+                
+                // Step 1: Clip canvas to circle and draw profile photo
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, avatarRadius, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.clip();
+                
+                // Handle non-square scaling beautifully (draw centered)
+                const imgRatio = baseImg.naturalWidth / baseImg.naturalHeight;
+                let drawW = 600;
+                let drawH = 600;
+                let drawX = 0;
+                let drawY = 0;
+                if (imgRatio > 1) {
+                    drawW = 600 * imgRatio;
+                    drawX = -(drawW - 600) / 2;
+                } else {
+                    drawH = 600 / imgRatio;
+                    drawY = -(drawH - 600) / 2;
+                }
+                ctx.drawImage(baseImg, drawX, drawY, drawW, drawH);
+                ctx.restore();
+                
+                // Step 2: Draw the Premium Verification Ring (Meta / Instagram Style Gradient)
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, avatarRadius - 4, 0, Math.PI * 2);
+                const gradient = ctx.createLinearGradient(0, 0, 600, 600);
+                gradient.addColorStop(0, '#f9ce34');
+                gradient.addColorStop(0.5, '#ee2a7b');
+                gradient.addColorStop(1, '#6228d7');
+                ctx.strokeStyle = gradient;
+                ctx.lineWidth = 12;
+                ctx.stroke();
+                ctx.restore();
+
+                // Step 3: Draw the Verified checkmark seal in the bottom right corner
+                const badgeRadius = 50;
+                const angle = Math.PI * 0.25; // 45 degrees (bottom right)
+                const badgeX = centerX + avatarRadius * Math.cos(angle) - 15;
+                const badgeY = centerY + avatarRadius * Math.sin(angle) - 15;
+                
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(badgeX, badgeY, badgeRadius, 0, Math.PI * 2);
+                ctx.fillStyle = "#0f172a"; // Deep slate background match
+                ctx.fill();
+                ctx.strokeStyle = "#00b894"; // Emerald success border
+                ctx.lineWidth = 6;
+                ctx.stroke();
+                ctx.restore();
+                
+                // Draw white checkmark inside green badge
+                ctx.save();
+                ctx.beginPath();
+                ctx.strokeStyle = "#00b894";
+                ctx.lineWidth = 8;
+                ctx.lineCap = "round";
+                ctx.lineJoin = "round";
+                ctx.moveTo(badgeX - 16, badgeY + 2);
+                ctx.lineTo(badgeX - 3, badgeY + 18);
+                ctx.lineTo(badgeX + 18, badgeY - 12);
+                ctx.stroke();
+                ctx.restore();
+                
+                // Step 4: Dispatch high-resolution PNG download
+                const downloadDispatcher = document.createElement("a");
+                downloadDispatcher.download = `provenant_verified_${activeBadgeVariant}_avatar.png`;
+                downloadDispatcher.href = hiddenCanvas.toDataURL("image/png");
+                
+                document.body.appendChild(downloadDispatcher);
+                downloadDispatcher.click();
+                document.body.removeChild(downloadDispatcher);
+            };
         }
 
         // LAYER 2 ENGINE: SECURE IMAGE CORNER HARD-BAKING PIXEL TRACKS
