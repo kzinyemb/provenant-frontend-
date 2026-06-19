@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6B0NP15RYC"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -91,7 +90,7 @@
         }
 
         .scenario-selector { display: flex; flex-direction: column; gap: 12px; }
-        
+         
         .scenario-option {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--brand-border);
@@ -235,12 +234,24 @@
             animation: watermarkFadeInOut 7s infinite ease-in-out;
         }
 
+        /* Image Scenario 4-second Fading Animation class */
+        .canvas-fading-watermark.animated-image-overlay {
+            animation: watermarkImageFade 4s forwards cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         @keyframes watermarkFadeInOut {
             0% { opacity: 0; transform: translateY(5px); }
             10% { opacity: 1; transform: translateY(0); }
             70% { opacity: 1; transform: translateY(0); }
             80% { opacity: 0; transform: translateY(-5px); }
             100% { opacity: 0; }
+        }
+
+        @keyframes watermarkImageFade {
+            0% { opacity: 0; transform: translateY(5px); }
+            10% { opacity: 1; transform: translateY(0); }
+            75% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-5px); }
         }
 
         .watermark-dot {
@@ -461,7 +472,7 @@
         </header>
 
         <div class="sandbox-grid">
-            
+             
             <div class="panel">
                 <div class="panel-title">1. Image Media Environments</div>
                 <div class="scenario-selector">
@@ -492,7 +503,7 @@
 
             <div class="panel center-panel">
                 <div class="panel-title">2. Processing Console Logs & Workspace Canvas</div>
-                
+                 
                 <div class="terminal" id="console-logs">
                     <div class="terminal-line neutral">> Ready engine deployment hooks. Select a configuration profile or upload your own file to run telemetry checks...</div>
                 </div>
@@ -501,9 +512,8 @@
                     <div class="output-placeholder" id="placeholder-text">
                         Run engine verification matrix to compile active status output layers.
                     </div>
-                    
+                     
                     <div class="media-preview-canvas" id="media-canvas">
-                        <!-- LIVE ADAPTIVE FADING WATERMARK BLOCK -->
                         <div class="canvas-fading-watermark" id="fading-video-watermark">
                             <div class="watermark-dot"></div>
                             <span class="watermark-text" id="watermark-label-text">PROVENANT | 100% ORIGINAL</span>
@@ -511,10 +521,10 @@
                     </div>
 
                     <button class="status-ready-tag" id="ready-banner">✨ VERIFICATION LOG ARCHIVE COMPLETE</button>
-                    
+                     
                     <div class="download-badge-section" id="badge-download-deck">
                         <div class="download-split-grid">
-                            
+                             
                             <div class="download-column">
                                 <div class="download-badge-title">Layer 1: Instagram Avatar Stamp</div>
                                 <div class="badge-matrix-row">
@@ -545,7 +555,7 @@
                                 </div>
                                 <button class="download-pill-trigger" onclick="downloadProfileBadge()">📥 Download Profile Avatar</button>
                             </div>
-                            
+                             
                             <div class="download-column">
                                 <div class="download-badge-title">Layer 2: Verified Feed Asset</div>
                                 <div class="check-preview-box">
@@ -703,7 +713,7 @@
             // Reset visual fading watermark states
             const watermark = document.getElementById('fading-video-watermark');
             watermark.style.opacity = "0";
-            watermark.classList.remove('animated-video-overlay');
+            watermark.classList.remove('animated-video-overlay', 'animated-image-overlay');
         }
 
         function selectBadgeVariant(element, variantKey) {
@@ -740,7 +750,7 @@
                 document.getElementById('badge-download-deck').style.display = 'none';
                 
                 // Clear any leftover animation on user uploads
-                document.getElementById('fading-video-watermark').classList.remove('animated-video-overlay');
+                document.getElementById('fading-video-watermark').className = 'canvas-fading-watermark';
             }
         }
 
@@ -776,7 +786,7 @@
             mediaCanvas.style.display = 'none';
             readyBanner.style.display = 'none';
             badgeDeck.style.display = 'none';
-            watermark.classList.remove('animated-video-overlay');
+            watermark.className = 'canvas-fading-watermark';
             watermark.style.opacity = "0";
 
             let step = 0;
@@ -809,15 +819,15 @@
                         readyBanner.style.display = 'inline-block';
                         badgeDeck.style.display = 'flex';
 
-                        // If it is a video asset, trigger the fading video watermark animation loop!
-                        if (currentScenarioId.includes('mp4') || currentScenarioId === 'youtube_master' || currentScenarioId === 'instagram_compressed') {
-                            watermark.style.opacity = "0";
-                            // Trigger reflow to restart animation safely
-                            void watermark.offsetWidth; 
+                        // Restart animation loops perfectly safely by resetting offsets
+                        void watermark.offsetWidth; 
+
+                        // Check if it is a video file or static image target to assign the proper fading timing sequence
+                        if (currentScenarioId.includes('mp4') || currentScenarioId === 'youtube_master' || currentScenarioId === 'instagram_compressed' || fallbackType === 'video') {
                             watermark.classList.add('animated-video-overlay');
                         } else {
-                            // If it's a static image, the watermark stays completely visible as a static stamp
-                            watermark.style.opacity = "1";
+                            // If it's a static image environment, fade in for 4 seconds then fully disappear to keep social algorithms happy
+                            watermark.classList.add('animated-image-overlay');
                         }
                     }
                 }
@@ -1025,4 +1035,5 @@
         }
     </script>
 </body>
-</html>
+</html>"""
+
