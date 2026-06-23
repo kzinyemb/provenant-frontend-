@@ -13,6 +13,13 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- PWA Integration Tags -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+
     <title>Provenant™ | Deepfake Protection for Creators & Influencer Networks</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap">
     <style>
@@ -168,7 +175,7 @@
             left: 50%;
             transform: translateX(-50%);
             z-index: 10;
-            width: 150px; /* Slightly widened to fit co-branding */
+            width: 150px;
             background: linear-gradient(135deg, #ee2a7b 0%, #a21caf 100%);
             border: 1.5px solid #0f172a;
             border-radius: 8px;
@@ -411,6 +418,13 @@
         </div>
         <p>&copy; 2026 Provenant™. All rights reserved. Strategic Media Presenter Node. Security Framework Tier 1.</p>
     </footer>
+
+    <!-- Service Worker Registration Script -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js');
+      }
+    </script>
 
 </body>
 </html>
