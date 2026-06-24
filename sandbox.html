@@ -73,52 +73,50 @@
 
                 <div class="relative w-full h-[450px] rounded-[28px] overflow-hidden mt-5 bg-black border border-white/5 flex items-center justify-center">
                      
-                    <div id="active-media-bg" class="w-full h-full bg-cover bg-center transition-all duration-300 relative flex items-center justify-center" style="background-image: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop');">
+                    <div id="active-media-bg" class="absolute inset-0 bg-cover bg-center transition-all duration-300 flex items-center justify-center z-10" style="background-image: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop');"></div>
+
+                    <video id="active-media-video" class="absolute inset-0 w-full h-full object-cover hidden z-10" autoplay loop muted playsinline></video>
                          
-                        <!-- Hidden File Inputs to Trigger Device Photo/Video Picker -->
-                        <input type="file" id="device-photo-picker" accept="image/*" class="hidden" onchange="handleFileSelection(event, 'image')">
-                        <input type="file" id="device-video-picker" accept="video/*" class="hidden" onchange="handleFileSelection(event, 'video')">
+                    <input type="file" id="device-photo-picker" accept="image/*" class="hidden" onchange="handleFileSelection(event, 'image')">
+                    <input type="file" id="device-video-picker" accept="video/*" class="hidden" onchange="handleFileSelection(event, 'video')">
 
-                        <div id="scan-radar-screen" class="absolute inset-0 bg-rose-500/10 backdrop-blur-[1px] hidden flex-col items-center justify-center gap-2 z-40">
-                            <div class="w-10 h-10 border-4 border-rose-500 border-t-transparent rounded-full animate-spin shadow-lg"></div>
-                            <span class="text-[9px] font-mono tracking-widest text-white uppercase font-black bg-rose-600/90 px-2.5 py-1 rounded shadow-md">
-                                Verifying Original Signature
-                            </span>
-                        </div>
-
-                        <div id="camera-rules-grid" class="absolute inset-0 grid grid-cols-3 grid-rows-3 pointer-events-none opacity-20">
-                            <div class="border-r border-b border-white/30"></div>
-                            <div class="border-r border-b border-white/30"></div>
-                            <div class="border-b border-white/30"></div>
-                            <div class="border-r border-b border-white/30"></div>
-                            <div class="border-r border-b border-white/30"></div>
-                            <div class="border-b border-white/30"></div>
-                            <div class="border-r border-white/30"></div>
-                            <div class="border-r border-white/30"></div>
-                            <div></div>
-                        </div>
-
-                        <!-- CO-BRANDED INTERACTIVE NATIVE APP ATTRIBUTION STAMP OVERLAY -->
-                        <div id="sim-watermark-pill"
-                             class="absolute bg-zinc-950/75 border border-white/10 rounded-full pl-2 pr-3 py-1.5 flex items-center gap-1.5 shadow-2xl backdrop-blur-md cursor-grab active:cursor-grabbing select-none hidden z-50 transition-opacity duration-200"
-                             style="left: 15%; top: 20%;">
-                            
-                            <!-- Visual Drag Indicator Icon -->
-                            <div class="text-[10px] text-slate-400 font-bold -mr-0.5 tracking-tighter opacity-80 select-none pointer-events-none">⋮⋮</div>
-
-                            <div class="w-3.5 h-3.5 bg-emerald-500 rounded-full flex items-center justify-center shadow-[0_0_6px_rgba(0,184,148,0.4)]">
-                                <span class="text-[8px] font-extrabold text-white mt-[-1.5px]">✓</span>
-                            </div>
-                            <span id="sim-watermark-text" class="text-[9px] font-semibold text-white font-sans tracking-wide uppercase whitespace-nowrap">
-                                PROVENANT • VERIFIED HUMAN (100% ORIGINAL)
-                            </span>
-                        </div>
-
-                        <div id="timeline-secs-tag" class="absolute bottom-3 right-3 bg-black/60 border border-white/10 px-2 py-1 rounded text-[8px] font-mono text-slate-300 hidden">
-                            SIM TIME: <span id="sim-sec-val">0.0s</span>
-                        </div>
-
+                    <div id="scan-radar-screen" class="absolute inset-0 bg-rose-500/10 backdrop-blur-[1px] hidden flex-col items-center justify-center gap-2 z-40">
+                        <div class="w-10 h-10 border-4 border-rose-500 border-t-transparent rounded-full animate-spin shadow-lg"></div>
+                        <span class="text-[9px] font-mono tracking-widest text-white uppercase font-black bg-rose-600/90 px-2.5 py-1 rounded shadow-md">
+                            Verifying Original Signature
+                        </span>
                     </div>
+
+                    <div id="camera-rules-grid" class="absolute inset-0 grid grid-cols-3 grid-rows-3 pointer-events-none opacity-20 z-30">
+                        <div class="border-r border-b border-white/30"></div>
+                        <div class="border-r border-b border-white/30"></div>
+                        <div class="border-b border-white/30"></div>
+                        <div class="border-r border-b border-white/30"></div>
+                        <div class="border-r border-b border-white/30"></div>
+                        <div class="border-b border-white/30"></div>
+                        <div class="border-r border-white/30"></div>
+                        <div class="border-r border-white/30"></div>
+                        <div></div>
+                    </div>
+
+                    <div id="sim-watermark-pill"
+                         class="absolute bg-zinc-950/75 border border-white/10 rounded-full pl-2 pr-3 py-1.5 flex items-center gap-1.5 shadow-2xl backdrop-blur-md cursor-grab active:cursor-grabbing select-none hidden z-50 transition-opacity duration-200"
+                         style="left: 15%; top: 20%;">
+                        
+                        <div class="text-[10px] text-slate-400 font-bold -mr-0.5 tracking-tighter opacity-80 select-none pointer-events-none">⋮⋮</div>
+
+                        <div class="w-3.5 h-3.5 bg-emerald-500 rounded-full flex items-center justify-center shadow-[0_0_6px_rgba(0,184,148,0.4)]">
+                            <span class="text-[8px] font-extrabold text-white mt-[-1.5px]">✓</span>
+                        </div>
+                        <span id="sim-watermark-text" class="text-[9px] font-semibold text-white font-sans tracking-wide uppercase whitespace-nowrap">
+                            PROVENANT • VERIFIED HUMAN (100% ORIGINAL)
+                        </span>
+                    </div>
+
+                    <div id="timeline-secs-tag" class="absolute bottom-3 right-3 bg-black/60 border border-white/10 px-2 py-1 rounded text-[8px] font-mono text-slate-300 hidden z-30">
+                        SIM TIME: <span id="sim-sec-val">0.0s</span>
+                    </div>
+
                 </div>
 
                 <div class="flex-grow flex flex-col justify-center px-1 py-1 text-left">
@@ -211,7 +209,6 @@
 
     </div>
 
-    <!-- DYNAMIC SHORTCUT INSTRUCTION MODAL WINDOW OVERLAY -->
     <div id="shortcut-modal" class="fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="bg-slate-900 border border-white/10 rounded-3xl w-full max-w-sm p-6 space-y-4 text-left shadow-2xl relative translate-y-4 transition-transform duration-300" id="shortcut-modal-card">
             <button onclick="closeShortcutModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors p-1 text-lg font-bold">×</button>
@@ -221,13 +218,11 @@
                 <p class="text-xs text-slate-400">Pin Provenant to your home screen to run it full-screen anytime like a native mobile app.</p>
             </div>
 
-            <!-- MODAL TAB HEADER SWITCHES -->
             <div class="flex border-b border-white/5 text-xs font-bold text-slate-500">
                 <button id="modal-tab-btn-ios" onclick="switchModalTab('ios')" class="flex-1 pb-2 border-b-2 border-rose-500 text-white text-center">🍏 iOS / iPhone</button>
                 <button id="modal-tab-btn-android" onclick="switchModalTab('android')" class="flex-1 pb-2 border-b-2 border-transparent text-center">🤖 Android</button>
             </div>
 
-            <!-- MODAL PACK CONTENT LAYER 1: iOS -->
             <div id="modal-pane-ios" class="space-y-2 text-xs text-slate-300 leading-relaxed">
                 <div class="flex gap-2.5 items-start"><span class="bg-white/5 rounded-md px-1.5 py-0.5 font-bold font-mono text-rose-400">1</span><span>Open the website in **Safari** on your iPhone.</span></div>
                 <div class="flex gap-2.5 items-start"><span class="bg-white/5 rounded-md px-1.5 py-0.5 font-bold font-mono text-rose-400">2</span><span>Tap the **Share** button <span class="text-sky-400 font-bold font-mono">[⎋]</span> at the bottom of the browser.</span></div>
@@ -235,7 +230,6 @@
                 <div class="flex gap-2.5 items-start"><span class="bg-white/5 rounded-md px-1.5 py-0.5 font-bold font-mono text-rose-400">4</span><span>Tap **Add** in the top right corner to confirm setup.</span></div>
             </div>
 
-            <!-- MODAL PACK CONTENT LAYER 2: ANDROID -->
             <div id="modal-pane-android" class="hidden space-y-2 text-xs text-slate-300 leading-relaxed">
                 <div class="flex gap-2.5 items-start"><span class="bg-white/5 rounded-md px-1.5 py-0.5 font-bold font-mono text-rose-400">1</span><span>Open the website inside **Chrome** on your Android device.</span></div>
                 <div class="flex gap-2.5 items-start"><span class="bg-white/5 rounded-md px-1.5 py-0.5 font-bold font-mono text-rose-400">2</span><span>Tap the **Three Dots Menu Icon (⋮)** in the upper right.</span></div>
@@ -247,7 +241,6 @@
         </div>
     </div>
 
-    <!-- TOAST POPUP GATEWAY -->
     <div id="custom-toast" class="fixed bottom-6 right-6 bg-slate-900 border border-white/10 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 transition-all duration-300 opacity-0 translate-y-4 pointer-events-none z-[99999] cursor-pointer" onclick="handleToastClick(event)">
         <div class="w-2 h-2 rounded-full bg-rose-500 animate-ping" id="toast-ping-dot"></div>
         <span id="toast-message-text" class="text-xs font-semibold">Initiating secure sandbox components...</span>
@@ -268,10 +261,10 @@
         let currentOffsetX = 15;
         let currentOffsetY = 20;
 
-        // Fallback Base Mock Images
+        // Fallback Base Mock Images / Mock Video
         let sampleDataURIs = {
             image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop',
-            video: 'https://images.unsplash.com/photo-1542204172-e7052809a936?q=80&w=600&auto=format&fit=crop'
+            video: '' // Will hold the dynamic dataURL object at runtime
         };
 
         // Custom Toast System
@@ -290,7 +283,6 @@
             toast.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
             toast.classList.add('opacity-100', 'translate-y-0');
 
-            // Maintain automatic fade out unless clicked
             setTimeout(() => {
                 if (document.getElementById('toast-message-text').innerText === message) {
                     dismissToast();
@@ -312,13 +304,17 @@
             }
         }
 
-        // Modal Action Scripts
+        // Modal Controls
         function openShortcutModal() {
             const modal = document.getElementById('shortcut-modal');
             const card = document.getElementById('shortcut-modal-card');
             modal.classList.remove('opacity-0', 'pointer-events-none');
             card.classList.remove('translate-y-4');
         }
+
+        document.addEventListener('keydown', function(e) {
+            if(e.key === "Escape") closeShortcutModal();
+        });
 
         function closeShortcutModal() {
             const modal = document.getElementById('shortcut-modal');
@@ -373,7 +369,7 @@
             }
         }
 
-        // Process file inputs and handle loops cleanly
+        // Process file inputs and handle media toggle switches dynamically
         function handleFileSelection(event, type) {
             const file = event.target.files[0];
             if (!file) return;
@@ -383,7 +379,21 @@
 
             reader.onload = function(e) {
                 sampleDataURIs[type] = e.target.result;
-                document.getElementById('active-media-bg').style.backgroundImage = `url('${e.target.result}')`;
+                
+                const imgNode = document.getElementById('active-media-bg');
+                const vidNode = document.getElementById('active-media-video');
+
+                if (type === 'image') {
+                    vidNode.classList.add('hidden');
+                    vidNode.src = "";
+                    imgNode.classList.remove('hidden');
+                    imgNode.style.backgroundImage = `url('${e.target.result}')`;
+                } else {
+                    imgNode.classList.add('hidden');
+                    vidNode.classList.remove('hidden');
+                    vidNode.src = e.target.result;
+                    vidNode.play().catch(err => console.log("Video auto-play deferred."));
+                }
                 
                 writeRadarLog(`Successfully loaded personal user file stream: [${file.name}]`, 'success');
                 showToast("File loaded! Tap 'Verify' to audit metrics.");
@@ -439,7 +449,6 @@
                 watermark.classList.remove('hidden');
                 grid.classList.add('opacity-0');
                 
-                // Fire the tooltip banner log notice safely
                 writeRadarLog("Badge active! Touch & hold layout coordinates directly inside screen frame area to find the best location.", "warning");
                 triggerWatermarkSimulation();
             }
@@ -570,27 +579,33 @@
         window.addEventListener('touchmove', onDragMove, { passive: false });
         window.addEventListener('touchend', onDragEnd);
 
-        // HIGH-FIDELITY MOBILE EXPORT ENGINE
+        // HIGH-FIDELITY EXPORT ENGINE (Bakes from Video Keyframes or Static Images uniformly)
         function downloadFlattenedMedia() {
             showToast("Baking flat pixel vectors to file... 🚀");
             writeRadarLog("Executing image export engine...", "warning");
 
             const hiddenCanvas = document.createElement("canvas");
             const ctx = hiddenCanvas.getContext("2d");
-            const baseImg = new Image();
-
-            if (!sampleDataURIs[mockMediaType].startsWith('data:')) {
-                baseImg.crossOrigin = "anonymous";
-            }
             
-            baseImg.src = sampleDataURIs[mockMediaType];
+            // Handles both running video snapshot extraction arrays and background images
+            const isVideoMode = (mockMediaType === 'video' && sampleDataURIs.video);
+            const mediaSourceNode = isVideoMode ? document.getElementById('active-media-video') : new Image();
 
-            baseImg.onload = function() {
-                hiddenCanvas.width = baseImg.naturalWidth || 600;
-                hiddenCanvas.height = baseImg.naturalHeight || 800;
+            if (!isVideoMode) {
+                if (!sampleDataURIs[mockMediaType].startsWith('data:')) {
+                    mediaSourceNode.crossOrigin = "anonymous";
+                }
+                mediaSourceNode.src = sampleDataURIs[mockMediaType];
+            }
 
-                ctx.drawImage(baseImg, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+            const finalizeCanvasExport = () => {
+                hiddenCanvas.width = isVideoMode ? mediaSourceNode.videoWidth : (mediaSourceNode.naturalWidth || 600);
+                hiddenCanvas.height = isVideoMode ? mediaSourceNode.videoHeight : (mediaSourceNode.naturalHeight || 800);
 
+                // 1. Capture base photo frame layer or video canvas keyframe block natively
+                ctx.drawImage(mediaSourceNode, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+
+                // 2. Compute proportional badge layouts based on high-res dimensions
                 const isVertical = hiddenCanvas.height > hiddenCanvas.width;
                 const baseDimensionRef = isVertical ? hiddenCanvas.width : hiddenCanvas.height;
 
@@ -609,6 +624,7 @@
                 const finalX = (hiddenCanvas.width - scaleWidth) * (currentOffsetX / 100);
                 const finalY = (hiddenCanvas.height - scaleHeight) * (currentOffsetY / 100);
 
+                // 3. Draw Translucent Backdrop capsule rectangle
                 ctx.save();
                 ctx.fillStyle = "rgba(22, 24, 26, 0.82)";
                 ctx.beginPath();
@@ -620,6 +636,7 @@
                 const circleX = finalX + (scaleHeight * 0.42) + 2;
                 const circleY = finalY + (scaleHeight * 0.5);
 
+                // 4. Draw green checkmark badge circle
                 ctx.save();
                 ctx.fillStyle = "#00b894";
                 ctx.beginPath();
@@ -640,6 +657,7 @@
                 ctx.stroke();
                 ctx.restore();
 
+                // 5. Print typography lines
                 ctx.save();
                 ctx.fillStyle = "#ffffff";
                 ctx.font = `600 ${Math.floor(scaleHeight * 0.38)}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
@@ -671,10 +689,16 @@
                     }, 500);
                     
                 } catch(err) {
-                    writeRadarLog("Canvas tainted by external URL file configurations.", "danger");
+                    writeRadarLog("Canvas tainted by external URL configuration streams.", "danger");
                     showToast("Error saving external demo layout. Please upload a real file to download successfully!");
                 }
             };
+
+            if (isVideoMode) {
+                finalizeCanvasExport();
+            } else {
+                mediaSourceNode.onload = finalizeCanvasExport;
+            }
         }
 
         // Initialize values on first boot
