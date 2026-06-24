@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6B0NP15RYC"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -13,9 +12,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Provenant Content Authentication Workspace</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Inter & Fira Code Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800;900&family=Fira+Code:wght=400;500&display=swap" rel="stylesheet">
     
     <script>
@@ -51,7 +48,6 @@
 
     <div class="w-full max-w-4xl flex flex-col items-center gap-8 text-center">
         
-        <!-- HEADER DESCRIPTION SUMMARY -->
         <div class="max-w-2xl space-y-3">
             <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white leading-tight">
                 Provenant™ Mobile
@@ -61,11 +57,9 @@
             </p>
         </div>
 
-        <!-- THE INTERACTIVE PHONE SHELL CENTERPIECE -->
         <div class="flex justify-center w-full">
             <div class="relative w-[350px] h-[720px] bg-slate-950 rounded-[48px] border-[10px] border-slate-900 shadow-[0_25px_60px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col justify-between p-3 select-none">
                 
-                <!-- iOS System Status Top Notch Bar -->
                 <div class="absolute top-0 left-1/2 -translate-x-1/2 w-36 h-6 bg-slate-900 rounded-b-2xl z-[100] flex items-center justify-between px-5 text-[9px] font-bold text-white/90">
                     <span class="text-[8px] -ml-1">10:55</span>
                     <div class="w-14 h-3 bg-black rounded-full mx-auto"></div>
@@ -77,17 +71,13 @@
                     </div>
                 </div>
 
-                <!-- MAIN LIVE IMAGE / EDITING FEED FRAME -->
                 <div class="relative w-full h-[450px] rounded-[28px] overflow-hidden mt-5 bg-black border border-white/5 flex items-center justify-center">
                     
-                    <!-- Base Media Mock Canvas -->
                     <div id="active-media-bg" class="w-full h-full bg-cover bg-center transition-all duration-300 relative flex items-center justify-center" style="background-image: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop');">
                         
-                        <!-- Hidden File Inputs to Trigger Device Photo/Video Picker -->
                         <input type="file" id="device-photo-picker" accept="image/*" class="hidden" onchange="handleFileSelection(event, 'image')">
                         <input type="file" id="device-video-picker" accept="video/*" class="hidden" onchange="handleFileSelection(event, 'video')">
 
-                        <!-- Simulated GPU Radar Scan Overlay -->
                         <div id="scan-radar-screen" class="absolute inset-0 bg-rose-500/10 backdrop-blur-[1px] hidden flex-col items-center justify-center gap-2 z-40">
                             <div class="w-10 h-10 border-4 border-rose-500 border-t-transparent rounded-full animate-spin shadow-lg"></div>
                             <span class="text-[9px] font-mono tracking-widest text-white uppercase font-black bg-rose-600/90 px-2.5 py-1 rounded shadow-md">
@@ -95,7 +85,6 @@
                             </span>
                         </div>
 
-                        <!-- Camera Guide Overlays -->
                         <div id="camera-rules-grid" class="absolute inset-0 grid grid-cols-3 grid-rows-3 pointer-events-none opacity-20">
                             <div class="border-r border-b border-white/30"></div>
                             <div class="border-r border-b border-white/30"></div>
@@ -108,7 +97,6 @@
                             <div></div>
                         </div>
 
-                        <!-- CO-BRANDED INTERACTIVE NATIVE APP ATTRIBUTION STAMP OVERLAY -->
                         <div id="sim-watermark-pill"
                              class="absolute bg-zinc-950/75 border border-white/10 rounded-full px-3 py-1.5 flex items-center gap-1.5 shadow-2xl backdrop-blur-md cursor-grab active:cursor-grabbing select-none hidden z-50 transition-opacity duration-200"
                              style="left: 15%; top: 20%;">
@@ -120,7 +108,6 @@
                             </span>
                         </div>
 
-                        <!-- Running simulation timeline marker -->
                         <div id="timeline-secs-tag" class="absolute bottom-3 right-3 bg-black/60 border border-white/10 px-2 py-1 rounded text-[8px] font-mono text-slate-300 hidden">
                             SIM TIME: <span id="sim-sec-val">0.0s</span>
                         </div>
@@ -128,10 +115,8 @@
                     </div>
                 </div>
 
-                <!-- CONSOLIDATED CONTEXT DYNAMIC CONTROL HOUSING -->
                 <div class="flex-grow flex flex-col justify-center px-1 py-1 text-left">
                     
-                    <!-- DYNAMIC SUB-PANEL 1: CAPTURE AND VERIFY CONTENT -->
                     <div id="tab-pane-capture" class="space-y-2">
                         <div class="grid grid-cols-2 gap-2">
                             <button onclick="triggerDevicePicker('image')" id="media-opt-img" class="py-2.5 px-3 rounded-xl text-[11px] font-bold transition-all border bg-rose-500/10 border-rose-500 text-rose-400 flex items-center justify-center gap-1">
@@ -144,7 +129,6 @@
                         <p class="text-[10px] text-slate-500 text-center italic">Select an asset from your device above, then tap "Verify" below to authenticate.</p>
                     </div>
 
-                    <!-- DYNAMIC SUB-PANEL 2: POSITION BADGE -->
                     <div id="tab-pane-editor" class="hidden space-y-2">
                         <div class="bg-slate-900/40 border border-white/5 rounded-xl p-2.5 space-y-2">
                             <div>
@@ -161,17 +145,14 @@
                         </div>
                     </div>
 
-                    <!-- DYNAMIC SUB-PANEL 3: DOWNLOAD -->
                     <div id="tab-pane-export" class="hidden space-y-2">
-                        <div class="px-2.5 py-1.5 bg-slate-950/50 border border-white/5 rounded-xl space-y-0.5 font-mono text-[9px]">
-                            <div class="flex justify-between">
-                                <span class="text-slate-500">C2PA HASH:</span>
-                                <span class="text-emerald-400 font-bold">#prv_98a72b_ok</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-slate-500">POSITION:</span>
-                                <span class="text-slate-300" id="coords-log-display">X: 15% | Y: 20%</span>
-                            </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="triggerDevicePicker('image')" id="media-opt-img-loop" class="py-1.5 px-3 rounded-xl text-[10px] font-bold transition-all border bg-slate-950/40 border-white/5 text-slate-400 flex items-center justify-center gap-1">
+                                📸 Photo Gallery
+                            </button>
+                            <button onclick="triggerDevicePicker('video')" id="media-opt-vid-loop" class="py-1.5 px-3 rounded-xl text-[10px] font-bold transition-all border bg-slate-950/40 border-white/5 text-slate-400 flex items-center justify-center gap-1">
+                                🎥 Reels Library
+                            </button>
                         </div>
                         <button onclick="downloadFlattenedMedia()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 py-2.5 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/10">
                             📥 Save & Download
@@ -180,7 +161,6 @@
 
                 </div>
 
-                <!-- PHONE INTERFACE ACTIVE SCREEN MENU BAR (CONSOLIDATED FOOTER) -->
                 <div class="w-full flex justify-between items-center px-4 py-2 border-t border-white/5 bg-slate-950/90 rounded-b-[36px] z-10">
                     <button onclick="handleVerifyTabTap()" id="nav-btn-capture" class="flex flex-col items-center gap-1 text-rose-500 transition-colors">
                         <div class="p-1.5 rounded-xl bg-white/5">
@@ -211,13 +191,11 @@
                     </button>
                 </div>
 
-                <!-- Simulated iOS Bottom Home Indicator line -->
                 <div class="absolute bottom-1 left-1/2 -translate-x-1/2 w-28 h-1 bg-white/20 rounded-full"></div>
 
             </div>
         </div>
 
-        <!-- DYNAMIC SYSTEM LOGS (BELOW PHONE SHELL) -->
         <div class="w-full max-w-sm bg-slate-950/80 border border-white/5 rounded-2xl p-4 font-mono text-[10px] text-sky-400 space-y-1 h-24 overflow-y-auto custom-scroll text-left">
             <div id="radar-log-1">> Provenant OS Companion Workspace [active]</div>
             <div id="radar-log-2" class="opacity-60">> Awaiting verification handshake...</div>
@@ -227,7 +205,6 @@
 
     </div>
 
-    <!-- TOAST POPUP GATEWAY -->
     <div id="custom-toast" class="fixed bottom-6 right-6 bg-slate-900 border border-white/10 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 transition-all duration-300 opacity-0 translate-y-4 pointer-events-none z-[99999]">
         <div class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></div>
         <span id="toast-message-text" class="text-xs font-semibold">Initiating secure sandbox components...</span>
@@ -247,13 +224,13 @@
         let currentOffsetX = 15;
         let currentOffsetY = 20;
 
-        // Fallback Base Mock Images (Will be overridden if user selects a file)
+        // Fallback Base Mock Images
         let sampleDataURIs = {
             image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop',
             video: 'https://images.unsplash.com/photo-1542204172-e7052809a936?q=80&w=600&auto=format&fit=crop'
         };
 
-        // Custom Toast System (Replacements for blocked browser alerts)
+        // Custom Toast System
         function showToast(message) {
             const toast = document.getElementById('custom-toast');
             document.getElementById('toast-message-text').innerText = message;
@@ -267,7 +244,7 @@
             }, 3000);
         }
 
-        // Write live logs into the terminal element on standard actions
+        // Terminal Log Engine
         function writeRadarLog(lineText, type = 'neutral') {
             const log1 = document.getElementById('radar-log-1');
             const log2 = document.getElementById('radar-log-2');
@@ -290,11 +267,10 @@
             else log1.className = 'text-sky-400';
         }
 
-        // Programmatically trigger native Android file select dialogs
+        // Programmatically trigger native file dialogs
         function triggerDevicePicker(type) {
             if (isSigningProcessActive) return;
             
-            // Allow back-and-forth toggling between panels cleanly
             isSecuredSigned = false; 
             document.getElementById('sim-watermark-pill').classList.add('hidden');
             
@@ -305,7 +281,7 @@
             }
         }
 
-        // Process device content inputs and paint to backdrop frame safely
+        // Process file inputs and handle loops cleanly
         function handleFileSelection(event, type) {
             const file = event.target.files[0];
             if (!file) return;
@@ -314,18 +290,20 @@
             const reader = new FileReader();
 
             reader.onload = function(e) {
-                // Read local file context securely as a raw DataURL token string
                 sampleDataURIs[type] = e.target.result;
-                
-                // Paint to background box frame layout structure
                 document.getElementById('active-media-bg').style.backgroundImage = `url('${e.target.result}')`;
                 
-                // Sync tab display configuration layouts cleanly
-                document.getElementById('media-opt-img').className = 'py-2.5 px-3 rounded-xl text-[11px] font-bold transition-all border ' + (type === 'image' ? 'bg-rose-500/10 border-rose-500 text-rose-400 flex items-center justify-center gap-1' : 'bg-slate-950/40 border-white/5 text-slate-400 flex items-center justify-center gap-1');
-                document.getElementById('media-opt-vid').className = 'py-2.5 px-3 rounded-xl text-[11px] font-bold transition-all border ' + (type === 'video' ? 'bg-rose-500/10 border-rose-500 text-rose-400 flex items-center justify-center gap-1' : 'bg-slate-950/40 border-white/5 text-slate-400 flex items-center justify-center gap-1');
-
+                // Fallback synchronization loop highlights
+                const isVerifyPanel = (selectedTab === 'capture');
+                const postfix = isVerifyPanel ? '' : '-loop';
+                
                 writeRadarLog(`Successfully loaded personal user file stream: [${file.name}]`, 'success');
-                showToast("File loaded! Tap 'Verify' below to audit metrics.");
+                showToast("File loaded! Tap 'Verify' to audit metrics.");
+                
+                // Route user smoothly back to verification gate if they selected a file on the download tab
+                if (selectedTab !== 'capture') {
+                    switchTab('capture');
+                }
             };
 
             reader.readAsDataURL(file);
@@ -334,8 +312,6 @@
         // Consolidated Verification Tap Handler
         function handleVerifyTabTap() {
             if (isSigningProcessActive) return;
-            
-            // Re-render panels appropriately
             switchTab('capture');
             executeSigningSequence();
         }
@@ -379,7 +355,7 @@
             }
         }
 
-        // Executing hardware verification loop
+        // Verification validation loop
         function executeSigningSequence() {
             isSigningProcessActive = true;
             document.getElementById('scan-radar-screen').classList.remove('hidden');
@@ -400,14 +376,14 @@
             }, 2500);
         }
 
-        // Personalization text binder sync
+        // Text synchronization
         function syncPersonalizedText() {
             const inputVal = document.getElementById('creator-input').value || "Verified Human";
             document.getElementById('sim-watermark-text').innerText = `PROVENANT • ${inputVal.toUpperCase()} (100% ORIGINAL)`;
             writeRadarLog(`Text updated: ${inputVal}`);
         }
 
-        // Updating temporal fade sliders
+        // Timeline slide limits
         function updateFadeDuration() {
             fadeSeconds = parseFloat(document.getElementById('fade-slider').value);
             document.getElementById('fade-time-lbl').innerText = `${fadeSeconds}s`;
@@ -415,7 +391,7 @@
             triggerWatermarkSimulation();
         }
 
-        // Simulating fading timeline clocks
+        // Simulation clocks
         function triggerWatermarkSimulation() {
             clearInterval(timelineInterval);
             timelineCurrentSecs = 0.0;
@@ -478,18 +454,15 @@
 
             const bgRect = bg.getBoundingClientRect();
 
-            // Convert pixel changes into precise viewport layout percentages
             const newXPercent = initialLeft + (deltaX / bgRect.width) * 100;
             const newYPercent = initialTop + (deltaY / bgRect.height) * 100;
 
-            // Restrict bounds so badge never slips entirely off phone screen margins
             currentOffsetX = Math.max(2, Math.min(68, newXPercent));
             currentOffsetY = Math.max(2, Math.min(90, newYPercent));
 
             pill.style.left = `${currentOffsetX.toFixed(1)}%`;
             pill.style.top = `${currentOffsetY.toFixed(1)}%`;
 
-            // Sync coordinate logs
             document.getElementById('coords-log-display').innerText = `X: ${currentOffsetX.toFixed(0)}% | Y: ${currentOffsetY.toFixed(0)}%`;
         }
 
@@ -499,12 +472,10 @@
             writeRadarLog(`Badge locked at coordinates X: ${currentOffsetX.toFixed(0)}% | Y: ${currentOffsetY.toFixed(0)}%`, 'success');
         }
 
-        // Attach Mouse drag listeners
         pill.addEventListener('mousedown', onDragStart);
         window.addEventListener('mousemove', onDragMove);
         window.addEventListener('mouseup', onDragEnd);
 
-        // Attach Mobile Touch drag listeners
         pill.addEventListener('touchstart', onDragStart);
         window.addEventListener('touchmove', onDragMove, { passive: false });
         window.addEventListener('touchend', onDragEnd);
@@ -518,7 +489,6 @@
             const ctx = hiddenCanvas.getContext("2d");
             const baseImg = new Image();
 
-            // Bypasses local cross-origin canvas security blockers cleanly on mobile runs
             if (!sampleDataURIs[mockMediaType].startsWith('data:')) {
                 baseImg.crossOrigin = "anonymous";
             }
@@ -529,10 +499,8 @@
                 hiddenCanvas.width = baseImg.naturalWidth || 600;
                 hiddenCanvas.height = baseImg.naturalHeight || 800;
 
-                // 1. Draw base photo layer
                 ctx.drawImage(baseImg, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
 
-                // 2. Compute proportional badge heights and text paddings based on high-res output
                 const isVertical = hiddenCanvas.height > hiddenCanvas.width;
                 const baseDimensionRef = isVertical ? hiddenCanvas.width : hiddenCanvas.height;
 
@@ -548,11 +516,9 @@
                 const scaleWidth = textWidth + (scaleRadius * 3.4);
                 ctx.restore();
 
-                // 3. Compute percentage locations into actual pixel coordinates
                 const finalX = (hiddenCanvas.width - scaleWidth) * (currentOffsetX / 100);
                 const finalY = (hiddenCanvas.height - scaleHeight) * (currentOffsetY / 100);
 
-                // 4. Draw Translucent Backdrop capsule rounded rectangle
                 ctx.save();
                 ctx.fillStyle = "rgba(22, 24, 26, 0.82)";
                 ctx.beginPath();
@@ -560,7 +526,6 @@
                 ctx.fill();
                 ctx.restore();
 
-                // 5. Draw green verification checkmark badge circle
                 const circleRadius = scaleHeight * 0.28;
                 const circleX = finalX + (scaleHeight * 0.42) + 2;
                 const circleY = finalY + (scaleHeight * 0.5);
@@ -572,7 +537,6 @@
                 ctx.fill();
                 ctx.restore();
 
-                // Draw white checkmark vector ticks
                 ctx.save();
                 ctx.strokeStyle = "#ffffff";
                 ctx.lineWidth = Math.max(1.5, scaleHeight * 0.05);
@@ -586,7 +550,6 @@
                 ctx.stroke();
                 ctx.restore();
 
-                // 6. Print high-res typographic strings
                 ctx.save();
                 ctx.fillStyle = "#ffffff";
                 ctx.font = `600 ${Math.floor(scaleHeight * 0.38)}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
@@ -596,7 +559,6 @@
                 ctx.restore();
 
                 try {
-                    // 7. Safe fallback block parsing configuration for secure standalone data stream
                     const dataUrl = hiddenCanvas.toDataURL("image/png");
                     const link = document.createElement("a");
                     link.download = `provenant_verified_asset_${Date.now()}.png`;
