@@ -52,7 +52,7 @@
             <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white leading-tight">
                 Provenant™ Mobile
             </h2>
-            <p class="text-sm text-slate-400 leading-relaxed">
+            <p class="text-sm text-slate-400 leather-relaxed">
                 Protect your digital intellectual property seamlessly. Brand your creative assets with cryptographic validation tokens, adjust smart visibility coordinates to match social network algorithms, and generate secure, platform-ready content instantly. Producing a verified original asset profile.
             </p>
         </div>
@@ -293,14 +293,9 @@
                 sampleDataURIs[type] = e.target.result;
                 document.getElementById('active-media-bg').style.backgroundImage = `url('${e.target.result}')`;
                 
-                // Fallback synchronization loop highlights
-                const isVerifyPanel = (selectedTab === 'capture');
-                const postfix = isVerifyPanel ? '' : '-loop';
-                
                 writeRadarLog(`Successfully loaded personal user file stream: [${file.name}]`, 'success');
                 showToast("File loaded! Tap 'Verify' to audit metrics.");
                 
-                // Route user smoothly back to verification gate if they selected a file on the download tab
                 if (selectedTab !== 'capture') {
                     switchTab('capture');
                 }
@@ -570,6 +565,15 @@
 
                     writeRadarLog("Image output ready! Saved to your downloads folder.", "success");
                     showToast("Success! Design file ready for Instagram.");
+                    
+                    // LOOPS BACK TO FIRST SCREEN UPON SUCCESSFUL DOWNLOAD
+                    setTimeout(() => {
+                        isSecuredSigned = false; 
+                        document.getElementById('sim-watermark-pill').classList.add('hidden');
+                        switchTab('capture');
+                        writeRadarLog("Pipeline reset complete. Ready for new asset stream.");
+                    }, 500);
+                    
                 } catch(err) {
                     writeRadarLog("Canvas tainted by external URL file configurations.", "danger");
                     showToast("Error saving external demo layout. Please upload a real file to download successfully!");
