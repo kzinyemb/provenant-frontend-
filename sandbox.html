@@ -49,124 +49,21 @@
 </head>
 <body class="bg-[#05070f] text-[#f8fafc] min-h-screen p-4 md:p-8 flex items-center justify-center selection:bg-rose-500 selection:text-white">
 
-    <div class="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+    <div class="w-full max-w-4xl flex flex-col items-center gap-8 text-center">
         
-        <!-- LEFT COLUMN: CONTROLS & MARKETING CONTEXT -->
-        <div class="lg:col-span-5 space-y-6 text-left">
-            <div class="space-y-3">
-                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white leading-tight">
-                    Provenant™ Mobile
-                </h2>
-                <p class="text-sm text-slate-400 leading-relaxed">
-                    Protect your digital intellectual property seamlessly. Brand your creative assets with cryptographic validation tokens, adjust smart visibility coordinates to match social network algorithms, and generate secure, platform-ready content instantly.
-                </p>
-            </div>
-
-            <!-- TAB ENGINE HEADER -->
-            <div class="flex gap-4 border-b border-white/5 pb-2 text-xs font-bold uppercase tracking-wider text-slate-500">
-                <button id="tab-btn-capture" onclick="switchTab('capture')" class="pb-2 border-b-2 border-rose-500 text-white transition-colors">1. Capture & Verify</button>
-                <button id="tab-btn-editor" onclick="switchTab('editor')" class="pb-2 border-b-2 border-transparent transition-colors">2. Position Badge</button>
-                <button id="tab-btn-export" onclick="switchTab('export')" class="pb-2 border-b-2 border-transparent transition-colors">3. Download & Share</button>
-            </div>
-
-            <!-- TAB 1: CAPTURE -->
-            <div id="tab-pane-capture" class="space-y-4">
-                <div class="bg-slate-900/60 border border-white/5 rounded-2xl p-5 space-y-4">
-                    <div>
-                        <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Step 1: Secure Biometric Stream</h4>
-                        <p class="text-xs text-slate-400 mt-1 leading-relaxed">
-                            Provenant seals camera roll metadata instantly upon local biometric authentication, producing a verified original asset profile.
-                        </p>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <button onclick="setMockMedia('image')" id="media-opt-img" class="py-3 px-4 rounded-xl text-xs font-bold transition-all border bg-rose-500/10 border-rose-500 text-rose-400">
-                            📸 Camera JPG Profile
-                        </button>
-                        <button onclick="setMockMedia('video')" id="media-opt-vid" class="py-3 px-4 rounded-xl text-xs font-bold transition-all border bg-slate-950/40 border-white/5 text-slate-400">
-                            🎥 Reels MP4 Project
-                        </button>
-                    </div>
-
-                    <button onclick="executeSigningSequence()" id="sign-main-btn" class="w-full bg-rose-600 hover:bg-rose-500 text-white py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg shadow-rose-600/10">
-                        🛡️ Authenticate & Verify Asset
-                    </button>
-                </div>
-            </div>
-
-            <!-- TAB 2: EDITOR -->
-            <div id="tab-pane-editor" class="hidden space-y-4">
-                <div class="bg-slate-900/60 border border-white/5 rounded-2xl p-5 space-y-4">
-                    <div>
-                        <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Step 2: Badge Personalization</h4>
-                        <p class="text-xs text-slate-400 mt-1 leading-relaxed">
-                            Drag the verification badge anywhere on the screen with your mouse/finger to avoid Instagram's overlays, and type your custom brand name.
-                        </p>
-                    </div>
-
-                    <div class="space-y-4">
-                        <div>
-                            <label class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Creator Name Label</label>
-                            <input type="text" id="creator-input" oninput="syncPersonalizedText()" value="Verified Human" class="w-full bg-slate-950/60 border border-white/10 px-3 py-2.5 rounded-xl text-xs text-white outline-none focus:border-rose-500 mt-1.5 transition-colors">
-                        </div>
-
-                        <div>
-                            <div class="flex justify-between items-center text-[10px] text-slate-400 uppercase tracking-widest font-bold">
-                                <span>Watermark Fade Duration</span>
-                                <span class="text-rose-400 font-mono font-bold" id="fade-time-lbl">3 seconds</span>
-                            </div>
-                            <input type="range" id="fade-slider" min="1" max="6" step="0.5" value="3" oninput="updateFadeDuration()" class="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer mt-2 accent-rose-500">
-                            <p class="text-[9px] text-slate-500 mt-1">Simulates automatic fade-out to keep Reels feeds visually clean.</p>
-                        </div>
-
-                        <div class="pt-2">
-                            <button onclick="triggerWatermarkSimulation()" class="w-full bg-slate-950/40 hover:bg-slate-950/60 border border-white/5 py-2.5 rounded-xl text-[10px] uppercase font-bold tracking-wider text-slate-300 transition-all flex items-center justify-center gap-1.5">
-                                ▶️ Play Timeline Fade Simulation
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 3: EXPORT -->
-            <div id="tab-pane-export" class="hidden space-y-4">
-                <div class="bg-slate-900/60 border border-white/5 rounded-2xl p-5 space-y-4">
-                    <div>
-                        <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Step 3: Direct Vector Export</h4>
-                        <p class="text-xs text-slate-400 mt-1 leading-relaxed">
-                            Permanently bakes the co-branded metadata pill directly into the native file pixels at your customized coordinates, making it immune to Instagram's compression crops.
-                        </p>
-                    </div>
-
-                    <div class="p-3 bg-slate-950/50 border border-white/5 rounded-xl space-y-2">
-                        <div class="flex justify-between text-[10px] font-mono">
-                            <span class="text-slate-500">C2PA HASH:</span>
-                            <span class="text-emerald-400 font-bold">#prv_98a72b_ok</span>
-                        </div>
-                        <div class="flex justify-between text-[10px] font-mono">
-                            <span class="text-slate-500">POSITION COORDINATES:</span>
-                            <span class="text-slate-300" id="coords-log-display">X: 15% | Y: 20%</span>
-                        </div>
-                    </div>
-
-                    <button onclick="downloadFlattenedMedia()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 py-3.5 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/10">
-                        📥 Save & Download Verified Image
-                    </button>
-                </div>
-            </div>
-
-            <!-- DYNAMIC RADAR TELEMETRY LOGS -->
-            <div class="bg-slate-950/80 border border-white/5 rounded-2xl p-4 font-mono text-[10px] text-sky-400 space-y-1 h-28 overflow-y-auto custom-scroll text-left">
-                <div id="radar-log-1">> Provenant OS Companion Workspace [active]</div>
-                <div id="radar-log-2" class="opacity-60">> Awaiting verification handshake...</div>
-                <div id="radar-log-3" class="opacity-40"></div>
-                <div id="radar-log-4" class="opacity-20"></div>
-            </div>
+        <!-- HEADER DESCRIPTION SUMMARY -->
+        <div class="max-w-2xl space-y-3">
+            <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white leading-tight">
+                Provenant™ Mobile
+            </h2>
+            <p class="text-sm text-slate-400 leading-relaxed">
+                Protect your digital intellectual property seamlessly. Brand your creative assets with cryptographic validation tokens, adjust smart visibility coordinates to match social network algorithms, and generate secure, platform-ready content instantly. Producing a verified original asset profile.
+            </p>
         </div>
 
-        <!-- RIGHT COLUMN: IPHONE PHONE SHELL MOCKUP -->
-        <div class="lg:col-span-7 flex justify-center">
-            <div class="relative w-[340px] h-[680px] bg-slate-950 rounded-[48px] border-[10px] border-slate-900 shadow-[0_25px_60px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col justify-between p-3 select-none">
+        <!-- THE INTERACTIVE PHONE SHELL CENTERPIECE -->
+        <div class="flex justify-center w-full">
+            <div class="relative w-[350px] h-[720px] bg-slate-950 rounded-[48px] border-[10px] border-slate-900 shadow-[0_25px_60px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col justify-between p-3 select-none">
                 
                 <!-- iOS System Status Top Notch Bar -->
                 <div class="absolute top-0 left-1/2 -translate-x-1/2 w-36 h-6 bg-slate-900 rounded-b-2xl z-[100] flex items-center justify-between px-5 text-[9px] font-bold text-white/90">
@@ -181,7 +78,7 @@
                 </div>
 
                 <!-- MAIN LIVE IMAGE / EDITING FEED FRAME -->
-                <div class="relative w-full h-[450px] rounded-[28px] overflow-hidden mt-5 bg-black border border-white/5 flex items-center justify-center">
+                <div class="relative w-full h-[430px] rounded-[28px] overflow-hidden mt-5 bg-black border border-white/5 flex items-center justify-center">
                     
                     <!-- Base Media Mock Canvas -->
                     <div id="active-media-bg" class="w-full h-full bg-cover bg-center transition-all duration-300 relative flex items-center justify-center" style="background-image: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop');">
@@ -227,11 +124,65 @@
                     </div>
                 </div>
 
-                <!-- PHONE INTERFACE ACTIVE SCREEN MENU BAR -->
-                <div class="w-full flex justify-between items-center px-4 py-1.5 border-t border-white/5 bg-slate-950/90 rounded-b-[36px] z-10">
+                <!-- CONSOLIDATED CONTEXT DYNAMIC CONTROL HOUSING -->
+                <div class="flex-grow flex flex-col justify-center px-1 py-2 text-left">
+                    
+                    <!-- DYNAMIC SUB-PANEL 1: CAPTURE AND VERIFY CONTENT -->
+                    <div id="tab-pane-capture" class="space-y-2.5">
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="setMockMedia('image')" id="media-opt-img" class="py-2.5 px-3 rounded-xl text-[11px] font-bold transition-all border bg-rose-500/10 border-rose-500 text-rose-400 flex items-center justify-center gap-1">
+                                📸 Photo JPG
+                            </button>
+                            <button onclick="setMockMedia('video')" id="media-opt-vid" class="py-2.5 px-3 rounded-xl text-[11px] font-bold transition-all border bg-slate-950/40 border-white/5 text-slate-400 flex items-center justify-center gap-1">
+                                🎥 Reels MP4
+                            </button>
+                        </div>
+                        <button onclick="executeSigningSequence()" id="sign-main-btn" class="w-full bg-rose-600 hover:bg-rose-500 text-white py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg shadow-rose-600/10">
+                            🛡️ Capture & Verify Content
+                        </button>
+                    </div>
+
+                    <!-- DYNAMIC SUB-PANEL 2: POSITION BADGE -->
+                    <div id="tab-pane-editor" class="hidden space-y-2">
+                        <div class="bg-slate-900/40 border border-white/5 rounded-xl p-2.5 space-y-2">
+                            <div>
+                                <label class="text-[9px] text-slate-400 uppercase tracking-widest font-bold">Creator Label</label>
+                                <input type="text" id="creator-input" oninput="syncPersonalizedText()" value="Verified Human" class="w-full bg-slate-950/60 border border-white/10 px-2 py-1.5 rounded-lg text-xs text-white outline-none focus:border-rose-500 mt-0.5 transition-colors">
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-center text-[9px] text-slate-400 uppercase tracking-widest font-bold">
+                                    <span>Fade Duration</span>
+                                    <span class="text-rose-400 font-mono font-bold" id="fade-time-lbl">3s</span>
+                                </div>
+                                <input type="range" id="fade-slider" min="1" max="6" step="0.5" value="3" oninput="updateFadeDuration()" class="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer mt-1 accent-rose-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DYNAMIC SUB-PANEL 3: DOWNLOAD -->
+                    <div id="tab-pane-export" class="hidden space-y-2.5">
+                        <div class="px-2.5 py-2 bg-slate-950/50 border border-white/5 rounded-xl space-y-1 font-mono text-[9px]">
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">C2PA HASH:</span>
+                                <span class="text-emerald-400 font-bold">#prv_98a72b_ok</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">POSITION:</span>
+                                <span class="text-slate-300" id="coords-log-display">X: 15% | Y: 20%</span>
+                            </div>
+                        </div>
+                        <button onclick="downloadFlattenedMedia()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 py-3 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/10">
+                            📥 Save & Download
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- PHONE INTERFACE ACTIVE SCREEN MENU BAR (CONSOLIDATED FOOTER) -->
+                <div class="w-full flex justify-between items-center px-4 py-2 border-t border-white/5 bg-slate-950/90 rounded-b-[36px] z-10">
                     <button onclick="switchTab('capture')" id="nav-btn-capture" class="flex flex-col items-center gap-1 text-rose-500 transition-colors">
-                        <div class="p-1 rounded-xl bg-white/5">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <div class="p-1.5 rounded-xl bg-white/5">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
                             </svg>
@@ -240,8 +191,8 @@
                     </button>
 
                     <button onclick="switchTab('editor')" id="nav-btn-editor" class="flex flex-col items-center gap-1 text-slate-400 transition-colors">
-                        <div class="p-1 rounded-xl bg-white/5">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <div class="p-1.5 rounded-xl bg-white/5">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
                             </svg>
                         </div>
@@ -249,8 +200,8 @@
                     </button>
 
                     <button onclick="switchTab('export')" id="nav-btn-export" class="flex flex-col items-center gap-1 text-slate-400 transition-colors">
-                        <div class="p-1 rounded-xl bg-white/5">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <div class="p-1.5 rounded-xl bg-white/5">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
                             </svg>
                         </div>
@@ -263,6 +214,15 @@
 
             </div>
         </div>
+
+        <!-- DYNAMIC SYSTEM LOGS (BELOW PHONE SHELL) -->
+        <div class="w-full max-w-sm bg-slate-950/80 border border-white/5 rounded-2xl p-4 font-mono text-[10px] text-sky-400 space-y-1 h-24 overflow-y-auto custom-scroll text-left">
+            <div id="radar-log-1">> Provenant OS Companion Workspace [active]</div>
+            <div id="radar-log-2" class="opacity-60">> Awaiting verification handshake...</div>
+            <div id="radar-log-3" class="opacity-40"></div>
+            <div id="radar-log-4" class="opacity-20"></div>
+        </div>
+
     </div>
 
     <!-- TOAST POPUP GATEWAY -->
@@ -333,7 +293,7 @@
             if (isSigningProcessActive) return;
 
             if (targetTab !== 'capture' && !isSecuredSigned) {
-                showToast("Please tap 'Authenticate & Verify Asset' to check raw file details first!");
+                showToast("Please tap 'Capture & Verify Content' to authenticate your files first!");
                 return;
             }
 
@@ -344,12 +304,6 @@
             document.getElementById('tab-pane-editor').classList.add('hidden');
             document.getElementById('tab-pane-export').classList.add('hidden');
             document.getElementById(`tab-pane-${targetTab}`).classList.remove('hidden');
-
-            // Update Menu Header Tabs UI
-            document.querySelectorAll('[id^="tab-btn-"]').forEach(btn => {
-                btn.className = 'pb-2 border-b-2 border-transparent transition-colors';
-            });
-            document.getElementById(`tab-btn-${targetTab}`).className = 'pb-2 border-b-2 border-rose-500 text-white transition-colors';
 
             // Update Phone Nav Footer UI
             document.querySelectorAll('[id^="nav-btn-"]').forEach(btn => {
@@ -378,8 +332,8 @@
             if (isSigningProcessActive) return;
             mockMediaType = type;
 
-            document.getElementById('media-opt-img').className = 'py-3 px-4 rounded-xl text-xs font-bold transition-all border ' + (type === 'image' ? 'bg-rose-500/10 border-rose-500 text-rose-400' : 'bg-slate-950/40 border-white/5 text-slate-400');
-            document.getElementById('media-opt-vid').className = 'py-3 px-4 rounded-xl text-xs font-bold transition-all border ' + (type === 'video' ? 'bg-rose-500/10 border-rose-500 text-rose-400' : 'bg-slate-950/40 border-white/5 text-slate-400');
+            document.getElementById('media-opt-img').className = 'py-2.5 px-3 rounded-xl text-[11px] font-bold transition-all border ' + (type === 'image' ? 'bg-rose-500/10 border-rose-500 text-rose-400 flex items-center justify-center gap-1' : 'bg-slate-950/40 border-white/5 text-slate-400 flex items-center justify-center gap-1');
+            document.getElementById('media-opt-vid').className = 'py-2.5 px-3 rounded-xl text-[11px] font-bold transition-all border ' + (type === 'video' ? 'bg-rose-500/10 border-rose-500 text-rose-400 flex items-center justify-center gap-1' : 'bg-slate-950/40 border-white/5 text-slate-400 flex items-center justify-center gap-1');
 
             document.getElementById('active-media-bg').style.backgroundImage = `url('${samples[type]}')`;
             
@@ -423,7 +377,7 @@
         // Updating temporal fade sliders
         function updateFadeDuration() {
             fadeSeconds = parseFloat(document.getElementById('fade-slider').value);
-            document.getElementById('fade-time-lbl').innerText = `${fadeSeconds} seconds`;
+            document.getElementById('fade-time-lbl').innerText = `${fadeSeconds}s`;
             writeRadarLog(`Fade-out interval bound set to: ${fadeSeconds}s`);
             triggerWatermarkSimulation();
         }
