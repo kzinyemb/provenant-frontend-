@@ -78,7 +78,7 @@
                 </div>
 
                 <!-- MAIN LIVE IMAGE / EDITING FEED FRAME -->
-                <div class="relative w-full h-[430px] rounded-[28px] overflow-hidden mt-5 bg-black border border-white/5 flex items-center justify-center">
+                <div class="relative w-full h-[450px] rounded-[28px] overflow-hidden mt-5 bg-black border border-white/5 flex items-center justify-center">
                     
                     <!-- Base Media Mock Canvas -->
                     <div id="active-media-bg" class="w-full h-full bg-cover bg-center transition-all duration-300 relative flex items-center justify-center" style="background-image: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop');">
@@ -125,10 +125,10 @@
                 </div>
 
                 <!-- CONSOLIDATED CONTEXT DYNAMIC CONTROL HOUSING -->
-                <div class="flex-grow flex flex-col justify-center px-1 py-2 text-left">
+                <div class="flex-grow flex flex-col justify-center px-1 py-1 text-left">
                     
                     <!-- DYNAMIC SUB-PANEL 1: CAPTURE AND VERIFY CONTENT -->
-                    <div id="tab-pane-capture" class="space-y-2.5">
+                    <div id="tab-pane-capture" class="space-y-2">
                         <div class="grid grid-cols-2 gap-2">
                             <button onclick="setMockMedia('image')" id="media-opt-img" class="py-2.5 px-3 rounded-xl text-[11px] font-bold transition-all border bg-rose-500/10 border-rose-500 text-rose-400 flex items-center justify-center gap-1">
                                 📸 Photo JPG
@@ -137,9 +137,7 @@
                                 🎥 Reels MP4
                             </button>
                         </div>
-                        <button onclick="executeSigningSequence()" id="sign-main-btn" class="w-full bg-rose-600 hover:bg-rose-500 text-white py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg shadow-rose-600/10">
-                            🛡️ Capture & Verify Content
-                        </button>
+                        <p class="text-[10px] text-slate-500 text-center italic">Select your file stream above, then tap "Verify" below to authenticate.</p>
                     </div>
 
                     <!-- DYNAMIC SUB-PANEL 2: POSITION BADGE -->
@@ -160,8 +158,8 @@
                     </div>
 
                     <!-- DYNAMIC SUB-PANEL 3: DOWNLOAD -->
-                    <div id="tab-pane-export" class="hidden space-y-2.5">
-                        <div class="px-2.5 py-2 bg-slate-950/50 border border-white/5 rounded-xl space-y-1 font-mono text-[9px]">
+                    <div id="tab-pane-export" class="hidden space-y-2">
+                        <div class="px-2.5 py-1.5 bg-slate-950/50 border border-white/5 rounded-xl space-y-0.5 font-mono text-[9px]">
                             <div class="flex justify-between">
                                 <span class="text-slate-500">C2PA HASH:</span>
                                 <span class="text-emerald-400 font-bold">#prv_98a72b_ok</span>
@@ -171,7 +169,7 @@
                                 <span class="text-slate-300" id="coords-log-display">X: 15% | Y: 20%</span>
                             </div>
                         </div>
-                        <button onclick="downloadFlattenedMedia()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 py-3 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/10">
+                        <button onclick="downloadFlattenedMedia()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 py-2.5 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/10">
                             📥 Save & Download
                         </button>
                     </div>
@@ -180,7 +178,7 @@
 
                 <!-- PHONE INTERFACE ACTIVE SCREEN MENU BAR (CONSOLIDATED FOOTER) -->
                 <div class="w-full flex justify-between items-center px-4 py-2 border-t border-white/5 bg-slate-950/90 rounded-b-[36px] z-10">
-                    <button onclick="switchTab('capture')" id="nav-btn-capture" class="flex flex-col items-center gap-1 text-rose-500 transition-colors">
+                    <button onclick="handleVerifyTabTap()" id="nav-btn-capture" class="flex flex-col items-center gap-1 text-rose-500 transition-colors">
                         <div class="p-1.5 rounded-xl bg-white/5">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
@@ -288,12 +286,23 @@
             else log1.className = 'text-sky-400';
         }
 
+        // Consolidated Verification Tap Handler
+        function handleVerifyTabTap() {
+            if (isSigningProcessActive) return;
+            
+            // Switch view panel back to media selection view if it wasn't there
+            switchTab('capture');
+            
+            // Trigger authentication algorithm sequence
+            executeSigningSequence();
+        }
+
         // Tab Switching Engine
         function switchTab(targetTab) {
             if (isSigningProcessActive) return;
 
             if (targetTab !== 'capture' && !isSecuredSigned) {
-                showToast("Please tap 'Capture & Verify Content' to authenticate your files first!");
+                showToast("Please tap 'Verify' to authenticate your picture or video files first!");
                 return;
             }
 
@@ -346,8 +355,6 @@
 
         // Executing hardware verification loop
         function executeSigningSequence() {
-            if (isSigningProcessActive) return;
-
             isSigningProcessActive = true;
             document.getElementById('scan-radar-screen').classList.remove('hidden');
             writeRadarLog("Initiating verification handshake...", "warning");
