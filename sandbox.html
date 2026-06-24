@@ -75,7 +75,6 @@
                      
                     <div id="active-media-bg" class="w-full h-full bg-cover bg-center transition-all duration-300 relative flex items-center justify-center" style="background-image: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop');">
                          
-                    // Hidden File Inputs to Trigger Device Photo/Video Picker 
                         <input type="file" id="device-photo-picker" accept="image/*" class="hidden" onchange="handleFileSelection(event, 'image')">
                         <input type="file" id="device-video-picker" accept="video/*" class="hidden" onchange="handleFileSelection(event, 'video')">
 
@@ -232,19 +231,17 @@
         };
 
         // Custom Toast System
-        let toastTimeout = null;
-        function showToast(message, duration = 3000) {
-            clearTimeout(toastTimeout);
+        function showToast(message) {
             const toast = document.getElementById('custom-toast');
             document.getElementById('toast-message-text').innerText = message;
             
             toast.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
             toast.classList.add('opacity-100', 'translate-y-0');
 
-            toastTimeout = setTimeout(() => {
+            setTimeout(() => {
                 toast.classList.remove('opacity-100', 'translate-y-0');
                 toast.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
-            }, duration);
+            }, 5000); // Maintained for the initial 5-second popup duration capability
         }
 
         // Terminal Log Engine
