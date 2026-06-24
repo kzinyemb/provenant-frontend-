@@ -14,7 +14,7 @@
     <title>Provenant Content Authentication Workspace</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800;900&family=Fira+Code:wght=400;500&display=swap" rel="stylesheet">
-    
+     
     <script>
         tailwind.config = {
             theme: {
@@ -47,7 +47,7 @@
 <body class="bg-[#05070f] text-[#f8fafc] min-h-screen p-4 md:p-8 flex items-center justify-center selection:bg-rose-500 selection:text-white">
 
     <div class="w-full max-w-4xl flex flex-col items-center gap-8 text-center">
-        
+         
         <div class="max-w-2xl space-y-3">
             <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white leading-tight">
                 Provenant™ Mobile
@@ -59,7 +59,7 @@
 
         <div class="flex justify-center w-full">
             <div class="relative w-[350px] h-[720px] bg-slate-950 rounded-[48px] border-[10px] border-slate-900 shadow-[0_25px_60px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col justify-between p-3 select-none">
-                
+                 
                 <div class="absolute top-0 left-1/2 -translate-x-1/2 w-36 h-6 bg-slate-900 rounded-b-2xl z-[100] flex items-center justify-between px-5 text-[9px] font-bold text-white/90">
                     <span class="text-[8px] -ml-1">10:55</span>
                     <div class="w-14 h-3 bg-black rounded-full mx-auto"></div>
@@ -72,9 +72,10 @@
                 </div>
 
                 <div class="relative w-full h-[450px] rounded-[28px] overflow-hidden mt-5 bg-black border border-white/5 flex items-center justify-center">
-                    
+                     
                     <div id="active-media-bg" class="w-full h-full bg-cover bg-center transition-all duration-300 relative flex items-center justify-center" style="background-image: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop');">
-                        
+                         
+                    // Hidden File Inputs to Trigger Device Photo/Video Picker 
                         <input type="file" id="device-photo-picker" accept="image/*" class="hidden" onchange="handleFileSelection(event, 'image')">
                         <input type="file" id="device-video-picker" accept="video/*" class="hidden" onchange="handleFileSelection(event, 'video')">
 
@@ -116,7 +117,7 @@
                 </div>
 
                 <div class="flex-grow flex flex-col justify-center px-1 py-1 text-left">
-                    
+                     
                     <div id="tab-pane-capture" class="space-y-2">
                         <div class="grid grid-cols-2 gap-2">
                             <button onclick="triggerDevicePicker('image')" id="media-opt-img" class="py-2.5 px-3 rounded-xl text-[11px] font-bold transition-all border bg-rose-500/10 border-rose-500 text-rose-400 flex items-center justify-center gap-1">
@@ -231,17 +232,19 @@
         };
 
         // Custom Toast System
-        function showToast(message) {
+        let toastTimeout = null;
+        function showToast(message, duration = 3000) {
+            clearTimeout(toastTimeout);
             const toast = document.getElementById('custom-toast');
             document.getElementById('toast-message-text').innerText = message;
             
             toast.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
             toast.classList.add('opacity-100', 'translate-y-0');
 
-            setTimeout(() => {
+            toastTimeout = setTimeout(() => {
                 toast.classList.remove('opacity-100', 'translate-y-0');
                 toast.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
-            }, 3000);
+            }, duration);
         }
 
         // Terminal Log Engine
@@ -585,6 +588,11 @@
         window.onload = function() {
             syncPersonalizedText();
             updateFadeDuration();
+            
+            // Displays home screen install tip for 5 seconds right at startup
+            setTimeout(() => {
+                showToast("Tip: Tap your browser menu and select 'Add to Home Screen' to use Provenant like a native app!", 5000);
+            }, 800);
         }
     </script>
 </body>
