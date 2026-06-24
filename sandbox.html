@@ -83,6 +83,10 @@
                     <!-- Base Media Mock Canvas -->
                     <div id="active-media-bg" class="w-full h-full bg-cover bg-center transition-all duration-300 relative flex items-center justify-center" style="background-image: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop');">
                         
+                        <!-- Hidden File Inputs to Trigger Device Photo/Video Picker -->
+                        <input type="file" id="device-photo-picker" accept="image/*" class="hidden" onchange="handleFileSelection(event, 'image')">
+                        <input type="file" id="device-video-picker" accept="video/*" class="hidden" onchange="handleFileSelection(event, 'video')">
+
                         <!-- Simulated GPU Radar Scan Overlay -->
                         <div id="scan-radar-screen" class="absolute inset-0 bg-rose-500/10 backdrop-blur-[1px] hidden flex-col items-center justify-center gap-2 z-40">
                             <div class="w-10 h-10 border-4 border-rose-500 border-t-transparent rounded-full animate-spin shadow-lg"></div>
@@ -116,7 +120,7 @@
                             </span>
                         </div>
 
-                        <!-- Running simulation timer marker -->
+                        <!-- Running simulation timeline marker -->
                         <div id="timeline-secs-tag" class="absolute bottom-3 right-3 bg-black/60 border border-white/10 px-2 py-1 rounded text-[8px] font-mono text-slate-300 hidden">
                             SIM TIME: <span id="sim-sec-val">0.0s</span>
                         </div>
@@ -130,14 +134,14 @@
                     <!-- DYNAMIC SUB-PANEL 1: CAPTURE AND VERIFY CONTENT -->
                     <div id="tab-pane-capture" class="space-y-2">
                         <div class="grid grid-cols-2 gap-2">
-                            <button onclick="setMockMedia('image')" id="media-opt-img" class="py-2.5 px-3 rounded-xl text-[11px] font-bold transition-all border bg-rose-500/10 border-rose-500 text-rose-400 flex items-center justify-center gap-1">
-                                📸 Photo JPG
+                            <button onclick="triggerDevicePicker('image')" id="media-opt-img" class="py-2.5 px-3 rounded-xl text-[11px] font-bold transition-all border bg-rose-500/10 border-rose-500 text-rose-400 flex items-center justify-center gap-1">
+                                📸 Photo Gallery
                             </button>
-                            <button onclick="setMockMedia('video')" id="media-opt-vid" class="py-2.5 px-3 rounded-xl text-[11px] font-bold transition-all border bg-slate-950/40 border-white/5 text-slate-400 flex items-center justify-center gap-1">
-                                🎥 Reels MP4
+                            <button onclick="triggerDevicePicker('video')" id="media-opt-vid" class="py-2.5 px-3 rounded-xl text-[11px] font-bold transition-all border bg-slate-950/40 border-white/5 text-slate-400 flex items-center justify-center gap-1">
+                                🎥 Reels Library
                             </button>
                         </div>
-                        <p class="text-[10px] text-slate-500 text-center italic">Select your file stream above, then tap "Verify" below to authenticate.</p>
+                        <p class="text-[10px] text-slate-500 text-center italic">Select an asset from your device above, then tap "Verify" below to authenticate.</p>
                     </div>
 
                     <!-- DYNAMIC SUB-PANEL 2: POSITION BADGE -->
@@ -243,8 +247,8 @@
         let currentOffsetX = 15;
         let currentOffsetY = 20;
 
-        // Sample Mock Images
-        const samples = {
+        // Fallback Base Mock Images (Will be overridden if user selects a file)
+        let sampleDataURIs = {
             image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop',
             video: 'https://images.unsplash.com/photo-1542204172-e7052809a936?q=80&w=600&auto=format&fit=crop'
         };
@@ -286,14 +290,53 @@
             else log1.className = 'text-sky-400';
         }
 
+        // Programmatically trigger native Android file select dialogs
+        function triggerDevicePicker(type) {
+            if (isSigningProcessActive) return;
+            
+            // Allow back-and-forth toggling between panels cleanly
+            isSecuredSigned = false; 
+            document.getElementById('sim-watermark-pill').classList.add('hidden');
+            
+            if (type === 'image') {
+                document.getElementById('device-photo-picker').click();
+            } else {
+                document.getElementById('device-video-picker').click();
+            }
+        }
+
+        // Process device content inputs and paint to backdrop frame safely
+        function handleFileSelection(event, type) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            mockMediaType = type;
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                // Read local file context securely as a raw DataURL token string
+                sampleDataURIs[type] = e.target.result;
+                
+                // Paint to background box frame layout structure
+                document.getElementById('active-media-bg').style.backgroundImage = `url('${e.target.result}')`;
+                
+                // Sync tab display configuration layouts cleanly
+                document.getElementById('media-opt-img').className = 'py-2.5 px-3 rounded-xl text-[11px] font-bold transition-all border ' + (type === 'image' ? 'bg-rose-500/10 border-rose-500 text-rose-400 flex items-center justify-center gap-1' : 'bg-slate-950/40 border-white/5 text-slate-400 flex items-center justify-center gap-1');
+                document.getElementById('media-opt-vid').className = 'py-2.5 px-3 rounded-xl text-[11px] font-bold transition-all border ' + (type === 'video' ? 'bg-rose-500/10 border-rose-500 text-rose-400 flex items-center justify-center gap-1' : 'bg-slate-950/40 border-white/5 text-slate-400 flex items-center justify-center gap-1');
+
+                writeRadarLog(`Successfully loaded personal user file stream: [${file.name}]`, 'success');
+                showToast("File loaded! Tap 'Verify' below to audit metrics.");
+            };
+
+            reader.readAsDataURL(file);
+        }
+
         // Consolidated Verification Tap Handler
         function handleVerifyTabTap() {
             if (isSigningProcessActive) return;
             
-            // Switch view panel back to media selection view if it wasn't there
+            // Re-render panels appropriately
             switchTab('capture');
-            
-            // Trigger authentication algorithm sequence
             executeSigningSequence();
         }
 
@@ -334,23 +377,6 @@
                 grid.classList.add('opacity-0');
                 triggerWatermarkSimulation();
             }
-        }
-
-        // Swapping active mock media files
-        function setMockMedia(type) {
-            if (isSigningProcessActive) return;
-            mockMediaType = type;
-
-            document.getElementById('media-opt-img').className = 'py-2.5 px-3 rounded-xl text-[11px] font-bold transition-all border ' + (type === 'image' ? 'bg-rose-500/10 border-rose-500 text-rose-400 flex items-center justify-center gap-1' : 'bg-slate-950/40 border-white/5 text-slate-400 flex items-center justify-center gap-1');
-            document.getElementById('media-opt-vid').className = 'py-2.5 px-3 rounded-xl text-[11px] font-bold transition-all border ' + (type === 'video' ? 'bg-rose-500/10 border-rose-500 text-rose-400 flex items-center justify-center gap-1' : 'bg-slate-950/40 border-white/5 text-slate-400 flex items-center justify-center gap-1');
-
-            document.getElementById('active-media-bg').style.backgroundImage = `url('${samples[type]}')`;
-            
-            // If they change media, require a new verification step
-            isSecuredSigned = false;
-            document.getElementById('sim-watermark-pill').classList.add('hidden');
-
-            writeRadarLog(`Loaded original layout file: [${type === 'image' ? 'raw_camera.jpg' : 'instagram_reel_final.mp4'}]`, 'warning');
         }
 
         // Executing hardware verification loop
@@ -483,7 +509,7 @@
         window.addEventListener('touchmove', onDragMove, { passive: false });
         window.addEventListener('touchend', onDragEnd);
 
-        // HIGH-FIDELITY EXPORT ENGINE
+        // HIGH-FIDELITY MOBILE EXPORT ENGINE
         function downloadFlattenedMedia() {
             showToast("Baking flat pixel vectors to file... 🚀");
             writeRadarLog("Executing image export engine...", "warning");
@@ -492,12 +518,16 @@
             const ctx = hiddenCanvas.getContext("2d");
             const baseImg = new Image();
 
-            baseImg.crossOrigin = "anonymous";
-            baseImg.src = samples[mockMediaType];
+            // Bypasses local cross-origin canvas security blockers cleanly on mobile runs
+            if (!sampleDataURIs[mockMediaType].startsWith('data:')) {
+                baseImg.crossOrigin = "anonymous";
+            }
+            
+            baseImg.src = sampleDataURIs[mockMediaType];
 
             baseImg.onload = function() {
-                hiddenCanvas.width = baseImg.naturalWidth;
-                hiddenCanvas.height = baseImg.naturalHeight;
+                hiddenCanvas.width = baseImg.naturalWidth || 600;
+                hiddenCanvas.height = baseImg.naturalHeight || 800;
 
                 // 1. Draw base photo layer
                 ctx.drawImage(baseImg, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
@@ -518,15 +548,15 @@
                 const scaleWidth = textWidth + (scaleRadius * 3.4);
                 ctx.restore();
 
-                // 3. Compute slider percentage locations into actual high-res pixel coordinates
+                // 3. Compute percentage locations into actual pixel coordinates
                 const finalX = (hiddenCanvas.width - scaleWidth) * (currentOffsetX / 100);
                 const finalY = (hiddenCanvas.height - scaleHeight) * (currentOffsetY / 100);
 
-                // 4. Draw Translucent Slate Backdrop capsule rounded rectangle
+                // 4. Draw Translucent Backdrop capsule rounded rectangle
                 ctx.save();
-                ctx.fillStyle = "rgba(22, 24, 26, 0.76)";
+                ctx.fillStyle = "rgba(22, 24, 26, 0.82)";
                 ctx.beginPath();
-                ctx.roundRect(finalX, finalY, scaleWidth, scaleHeight, 30);
+                ctx.roundRect(finalX, finalY, scaleWidth, scaleHeight, scaleRadius);
                 ctx.fill();
                 ctx.restore();
 
@@ -542,7 +572,7 @@
                 ctx.fill();
                 ctx.restore();
 
-                // Draw white checkmark line vector ticks
+                // Draw white checkmark vector ticks
                 ctx.save();
                 ctx.strokeStyle = "#ffffff";
                 ctx.lineWidth = Math.max(1.5, scaleHeight * 0.05);
@@ -565,17 +595,23 @@
                 ctx.fillText(badgeText, circleX + circleRadius + (scaleHeight * 0.22), finalY + (scaleHeight * 0.52));
                 ctx.restore();
 
-                // 7. Dispatch uncompressed lossless PNG file
-                const link = document.createElement("a");
-                link.download = `provenant_verified_feed_${Date.now()}.png`;
-                link.href = hiddenCanvas.toDataURL("image/png");
-                
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+                try {
+                    // 7. Safe fallback block parsing configuration for secure standalone data stream
+                    const dataUrl = hiddenCanvas.toDataURL("image/png");
+                    const link = document.createElement("a");
+                    link.download = `provenant_verified_asset_${Date.now()}.png`;
+                    link.href = dataUrl;
+                    
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
 
-                writeRadarLog("Image output ready! Saved to your downloads folder.", "success");
-                showToast("Success! Design file ready for Instagram.");
+                    writeRadarLog("Image output ready! Saved to your downloads folder.", "success");
+                    showToast("Success! Design file ready for Instagram.");
+                } catch(err) {
+                    writeRadarLog("Canvas tainted by external URL file configurations.", "danger");
+                    showToast("Error saving external demo layout. Please upload a real file to download successfully!");
+                }
             };
         }
 
