@@ -241,7 +241,7 @@
             setTimeout(() => {
                 toast.classList.remove('opacity-100', 'translate-y-0');
                 toast.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
-            }, 5000); // Maintained for the initial 5-second popup duration capability
+            }, 5000); 
         }
 
         // Terminal Log Engine
@@ -566,7 +566,9 @@
                     writeRadarLog("Image output ready! Saved to your downloads folder.", "success");
                     showToast("Success! Design file ready for Instagram.");
                     
-                    // LOOPS BACK TO FIRST SCREEN UPON SUCCESSFUL DOWNLOAD
+                    // PERMANENTLY STOP HINT AND LOOP BACK
+                    localStorage.setItem('provenant_has_downloaded', 'true');
+                    
                     setTimeout(() => {
                         isSecuredSigned = false; 
                         document.getElementById('sim-watermark-pill').classList.add('hidden');
@@ -586,10 +588,21 @@
             syncPersonalizedText();
             updateFadeDuration();
             
-            // Displays home screen install tip for 5 seconds right at startup
-            setTimeout(() => {
-                showToast("Tip: Tap your browser menu and select 'Add to Home Screen' to use Provenant like a native app!", 5000);
-            }, 800);
+            // SMART AUTOMATION REMINDER TIMELINE ALGORITHM
+            const hasDownloaded = localStorage.getItem('provenant_has_downloaded');
+            
+            if (!hasDownloaded) {
+                let showCount = parseInt(localStorage.getItem('provenant_tip_count') || '0');
+                
+                if (showCount < 3) {
+                    showCount++;
+                    localStorage.setItem('provenant_tip_count', showCount.toString());
+                    
+                    setTimeout(() => {
+                        showToast("Tip: Tap your browser menu and select 'Add to Home Screen' to use Provenant like a native app!", 5000);
+                    }, 800);
+                }
+            }
         }
     </script>
 </body>
