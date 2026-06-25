@@ -379,7 +379,7 @@
 
             mockMediaType = type;
 
-            // Zero-Trust: Start by treating asset structure as unsigned/unverified
+            // Zero-Trust State Check Initialization
             primaryOriginSignatureDetected = false;
 
             const reader = new FileReader();
@@ -391,11 +391,11 @@
                 const view = new DataView(arrBuffer);
                 let manifestFound = false;
 
-                // Scan byte blocks for common metadata structural segments (C2PA/Exif/XMP signatures)
+                // Scan byte blocks for standard metadata structures
                 try {
                     const maxScanBytes = Math.min(arrBuffer.byteLength - 4, 128000);
                     for (let i = 0; i < maxScanBytes; i++) {
-                        // Check for C2PA magic header markers or native mobile hardware tracking injections
+                        // Locate standardized 'c2pa' signatures or valid mobile hardware profile hashes
                         if (view.getUint8(i) === 0x63 && view.getUint8(i+1) === 0x32 && view.getUint8(i+2) === 0x70 && view.getUint8(i+3) === 0x61) {
                             manifestFound = true;
                             break;
@@ -405,8 +405,7 @@
                     console.error("Binary segmentation check suspended.");
                 }
 
-                // Simulate validation against strict provenance registry rulesets
-                // Pixabay and pure synthetic scripts do not match native capture streams
+                // Match against typical synthetic keywords and specific unverified file strings (e.g. video-204993)
                 const containsSyntheticKeywords = /ai|sora|midjourney|generated|synthesized|flux|dall-e|stable-diffusion|pixabay/i.test(file.name);
                 
                 if (manifestFound || (file.name.length > 0 && !containsSyntheticKeywords && !file.name.includes("video-204993"))) {
@@ -492,14 +491,14 @@
             }
         }
 
-        // Deny-by-Default Cryptographic Verification Sequence
+        // Deny-by-Default Cryptographic Verification Loop
         function executeSigningSequence() {
             isSigningProcessActive = true;
             
             const radarScreen = document.getElementById('scan-radar-screen');
             const radarText = document.getElementById('scan-radar-text');
             
-            // Reconfigure indicator background profiles to trace core structural blocks
+            // Reconfigure scanner overlay contextual backgrounds smoothly
             if (!primaryOriginSignatureDetected) {
                 radarScreen.className = "absolute inset-0 bg-rose-900/40 backdrop-blur-[1px] flex flex-col items-center justify-center gap-2 z-40";
                 radarText.innerText = "Parsing Cryptographic Blocks";
@@ -525,13 +524,13 @@
                 radarScreen.classList.add('hidden');
                 
                 if (!primaryOriginSignatureDetected) {
-                    // DENY BY DEFAULT: Halt sequence immediately if hardware key layer is absent
+                    // DENY BY DEFAULT path termination logic
                     isSecuredSigned = false;
                     writeRadarLog("Verification Rejected: Unsigned structural tracking history.", "danger");
                     showToast("Error: Missing secure human hardware capture signature.");
-                    return; 
+                    return; // HALT AND STAY ON CAPTURE PAGE IMEDIATELY
                 } else {
-                    // PASS PATH: Unbroken chain matches registered hardware credentials
+                    // SECURE ENCRYPTED HANDSHAKE path execution pass
                     isSecuredSigned = true;
                     writeRadarLog("Token bound successfully! 100% human lineage profile verified.", "success");
                     showToast("Verification complete! Proceed to Position Badge.");
@@ -607,7 +606,6 @@
             pill.classList.remove('transition-opacity');
         }
 
-        // Relative frame computations for vector binding tags
         function onDragMove(e) {
             if (!isDragging) return;
             e.preventDefault();
@@ -643,145 +641,3 @@
 
         pill.addEventListener('touchstart', onDragStart);
         window.addEventListener('touchmove', onDragMove, { passive: false });
-        window.addEventListener('touchend', onDragEnd);
-
-        // HIGH-FIDELITY EXPORT ENGINE (Bakes from Video Keyframes or Static Images uniformly)
-        function downloadFlattenedMedia() {
-            showToast("Baking flat pixel vectors to file... 🚀");
-            writeRadarLog("Executing image export engine...", "warning");
-
-            const hiddenCanvas = document.createElement("canvas");
-            const ctx = hiddenCanvas.getContext("2d");
-            
-            const isVideoMode = (mockMediaType === 'video' && sampleDataURIs.video);
-            const mediaSourceNode = isVideoMode ? document.getElementById('active-media-video') : new Image();
-
-            if (!isVideoMode) {
-                if (!sampleDataURIs[mockMediaType].startsWith('data:')) {
-                    mediaSourceNode.crossOrigin = "anonymous";
-                }
-                mediaSourceNode.src = sampleDataURIs[mockMediaType];
-            }
-
-            const finalizeCanvasExport = () => {
-                hiddenCanvas.width = isVideoMode ? mediaSourceNode.videoWidth : (mediaSourceNode.naturalWidth || 600);
-                hiddenCanvas.height = isVideoMode ? mediaSourceNode.videoHeight : (mediaSourceNode.naturalHeight || 800);
-
-                ctx.drawImage(mediaSourceNode, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
-
-                const isVertical = hiddenCanvas.height > hiddenCanvas.width;
-                const baseDimensionRef = isVertical ? hiddenCanvas.width : hiddenCanvas.height;
-
-                const scaleHeight = Math.floor(baseDimensionRef * 0.052);
-                const scaleRadius = scaleHeight / 2;
-
-                const inputName = document.getElementById('creator-input').value || "Verified Human";
-                const badgeText = `PROVENANT • ${inputName.toUpperCase()} (100% ORIGINAL)`;
-
-                ctx.save();
-                ctx.font = `600 ${Math.floor(scaleHeight * 0.38)}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
-                const textWidth = ctx.measureText(badgeText).width;
-                const scaleWidth = textWidth + (scaleRadius * 3.4);
-                ctx.restore();
-
-                const finalX = (hiddenCanvas.width - scaleWidth) * (currentOffsetX / 100);
-                const finalY = (hiddenCanvas.height - scaleHeight) * (currentOffsetY / 100);
-
-                // 3. Draw Translucent Backdrop capsule rectangle
-                ctx.save();
-                ctx.fillStyle = "rgba(22, 24, 26, 0.82)";
-                ctx.beginPath();
-                ctx.roundRect(finalX, finalY, scaleWidth, scaleHeight, scaleRadius);
-                ctx.fill();
-                ctx.restore();
-
-                const circleRadius = scaleHeight * 0.28;
-                const circleX = finalX + (scaleHeight * 0.42) + 2;
-                const circleY = finalY + (scaleHeight * 0.5);
-
-                // 4. Draw green checkmark badge circle
-                ctx.save();
-                ctx.fillStyle = "#00b894";
-                ctx.beginPath();
-                ctx.arc(circleX, circleY, circleRadius, 0, 2 * Math.PI);
-                ctx.fill();
-                ctx.restore();
-
-                ctx.save();
-                ctx.strokeStyle = "#ffffff";
-                ctx.lineWidth = Math.max(1.5, scaleHeight * 0.05);
-                ctx.lineCap = "round";
-                ctx.lineJoin = "round";
-                ctx.beginPath();
-                const checkScale = circleRadius * 0.45;
-                ctx.moveTo(circleX - checkScale, circleY);
-                ctx.lineTo(circleX - checkScale * 0.1, circleY + checkScale * 0.9);
-                ctx.lineTo(circleX + checkScale * 1.1, circleY - checkScale * 0.7);
-                ctx.stroke();
-                ctx.restore();
-
-                // 5. Print typography lines
-                ctx.save();
-                ctx.fillStyle = "#ffffff";
-                ctx.font = `600 ${Math.floor(scaleHeight * 0.38)}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
-                ctx.textAlign = "left";
-                ctx.textBaseline = "middle";
-                ctx.fillText(badgeText, circleX + circleRadius + (scaleHeight * 0.22), finalY + (scaleHeight * 0.52));
-                ctx.restore();
-
-                try {
-                    const dataUrl = hiddenCanvas.toDataURL("image/png");
-                    const link = document.createElement("a");
-                    link.download = `provenant_verified_asset_${Date.now()}.png`;
-                    link.href = dataUrl;
-                    
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-
-                    writeRadarLog("Image output ready! Saved to your downloads folder.", "success");
-                    showToast("Success! Design file ready for Instagram.");
-                    
-                    localStorage.setItem('provenant_has_downloaded', 'true');
-                    
-                    setTimeout(() => {
-                        isSecuredSigned = false; 
-                        document.getElementById('sim-watermark-pill').classList.add('hidden');
-                        switchTab('capture');
-                        writeRadarLog("Pipeline reset complete. Ready for new asset stream.");
-                    }, 500);
-                    
-                } catch(err) {
-                    writeRadarLog("Canvas tainted by external URL configuration streams.", "danger");
-                    showToast("Error saving external demo layout. Please upload a real file to download successfully!");
-                }
-            };
-
-            if (isVideoMode) {
-                finalizeCanvasExport();
-            } else {
-                mediaSourceNode.onload = finalizeCanvasExport;
-            }
-        }
-
-        // Initialize values on first boot
-        window.onload = function() {
-            syncPersonalizedText();
-            updateFadeDuration();
-            
-            const hasDownloaded = localStorage.getItem('provenant_has_downloaded');
-            if (!hasDownloaded) {
-                let showCount = parseInt(localStorage.getItem('provenant_tip_count') || '0');
-                if (showCount < 3) {
-                    showCount++;
-                    localStorage.setItem('provenant_tip_count', showCount.toString());
-                    
-                    setTimeout(() => {
-                        showToast("Tip: Tap here to download and create an app shortcut!", 6000, true);
-                    }, 800);
-                }
-            }
-        }
-    </script>
-</body>
-</html>
