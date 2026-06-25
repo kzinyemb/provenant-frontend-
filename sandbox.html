@@ -454,22 +454,26 @@
             }
         }
 
-        // Verification validation loop
+        // Verification validation loop (Simulating Cryptographic Lineage Audit Blueprint)
         function executeSigningSequence() {
             isSigningProcessActive = true;
             document.getElementById('scan-radar-screen').classList.remove('hidden');
-            writeRadarLog("Initiating verification handshake...", "warning");
-            showToast("Verifying original capture files...");
+            writeRadarLog("Initiating lineage verification handshake...", "warning");
+            showToast("Verifying organic capture history...");
 
             setTimeout(() => {
-                writeRadarLog("File analysis passed. Generating local tracking tokens...", "warning");
-            }, 1000);
+                writeRadarLog("Camera lens sensor profile matched. Auditing post-processing layer adjustments...", "warning");
+            }, 800);
+
+            setTimeout(() => {
+                writeRadarLog("Allowed: Structural edits (filters/crops/stretching) registered successfully.", "success");
+            }, 1600);
 
             setTimeout(() => {
                 isSigningProcessActive = false;
                 isSecuredSigned = true;
                 document.getElementById('scan-radar-screen').classList.add('hidden');
-                writeRadarLog("Token generated successfully! Asset verified.", "success");
+                writeRadarLog("Token bound successfully! 100% human lineage profile verified.", "success");
                 showToast("Verification complete! Proceed to Position Badge.");
                 switchTab('editor');
             }, 2500);
@@ -561,8 +565,6 @@
 
             pill.style.left = `${currentOffsetX.toFixed(1)}%`;
             pill.style.top = `${currentOffsetY.toFixed(1)}%`;
-
-            document.getElementById('coords-log-display').innerText = `X: ${currentOffsetX.toFixed(0)}% | Y: ${currentOffsetY.toFixed(0)}%`;
         }
 
         function onDragEnd() {
