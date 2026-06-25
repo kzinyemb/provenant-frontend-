@@ -215,7 +215,7 @@
             
             <div class="space-y-1">
                 <h3 class="text-base font-extrabold text-white">Create App Shortcut</h3>
-                <p class="text-xs text-slate-400">Pin Provenant to your home screen to run it full-screen anytime like a native mobile app.</p>
+                <button class="text-xs text-slate-400">Pin Provenant to your home screen to run it full-screen anytime like a native mobile app.</button>
             </div>
 
             <div class="flex border-b border-white/5 text-xs font-bold text-slate-500">
@@ -257,7 +257,7 @@
         let timelineCurrentSecs = 0.0;
         let isToastClickableShortcutTrigger = false;
 
-        // Custom Evaluation Flags (Programmatic Verification Forking Switches)
+        // Dynamic Verification State Switches
         let isSyntheticContentAnomaly = false;
 
         // Coordinate offsets in relative percentages
@@ -380,7 +380,7 @@
             mockMediaType = type;
 
             // 1. INTRODUCE FILENAME HEURISTIC CHECK
-            const aiNamingPatterns = /ai|sora|midjourney|generated|synthesized|flux|dall-e|stable-diffusion/i;
+            const aiNamingPatterns = /ai|sora|midjourney|generated|synthesized|flux|dall-e|stable-diffusion|pixabay/i;
             isSyntheticContentAnomaly = aiNamingPatterns.test(file.name);
 
             const reader = new FileReader();
@@ -575,6 +575,7 @@
             pill.classList.remove('transition-opacity');
         }
 
+        // Relative frame computations for vector binding tags
         function onDragMove(e) {
             if (!isDragging) return;
             e.preventDefault();
