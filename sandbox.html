@@ -494,10 +494,11 @@
                 radarScreen.classList.add('hidden');
                 
                 if (isSyntheticContentAnomaly) {
-                    // IF IT MATCHES AI CRITERIA: Block generation and register synthetic warnings
+                    // IF IT MATCHES AI CRITERIA: Block generation and stop execution without changing tabs
                     isSecuredSigned = false;
                     writeRadarLog("Synthetic Anomaly Detected. Token assignment dropped.", "danger");
                     showToast("Error: AI Generated Content cannot be authenticated as Human Origin!");
+                    return; // FREEZE INTERFACE PIPELINE RUNS IMMEDIATELY HERE
                 } else {
                     // IF IT LOOKS LIKE A STANDARD CAMERA FILE: Allow human original profile pass
                     isSecuredSigned = true;
