@@ -599,6 +599,7 @@
             pill.style.top = `${currentOffsetY.toFixed(1)}%`;
         }
 
+        // Clean bounds mapping locks
         function onDragEnd() {
             if (!isDragging) return;
             isDragging = false;
