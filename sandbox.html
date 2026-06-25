@@ -82,7 +82,7 @@
 
                     <div id="scan-radar-screen" class="absolute inset-0 bg-rose-500/10 backdrop-blur-[1px] hidden flex-col items-center justify-center gap-2 z-40">
                         <div class="w-10 h-10 border-4 border-rose-500 border-t-transparent rounded-full animate-spin shadow-lg"></div>
-                        <span class="text-[9px] font-mono tracking-widest text-white uppercase font-black bg-rose-600/90 px-2.5 py-1 rounded shadow-md">
+                        <span id="scan-radar-text" class="text-[9px] font-mono tracking-widest text-white uppercase font-black bg-rose-600/90 px-2.5 py-1 rounded shadow-md">
                             Verifying Original Signature
                         </span>
                     </div>
@@ -257,6 +257,9 @@
         let timelineCurrentSecs = 0.0;
         let isToastClickableShortcutTrigger = false;
 
+        // Custom Evaluation Flags (Programmatic Verification Forking Switches)
+        let isSyntheticContentAnomaly = false;
+
         // Coordinate offsets in relative percentages
         let currentOffsetX = 15;
         let currentOffsetY = 20;
@@ -375,8 +378,12 @@
             if (!file) return;
 
             mockMediaType = type;
-            const reader = new FileReader();
 
+            // 1. INTRODUCE FILENAME HEURISTIC CHECK
+            const aiNamingPatterns = /ai|sora|midjourney|generated|synthesized|flux|dall-e|stable-diffusion/i;
+            isSyntheticContentAnomaly = aiNamingPatterns.test(file.name);
+
+            const reader = new FileReader();
             reader.onload = function(e) {
                 sampleDataURIs[type] = e.target.result;
                 
@@ -454,28 +461,50 @@
             }
         }
 
-        // Verification validation loop (Simulating Cryptographic Lineage Audit Blueprint)
+        // 2. FORK THE VERIFICATION PATH
         function executeSigningSequence() {
             isSigningProcessActive = true;
-            document.getElementById('scan-radar-screen').classList.remove('hidden');
+            
+            const radarScreen = document.getElementById('scan-radar-screen');
+            const radarText = document.getElementById('scan-radar-text');
+            
+            // Set dynamic scanning indicator tracking colors smoothly
+            if (isSyntheticContentAnomaly) {
+                radarScreen.className = "absolute inset-0 bg-rose-900/40 backdrop-blur-[1px] flex flex-col items-center justify-center gap-2 z-40";
+                radarText.innerText = "Analyzing Frame Discrepancies";
+            } else {
+                radarScreen.className = "absolute inset-0 bg-emerald-950/20 backdrop-blur-[1px] flex flex-col items-center justify-center gap-2 z-40";
+                radarText.innerText = "Verifying Original Signature";
+            }
+            
+            radarScreen.classList.remove('hidden');
             writeRadarLog("Initiating lineage verification handshake...", "warning");
             showToast("Verifying organic capture history...");
 
             setTimeout(() => {
-                writeRadarLog("Camera lens sensor profile matched. Auditing post-processing layer adjustments...", "warning");
-            }, 800);
-
-            setTimeout(() => {
-                writeRadarLog("Allowed: Structural edits (filters/crops/stretching) registered successfully.", "success");
-            }, 1600);
+                if (isSyntheticContentAnomaly) {
+                    writeRadarLog("High structural entropy anomaly detected in tracking vector fields.", "danger");
+                } else {
+                    writeRadarLog("Camera lens sensor profile matched. Auditing layer updates...", "warning");
+                }
+            }, 1000);
 
             setTimeout(() => {
                 isSigningProcessActive = false;
-                isSecuredSigned = true;
-                document.getElementById('scan-radar-screen').classList.add('hidden');
-                writeRadarLog("Token bound successfully! 100% human lineage profile verified.", "success");
-                showToast("Verification complete! Proceed to Position Badge.");
-                switchTab('editor');
+                radarScreen.classList.add('hidden');
+                
+                if (isSyntheticContentAnomaly) {
+                    // IF IT MATCHES AI CRITERIA: Block generation and register synthetic warnings
+                    isSecuredSigned = false;
+                    writeRadarLog("Synthetic Anomaly Detected. Token assignment dropped.", "danger");
+                    showToast("Error: AI Generated Content cannot be authenticated as Human Origin!");
+                } else {
+                    // IF IT LOOKS LIKE A STANDARD CAMERA FILE: Allow human original profile pass
+                    isSecuredSigned = true;
+                    writeRadarLog("Token bound successfully! 100% human lineage profile verified.", "success");
+                    showToast("Verification complete! Proceed to Position Badge.");
+                    switchTab('editor');
+                }
             }, 2500);
         }
 
@@ -529,6 +558,7 @@
         let isDragging = false;
         let startX, startY, initialLeft, initialTop;
 
+        // Custom touch/mouse mechanics wrappers
         function onDragStart(e) {
             if (selectedTab !== 'editor') return;
             isDragging = true;
@@ -568,6 +598,7 @@
         }
 
         function onDragEnd() {
+            if (!isDragging) return;
             isDragging = false;
             pill.classList.add('transition-opacity');
             writeRadarLog(`Badge locked at coordinates X: ${currentOffsetX.toFixed(0)}% | Y: ${currentOffsetY.toFixed(0)}%`, 'success');
@@ -589,7 +620,6 @@
             const hiddenCanvas = document.createElement("canvas");
             const ctx = hiddenCanvas.getContext("2d");
             
-            // Handles both running video snapshot extraction arrays and background images
             const isVideoMode = (mockMediaType === 'video' && sampleDataURIs.video);
             const mediaSourceNode = isVideoMode ? document.getElementById('active-media-video') : new Image();
 
@@ -604,10 +634,8 @@
                 hiddenCanvas.width = isVideoMode ? mediaSourceNode.videoWidth : (mediaSourceNode.naturalWidth || 600);
                 hiddenCanvas.height = isVideoMode ? mediaSourceNode.videoHeight : (mediaSourceNode.naturalHeight || 800);
 
-                // 1. Capture base photo frame layer or video canvas keyframe block natively
                 ctx.drawImage(mediaSourceNode, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
 
-                // 2. Compute proportional badge layouts based on high-res dimensions
                 const isVertical = hiddenCanvas.height > hiddenCanvas.width;
                 const baseDimensionRef = isVertical ? hiddenCanvas.width : hiddenCanvas.height;
 
@@ -708,12 +736,9 @@
             syncPersonalizedText();
             updateFadeDuration();
             
-            // SMART REMINDER AUTOMATION LOGIC
             const hasDownloaded = localStorage.getItem('provenant_has_downloaded');
-            
             if (!hasDownloaded) {
                 let showCount = parseInt(localStorage.getItem('provenant_tip_count') || '0');
-                
                 if (showCount < 3) {
                     showCount++;
                     localStorage.setItem('provenant_tip_count', showCount.toString());
