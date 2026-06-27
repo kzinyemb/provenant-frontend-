@@ -234,7 +234,7 @@
                 <div class="flex gap-2.5 items-start"><span class="bg-white/5 rounded-md px-1.5 py-0.5 font-bold font-mono text-rose-400">1</span><span>Open the website inside **Chrome** on your Android device.</span></div>
                 <div class="flex gap-2.5 items-start"><span class="bg-white/5 rounded-md px-1.5 py-0.5 font-bold font-mono text-rose-400">2</span><span>Tap the **Three Dots Menu Icon (⋮)** in the upper right.</span></div>
                 <div class="flex gap-2.5 items-start"><span class="bg-white/5 rounded-md px-1.5 py-0.5 font-bold font-mono text-rose-400">3</span><span>Select **"Add to Home screen"** from the browser options list.</span></div>
-                <div class="flex gap-2.5 items-start"><span class="bg-white/5 rounded-md px-1.5 py-0.5 font-bold font-mono text-rose-400">4</span><span>Tap **Add** on the popup dialogue windows to finish creation.</span></div>
+                <div class="flex gap-2.5 items-start"><span class="bg-white/5 rounded-md px-1.5 py-0.5 font-bold font-mono text-rose-400">4</span><span>Tap **Add on the popup dialogue windows to finish creation.</span></div>
             </div>
 
             <button onclick="closeShortcutModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 rounded-xl text-xs transition-colors">Got it, Thanks!</button>
@@ -271,10 +271,9 @@
             video: '' // Will hold the dynamic dataURL object at runtime
         };
 
-        // INTEGRATED STEP 2: Live Verification Engine Bridge Call
+        // INTEGRATED STEP 2: Customer-Facing Verification Bridge Call
         async function verifyData(captureData) {
             try {
-                // Connects dynamically to your live local running gateway engine instance
                 const backendUrl = 'http://localhost:3000/api/verify-lineage'; 
 
                 const response = await fetch(backendUrl, {
@@ -289,13 +288,15 @@
                 console.log('Verification Engine Response:', result);
                 
                 if (result.verified) {
-                    writeRadarLog(`Verified Ledger: Signee Authority matches [${result.issuer}]`, 'success');
+                    // Customer-friendly logs
+                    writeRadarLog("Success! Original file authenticated.", 'success');
+                    writeRadarLog(result.message || "Your content protection token is linked.", 'success');
                 } else {
-                    writeRadarLog(`Handshake Rejected: ${result.reason}`, 'danger');
+                    writeRadarLog(`Could not verify: ${result.reason}`, 'danger');
                 }
             } catch (error) {
                 console.error('Error connecting to verification engine:', error);
-                writeRadarLog('Runtime Engine sync offline. running fallback core arrays.', 'neutral');
+                writeRadarLog('Running in offline companion mode. Core features active.', 'neutral');
             }
         }
 
