@@ -271,6 +271,34 @@
             video: '' // Will hold the dynamic dataURL object at runtime
         };
 
+        // INTEGRATED STEP 2: Live Verification Engine Bridge Call
+        async function verifyData(captureData) {
+            try {
+                // Connects dynamically to your live local running gateway engine instance
+                const backendUrl = 'http://localhost:3000/api/verify-lineage'; 
+
+                const response = await fetch(backendUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ data: captureData })
+                });
+
+                const result = await response.json();
+                console.log('Verification Engine Response:', result);
+                
+                if (result.verified) {
+                    writeRadarLog(`Verified Ledger: Signee Authority matches [${result.issuer}]`, 'success');
+                } else {
+                    writeRadarLog(`Handshake Rejected: ${result.reason}`, 'danger');
+                }
+            } catch (error) {
+                console.error('Error connecting to verification engine:', error);
+                writeRadarLog('Runtime Engine sync offline. running fallback core arrays.', 'neutral');
+            }
+        }
+
         // Custom Toast System
         function showToast(message, hideDelay = 5000, isShortcutTip = false) {
             const toast = document.getElementById('custom-toast');
@@ -511,6 +539,9 @@
             writeRadarLog("Auditing binary structure container for hardware manifests...", "warning");
             showToast("Parsing global C2PA schema metadata...");
 
+            // Trigger api backend check asynchronously alongside visual processing simulation clocks
+            verifyData(sampleDataURIs[mockMediaType]);
+
             setTimeout(() => {
                 if (!primaryOriginSignatureDetected) {
                     writeRadarLog("Anomaly: Missing authentic sensor manifest anchor hashes.", "danger");
@@ -685,7 +716,7 @@
                 const finalX = (hiddenCanvas.width - scaleWidth) * (currentOffsetX / 100);
                 const finalY = (hiddenCanvas.height - scaleHeight) * (currentOffsetY / 100);
 
-                // 3. Draw Translucent Backdrop capsule rectangle
+                // Draw Translucent Backdrop capsule rectangle
                 ctx.save();
                 ctx.fillStyle = "rgba(22, 24, 26, 0.82)";
                 ctx.beginPath();
@@ -697,7 +728,7 @@
                 const circleX = finalX + (scaleHeight * 0.42) + 2;
                 const circleY = finalY + (scaleHeight * 0.5);
 
-                // 4. Draw green checkmark badge circle
+                // Draw green checkmark badge circle
                 ctx.save();
                 ctx.fillStyle = "#00b894";
                 ctx.beginPath();
@@ -718,7 +749,7 @@
                 ctx.stroke();
                 ctx.restore();
 
-                // 5. Print typography lines
+                // Print typography lines
                 ctx.save();
                 ctx.fillStyle = "#ffffff";
                 ctx.font = `600 ${Math.floor(scaleHeight * 0.38)}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
