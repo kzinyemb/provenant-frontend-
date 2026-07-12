@@ -1,44 +1,357 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google tag (gtag.js) Preserved Exactly -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6B0NP15RYC"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-6B0NP15RYC');
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Writers Forensic Workspace | VerifyHuman™</title>
-    <!-- React & Tailwind Setup -->
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+    
     <style>
-        :root { --brand-dark: #1a1a1a; --ribbon-bg: #ffffff; --border-color: #edebe9; --bg-workspace: #f4f7f6; }
+        :root { 
+            --ribbon-bg: #ffffff; 
+            --border-color: #edebe9; 
+            --bg-workspace: #f4f7f6; 
+            --brand-dark: #0f172a;
+            --brand-accent: #00b894;
+            --sidebar-width: 360px;
+        }
         body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; background-color: var(--bg-workspace); font-family: 'Inter', sans-serif; margin: 0; }
+        
+        /* Navigation & Tabs */
         .quick-access { background: var(--brand-dark); color: white; padding: 8px 20px; display: flex; gap: 15px; align-items: center; z-index: 100; }
         .tabs { background: var(--brand-dark); display: flex; padding-left: 10px; z-index: 50; }
-        .tab { padding: 10px 20px; color: rgba(255,255,255,0.7); cursor: pointer; font-size: 13px; font-weight: 600; }
-        .tab.active { background: var(--ribbon-bg); color: var(--brand-dark); border-radius: 8px 8px 0 0; }
+        .tab { padding: 10px 20px; color: rgba(255,255,255,0.7); cursor: pointer; font-size: 13px; font-weight: 600; border-radius: 8px 8px 0 0; }
+        .tab.active { background: var(--ribbon-bg); color: var(--brand-dark); }
+
+        /* Ribbon Menu */
         .ribbon-content { background: var(--ribbon-bg); height: 115px; border-bottom: 1px solid var(--border-color); display: none; padding: 0 20px; align-items: center; gap: 10px; }
         .ribbon-content.active { display: flex; }
         .group { display: flex; flex-direction: column; align-items: center; border-right: 1px solid var(--border-color); padding: 0 15px; height: 85%; justify-content: center; }
         .group-label { font-size: 10px; color: #888; margin-top: 5px; text-transform: uppercase; }
-        .btn-row { display: flex; gap: 4px; }
-        .btn-ribbon { background: none; border: 1px solid transparent; padding: 6px; cursor: pointer; border-radius: 4px; font-size: 12px; }
-        .btn-ribbon:hover { background: #f0f0f0; }
+        .btn-row { display: flex; gap: 4px; align-items: center; }
+        .btn-ribbon { background: none; border: 1px solid transparent; padding: 6px; cursor: pointer; border-radius: 4px; font-size: 12px; color: var(--brand-dark); transition: 0.2s; }
+        .btn-ribbon:hover { background: #f0f0f0; border-color: #ccc; }
         .btn-big { flex-direction: column; display: flex; min-width: 55px; text-align: center; }
-        .workspace-container { display: flex; flex-grow: 1; overflow: hidden; }
-        .workspace { flex-grow: 1; overflow: auto; display: flex; flex-direction: column; align-items: center; padding: 40px; }
-        .paper { background: white; width: 8.5in; min-height: 11in; padding: 1in; box-shadow: 0 0 10px rgba(0,0,0,0.1); outline: none; }
-        #provenant-sidebar { width: 350px; border-left: 1px solid #ddd; background: #000; color: #eee; overflow-y: auto; }
+        .btn-big span { font-size: 20px; }
+
+        /* Split Screen Container Frame */
+        .app-split-container {
+            display: flex;
+            flex-direction: row;
+            flex-grow: 1;
+            overflow: hidden;
+            width: 100%;
+            position: relative;
+        }
+
+        /* Workspace & Paper */
+        .workspace { flex-grow: 1; overflow: auto; display: flex; flex-direction: column; align-items: center; padding: 40px; position: relative; height: 100%; }
+        .paper { background: white; width: 8.5in; min-height: 11in; padding: 1in; box-shadow: var(--card-shadow); outline: none; position: relative; line-height: 1.15; transition: 0.3s; }
+        
+        /* Floating Badge Button */
+        .badge-trigger { position: fixed; top: 160px; right: 40px; z-index: 10; display: flex; flex-direction: column; gap: 10px; transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        .status-bar { background: var(--brand-dark); color: white; padding: 6px 20px; font-size: 12px; display: flex; justify-content: space-between; z-index: 90; }
+        select { padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px; }
+
+        /* Citation View */
+        #citation-view { display: none; width: 100%; max-width: 8.5in; background: white; padding: 1in; box-shadow: var(--card-shadow); font-family: 'Times New Roman', serif; }
+
+        /* Custom Collapsible Voice Scratchpad Sidebar */
+        .scratchpad-sidebar {
+            width: var(--sidebar-width);
+            min-width: var(--sidebar-width);
+            background: #1e293b;
+            border-left: 1.5px solid rgba(255, 255, 255, 0.1);
+            color: #f1f5f9;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 80;
+        }
+
+        .scratchpad-sidebar.closed {
+            margin-right: calc(-1 * var(--sidebar-width));
+            transform: translateX(var(--sidebar-width));
+        }
+
+        .scratchpad-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #0f172a;
+        }
+
+        .scratchpad-title {
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .scratchpad-toggle-handle {
+            position: absolute;
+            left: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 80px;
+            background: #1e293b;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-right: none;
+            border-radius: 12px 0 0 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #f1f5f9;
+            box-shadow: -4px 0 15px rgba(0,0,0,0.15);
+            z-index: 100;
+            transition: color 0.2s ease;
+        }
+
+        .scratchpad-toggle-handle:hover {
+            color: #38bdf8;
+        }
+
+        .scratchpad-content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .voice-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: rgba(15, 23, 42, 0.4);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .rec-btn {
+            background: #e11d48;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            font-size: 13px;
+        }
+
+        .rec-btn:hover {
+            background: #f43f5e;
+            transform: translateY(-1px);
+        }
+
+        .rec-btn.recording {
+            background: #0f172a;
+            color: #f43f5e;
+            border: 2px solid #f43f5e;
+            animation: pulseRecord 1.5s infinite;
+        }
+
+        @keyframes pulseRecord {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        .upload-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #94a3b8;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 10px;
+            margin-top: 5px;
+        }
+
+        .custom-file-upload {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-block;
+            transition: all 0.2s ease;
+            color: #e2e8f0;
+        }
+
+        .custom-file-upload:hover {
+            border-color: #38bdf8;
+            color: white;
+        }
+
+        .voice-clips-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .clip-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: border-color 0.2s;
+        }
+
+        .clip-card:hover { border-color: #38bdf8; }
+
+        .clip-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        .clip-title { font-weight: 600; color: #f8fafc; font-size: 12px; word-break: break-all; }
+
+        .clip-player { width: 100%; height: 28px; outline: none; }
+
+        .clip-text-container { display: flex; flex-direction: column; gap: 5px; }
+
+        .clip-textarea {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 8px;
+            font-size: 12px;
+            color: #e2e8f0;
+            resize: vertical;
+            min-height: 50px;
+            font-family: inherit;
+        }
+
+        .clip-textarea:focus { border-color: #38bdf8; outline: none; }
+
+        .clip-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
+
+        .insert-btn {
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .insert-btn:hover { background: #0ea5e9; transform: scale(1.02); }
+
+        .manifest-btn {
+            background: none;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #94a3b8;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .manifest-btn:hover { border-color: #38bdf8; color: #fff; }
+
+        .delete-clip-btn {
+            background: none;
+            border: none;
+            color: #f43f5e;
+            cursor: pointer;
+            font-size: 11px;
+            padding: 4px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        .delete-clip-btn:hover { background: rgba(244, 63, 94, 0.1); }
+
+        .empty-placeholder {
+            text-align: center;
+            color: #64748b;
+            font-size: 12px;
+            padding: 40px 10px;
+            border: 2px dashed rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+
+        /* Custom Modal Box overlay for fully compliant alerts & confirms */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-box {
+            background: #ffffff;
+            color: var(--brand-dark);
+            width: 90%;
+            max-width: 400px;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        .modal-title { font-weight: 800; font-size: 18px; margin-bottom: 12px; }
+        .modal-message { font-size: 14px; color: #475569; margin-bottom: 24px; line-height: 1.5; }
+        .modal-actions { display: flex; gap: 12px; justify-content: center; }
+        .modal-btn { padding: 10px 20px; font-size: 13px; font-weight: 700; border-radius: 8px; border: none; cursor: pointer; transition: background 0.2s; }
+        .modal-btn-confirm { background: #e11d48; color: white; }
+        .modal-btn-confirm:hover { background: #f43f5e; }
+        .modal-btn-cancel { background: #f1f5f9; color: #475569; }
+        .modal-btn-cancel:hover { background: #e2e8f0; }
     </style>
 </head>
 <body>
 
 <div class="quick-access">
-    <div onclick="location.href='index.html'" style="cursor:pointer">🏠</div>
-    <div onclick="manualSave()" id="save-icon" style="cursor:pointer">💾</div>
-    <span id="doc-name" style="margin-left:auto; font-weight:bold; font-size:12px;" onclick="renameDoc()">Untitled Manuscript</span>
+    <div onclick="location.href='index.html'" style="cursor:pointer" title="Exit Storefront Dashboard">🏠</div>
+    <div onclick="manualSave()" id="save-icon" style="cursor:pointer" title="Save Now">💾</div>
+    <div style="background: var(--brand-accent); padding: 2px 12px; border-radius: 50px; font-weight: 800; font-size: 11px;">Human Integrity: <span id="trust-score">0%</span></div>
+    <span id="doc-name" style="margin-left:auto; font-weight:bold; font-size:12px; cursor:pointer;" onclick="renameDoc()">Untitled Manuscript</span>
 </div>
 
 <div class="tabs">
@@ -47,73 +360,515 @@
     <div class="tab" id="tab-data" onclick="setView('data')" style="background:#00b894; color:white">Forensics</div>
 </div>
 
-<!-- Ribbons (Kept Original) -->
-<div class="ribbon-content" id="file-ribbon">...</div>
-<div class="ribbon-content active" id="home-ribbon">...</div>
-
-<div class="workspace-container">
-    <div class="workspace">
-        <div id="word-view" class="paper" contenteditable="true">Start composing...</div>
+<div class="ribbon-content" id="file-ribbon">
+    <div class="group">
+        <div class="btn-row">
+            <button class="btn-ribbon btn-big" onclick="newDoc()"><span>📄</span>New</button>
+            <button class="btn-ribbon btn-big" onclick="exportPDF()"><span>📕</span>PDF</button>
+            <button class="btn-ribbon btn-big" onclick="window.print()"><span>🖨️</span>Print</button>
+        </div>
+        <div class="group-label">Document</div>
     </div>
-    
-    <!-- React Integrated Sidebar -->
-    <div id="provenant-sidebar"></div>
+    <div class="group">
+        <div class="btn-row">
+            <button class="btn-ribbon btn-big" onclick="createCopy()"><span>👯</span>Copy</button>
+            <button class="btn-ribbon btn-big" onclick="renameDoc()"><span>✏️</span>Rename</button>
+            <button class="btn-ribbon btn-big" onclick="deleteDoc()" style="color:#d83b01"><span>🗑️</span>Delete</button>
+        </div>
+        <div class="group-label">Manage</div>
+    </div>
+    <div class="group">
+        <button class="btn-ribbon btn-big" onclick="toggleCitations()"><span>📚</span>Citations</button>
+        <div class="group-label">Guides</div>
+    </div>
 </div>
 
-<script type="text/babel">
-    const { useState, useRef } = React;
-    const { Mic, Clock, Play, Square, QrCode } = lucide;
+<div class="ribbon-content active" id="home-ribbon">
+    <div class="group">
+        <select onchange="document.execCommand('fontName', false, this.value)" style="width: 130px; margin-bottom: 5px;">
+            <option value="Arial">Arial</option>
+            <option value="Calibri">Calibri</option>
+            <option value="Calibri Light">Calibri Light</option>
+            <option value="Times New Roman">Times New Roman</option>
+        </select>
+        <div class="btn-row">
+            <button class="btn-ribbon" onclick="document.execCommand('bold')"><b>B</b></button>
+            <button class="btn-ribbon" onclick="document.execCommand('italic')"><i>I</i></button>
+            <button class="btn-ribbon" onclick="document.execCommand('underline')"><u>U</u></button>
+            <button class="btn-ribbon" onclick="document.execCommand('superscript')">x²</button>
+            <button class="btn-ribbon" onclick="document.execCommand('subscript')">x₂</button>
+        </div>
+        <div class="group-label">Font & Style</div>
+    </div>
+    <div class="group">
+        <div class="btn-row">
+            <button class="btn-ribbon" onclick="document.execCommand('justifyLeft')">Left</button>
+            <button class="btn-ribbon" onclick="document.execCommand('justifyCenter')">Center</button>
+            <button class="btn-ribbon" onclick="document.execCommand('justifyRight')">Right</button>
+        </div>
+        <select onchange="document.getElementById('word-view').style.lineHeight = this.value" style="margin-top:5px;">
+            <option value="1.0">1.0 spacing</option>
+            <option value="1.15">1.15 spacing</option>
+            <option value="1.5">1.5 spacing</option>
+            <option value="2.0">2.0 spacing</option>
+        </select>
+        <div class="group-label">Paragraph</div>
+    </div>
+</div>
 
-    function ProvenantSidebar() {
-        const [isRecording, setIsRecording] = useState(false);
-        const [sessionLog, setSessionLog] = useState([]);
-        const [audioUrl, setAudioUrl] = useState(null);
-        const mediaRecorderRef = useRef(null);
-        const audioChunksRef = useRef([]);
+<div class="badge-trigger" id="floating-badge-trigger">
+    <button class="action-btn" style="padding: 10px 20px; font-size: 11px;" onclick="addBadge()">Get Certification Badge</button>
+</div>
 
-        const startRecording = async () => {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            mediaRecorderRef.current = new MediaRecorder(stream);
-            audioChunksRef.current = [];
-            mediaRecorderRef.current.ondataavailable = (e) => audioChunksRef.current.push(e.data);
-            mediaRecorderRef.current.onstop = () => {
-                const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-                setAudioUrl(URL.createObjectURL(audioBlob));
-                setSessionLog(prev => [...prev, { timestamp: new Date().toLocaleTimeString(), event: "Segment Finalized" }]);
-            };
-            mediaRecorderRef.current.start();
-            setIsRecording(true);
-        };
+<!-- SPLIT SCREEN FRAME WRAPPING WORKSPACE AND SIDEBAR -->
+<div class="app-split-container">
+    <div class="workspace">
+        <div id="word-view" class="paper" contenteditable="true" oninput="handleInput()">Start composing text or narrative content loops...</div>
+        
+        <div id="data-view-container" style="display:none; width: 100%; max-width: 800px; background: white; padding: 40px; border-radius: 15px;">
+            <h2>Velocity Forensics</h2>
+            <div style="height: 350px;"><canvas id="wpmChart"></canvas></div>
+        </div>
 
-        return (
-            <div className="p-6 font-sans">
-                <h1 className="text-xl font-bold text-blue-400 mb-6">Provenant Studio</h1>
-                <div className="bg-gray-900 border border-gray-800 p-4 rounded-xl mb-4">
-                    <h2 className="flex items-center gap-2 mb-4 text-sm"><Mic size={16} /> Capture</h2>
-                    <div className="flex gap-2 items-center">
-                        <button onClick={() => isRecording ? mediaRecorderRef.current.stop() || setIsRecording(false) : startRecording()} 
-                                className={`px-4 py-2 rounded ${isRecording ? 'bg-red-600' : 'bg-blue-600'}`}>
-                            {isRecording ? <Square size={16}/> : <Play size={16}/>}
-                        </button>
-                        {audioUrl && <audio src={audioUrl} controls className="h-8 w-full" />}
-                    </div>
-                </div>
-                <div className="bg-gray-900 border border-gray-800 p-4 rounded-xl">
-                    <h2 className="flex items-center gap-2 mb-4 text-sm"><Clock size={16} /> Log</h2>
-                    <div className="text-[10px] h-32 overflow-y-auto space-y-1">
-                        {sessionLog.map((log, i) => <div key={i}>[{log.timestamp}] {log.event}</div>)}
-                    </div>
+        <div id="citation-view">
+            <button onclick="toggleCitations()" style="float:right; cursor:pointer;">✖ Close</button>
+            <h2 style="text-align:center">VerifyHuman™ Citation Guides</h2>
+            <hr>
+            <h3>MLA Example</h3>
+            <p style="padding-left: 40px; text-indent: -40px;">Doe, Jane. "The Impact of Human-Centric Composition." <i>VerifyHuman Forensic Workspace</i>, Report VH-9921, 2026. Certified Human Integrity: 98%.</p>
+            <br>
+            <h3>APA Example</h3>
+            <p style="padding-left: 40px; text-indent: -40px;">Doe, J. (2026). <i>The impact of human-centric composition</i> (Forensic Report No. VH-9921). VerifyHuman Authenticity Services. https://verifyhuman.com/reports/VH-9921</p>
+        </div>
+    </div>
+
+    <!-- COLLAPSIBLE HYBRID VOICE SCRATCHPAD SIDEBAR -->
+    <div id="scratchpad-sidebar" class="scratchpad-sidebar closed">
+        <div class="scratchpad-toggle-handle" onclick="toggleScratchpad()">
+            <span id="scratchpad-toggle-arrow" style="font-size: 20px;">◀</span>
+        </div>
+        
+        <div class="scratchpad-header">
+            <div class="scratchpad-title">
+                <span>🎙️</span> Voice Scratchpad
+            </div>
+            <span style="font-size: 10px; color: #38bdf8; font-weight: bold; background: rgba(56, 189, 248, 0.1); padding: 2px 8px; border-radius: 10px;">Hybrid Utility</span>
+        </div>
+
+        <div class="scratchpad-content">
+            <div class="voice-controls">
+                <button id="rec-control-btn" class="rec-btn" onclick="toggleRecording()">
+                    <span id="rec-dot-icon">●</span> <span id="rec-btn-text">Record Voice Note</span>
+                </button>
+                
+                <div class="upload-row">
+                    <span>Or import audio:</span>
+                    <label for="audio-file-input" class="custom-file-upload">
+                        📁 Choose File
+                    </label>
+                    <input type="file" id="audio-file-input" accept="audio/*" style="display: none;" onchange="handleAudioUpload(this)">
                 </div>
             </div>
-        );
-    }
-    const root = ReactDOM.createRoot(document.getElementById('provenant-sidebar'));
-    root.render(<ProvenantSidebar />);
-</script>
+
+            <div id="voice-clips-list" class="voice-clips-list">
+                <!-- Fallback Empty State -->
+                <div id="scratchpad-empty-state" class="empty-placeholder">
+                    <span style="font-size: 24px;">🎙️</span>
+                    <p>No audio captures mapped yet. Record your voice or import a local sound file to start parsing dictation logs.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="status-bar">
+    <div>Words: <span id="word-count">0</span> | Keystrokes: <span id="key-count">0</span></div>
+    <div id="save-status">Auto-save Enabled</div>
+</div>
+
+<!-- Custom Dialog Overlay (Eliminating native alerts and confirms completely) -->
+<div id="custom-modal-overlay" class="modal-overlay">
+    <div class="modal-box">
+        <div id="custom-modal-title" class="modal-title">Verification Shield</div>
+        <div id="custom-modal-message" class="modal-message">Do you want to run this task?</div>
+        <div class="modal-actions">
+            <button id="custom-modal-btn-cancel" class="modal-btn modal-btn-cancel" onclick="closeCustomModal(false)">Cancel</button>
+            <button id="custom-modal-btn-confirm" class="modal-btn modal-btn-confirm" onclick="closeCustomModal(true)">Confirm</button>
+        </div>
+    </div>
+</div>
 
 <script>
-    // Existing helper scripts (manualSave, setView, etc.)
-    function setView(id) { /* Existing implementation */ }
+    let log = [], startTime = null, chartInstance = null;
+    const editor = document.getElementById('word-view');
+
+    window.onload = () => {
+        const savedText = localStorage.getItem('hv_content');
+        if (savedText) editor.innerHTML = savedText;
+        updateStats();
+        loadVoiceClips();
+    };
+
+    function handleInput() { updateStats(); autoSave(); calculateTrustScore(); }
+    
+    editor.addEventListener('keydown', (e) => { 
+        if (!startTime) startTime = Date.now(); 
+        log.push({ k: e.key, t: Date.now() - startTime }); 
+    });
+
+    function manualSave() {
+        autoSave();
+        const icon = document.getElementById('save-icon');
+        const status = document.getElementById('save-status');
+        icon.style.color = "#00b894";
+        status.innerText = "All changes saved!";
+        setTimeout(() => { icon.style.color = "white"; status.innerText = "Auto-save Enabled"; }, 2000);
+    }
+
+    function calculateTrustScore() {
+        const text = editor.innerText.trim();
+        let score = text.length > 0 ? Math.min(100, (log.length / text.length) * 100) : 0;
+        document.getElementById('trust-score').innerText = Math.floor(score) + "%";
+    }
+
+    function addBadge() {
+        const score = document.getElementById('trust-score').innerText;
+        const badgeHTML = `<div contenteditable="false" style="margin-top: 50px; border: 2px solid #00b894; padding: 15px; border-radius: 10px; width: 300px;"><div style="color:#00b894; font-weight:800;">VERIFIED HUMAN Origin</div><div style="font-size:11px;">Composition Trust Metric: ${score}</div><div style="font-size:9px; color:#888;">ID: VH-${Math.floor(Math.random()*1000000)}</div></div><p></p>`;
+        editor.innerHTML += badgeHTML;
+        autoSave();
+    }
+
+    function toggleCitations() {
+        const cv = document.getElementById('citation-view');
+        editor.style.display = (cv.style.display === 'block') ? 'block' : 'none';
+        cv.style.display = (cv.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function setView(id) {
+        document.querySelectorAll('.ribbon-content').forEach(r => r.style.display = 'none');
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById('citation-view').style.display = 'none';
+        
+        if(id === 'data') {
+            editor.style.display = 'none';
+            document.getElementById('data-view-container').style.display = 'block';
+            document.getElementById('tab-data').classList.add('active');
+            updateChart();
+        } else {
+            editor.style.display = 'block';
+            document.getElementById('data-view-container').style.display = 'none';
+            document.getElementById(id + '-ribbon').style.display = 'flex';
+            document.getElementById('tab-' + id).classList.add('active');
+        }
+    }
+
+    function updateChart() {
+        const ctx = document.getElementById('wpmChart').getContext('2d');
+        if(chartInstance) chartInstance.destroy();
+        chartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: log.slice(-20).map(e => Math.floor(e.t/1000) + 's'),
+                datasets: [{ label: 'Biometric Cadence Variance', data: log.slice(-20).map(e => e.t % 500), borderColor: '#3b82f6' }]
+            },
+            options: { maintainAspectRatio: false }
+        });
+    }
+
+    function updateStats() { 
+        const t = editor.innerText.trim(); 
+        document.getElementById('word-count').innerText = t===""?0:t.split(/\s+/).length; 
+        document.getElementById('key-count').innerText = log.length; 
+    }
+
+    function autoSave() { localStorage.setItem('hv_content', editor.innerHTML); }
+    function exportPDF() { html2pdf().from(editor).save('VerifyHuman_Manuscript_Report.pdf'); }
+    
+    let currentModalCallback = null;
+    
+    function showCustomModal(title, msg, isConfirm = true, callback = null) {
+        document.getElementById('custom-modal-title').innerText = title;
+        document.getElementById('custom-modal-message').innerText = msg;
+        currentModalCallback = callback;
+        
+        const cancelBtn = document.getElementById('custom-modal-btn-cancel');
+        if (isConfirm) {
+            cancelBtn.style.display = 'block';
+        } else {
+            cancelBtn.style.display = 'none';
+        }
+        
+        document.getElementById('custom-modal-overlay').style.display = 'flex';
+    }
+    
+    function closeCustomModal(result) {
+        document.getElementById('custom-modal-overlay').style.display = 'none';
+        if (currentModalCallback) {
+            currentModalCallback(result);
+            currentModalCallback = null;
+        }
+    }
+
+    function renameDoc() { 
+        let n = prompt("Name:"); 
+        if(n) document.getElementById('doc-name').innerText = n; 
+    }
+    
+    function newDoc() { 
+        showCustomModal(
+            "New Document Template", 
+            "Are you sure you want to clear your current progress? Every unsaved edit loop will be flushed permanently.",
+            true,
+            (confirmed) => {
+                if (confirmed) {
+                    localStorage.clear(); 
+                    location.reload();
+                }
+            }
+        );
+    }
+    
+    function deleteDoc() { 
+        showCustomModal(
+            "Verify File Truncation", 
+            "Are you sure you want to delete this workspace layout permanently?",
+            true,
+            (confirmed) => {
+                if (confirmed) {
+                    localStorage.clear(); 
+                    location.reload();
+                }
+            }
+        );
+    }
+    
+    function createCopy() { 
+        const blob = new Blob([editor.innerHTML], {type: "text/html"}); 
+        const a = document.createElement('a'); 
+        a.href = URL.createObjectURL(blob); 
+        a.download = "Manuscript_Copy.html"; 
+        a.click(); 
+    }
+
+    /* VOICE SCRATCHPAD CONTROLLER LOGIC */
+    let isRecordingActive = false;
+    let voiceClips = [];
+    let mediaRecorder = null;
+    let audioChunks = [];
+    
+    function toggleScratchpad() {
+        const sidebar = document.getElementById('scratchpad-sidebar');
+        const arrow = document.getElementById('scratchpad-toggle-arrow');
+        const badgeTrigger = document.getElementById('floating-badge-trigger');
+        
+        sidebar.classList.toggle('closed');
+        if(sidebar.classList.contains('closed')) {
+            arrow.innerText = "◀";
+            badgeTrigger.style.right = "40px";
+        } else {
+            arrow.innerText = "▶";
+            badgeTrigger.style.right = "410px";
+        }
+    }
+
+    async function toggleRecording() {
+        const btn = document.getElementById('rec-control-btn');
+        const dot = document.getElementById('rec-dot-icon');
+        const text = document.getElementById('rec-btn-text');
+
+        if (!isRecordingActive) {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    
+                    const newClip = {
+                        id: Date.now(),
+                        title: `Recorded Clip - ${new Date().toLocaleTimeString()}`,
+                        url: audioUrl,
+                        text: "New dictation captured. Refine transcript text or dictation details here..."
+                    };
+
+                    voiceClips.unshift(newClip);
+                    saveVoiceClips();
+                    renderVoiceClips();
+                };
+
+                mediaRecorder.start();
+                isRecordingActive = true;
+                btn.classList.add('recording');
+                dot.innerText = "■";
+                text.innerText = "Recording... Tap to Stop";
+            } catch (err) {
+                showCustomModal(
+                    "Handshake Blocked",
+                    "Microphone connection denied: Hardware handshake layer blocked or permissions missing.",
+                    false
+                );
+                console.error(err);
+            }
+        } else {
+            if (mediaRecorder) mediaRecorder.stop();
+            isRecordingActive = false;
+            btn.classList.remove('recording');
+            dot.innerText = "●";
+            text.innerText = "Record Voice Note";
+        }
+    }
+
+    function handleAudioUpload(input) {
+        if (!input.files || input.files.length === 0) return;
+        const file = input.files[0];
+        const audioUrl = URL.createObjectURL(file);
+
+        const newClip = {
+            id: Date.now(),
+            title: file.name,
+            url: audioUrl,
+            text: "Imported audio note. Input custom transcription or feedback loop here..."
+        };
+
+        voiceClips.unshift(newClip);
+        saveVoiceClips();
+        renderVoiceClips();
+        input.value = ''; // Reset input target
+    }
+
+    function saveVoiceClips() {
+        const serializable = voiceClips.map(clip => ({
+            id: clip.id,
+            title: clip.title,
+            text: clip.text,
+            url: clip.url.startsWith('blob:') ? '' : clip.url
+        }));
+        localStorage.setItem('hv_voice_clips', JSON.stringify(serializable));
+    }
+
+    function loadVoiceClips() {
+        const stored = localStorage.getItem('hv_voice_clips');
+        if (stored) {
+            try {
+                const loaded = JSON.parse(stored);
+                voiceClips = loaded.map(clip => ({
+                    ...clip,
+                    url: clip.url || ''
+                }));
+            } catch (e) {
+                voiceClips = [];
+            }
+        }
+        renderVoiceClips();
+    }
+
+    function deleteClip(id) {
+        voiceClips = voiceClips.filter(c => c.id !== id);
+        saveVoiceClips();
+        renderVoiceClips();
+    }
+
+    function updateClipText(id, newText) {
+        const idx = voiceClips.findIndex(c => c.id === id);
+        if (idx !== -1) {
+            voiceClips[idx].text = newText;
+            saveVoiceClips();
+        }
+    }
+
+    function generateProvenanceQR(id) {
+        const target = voiceClips.find(c => c.id === id);
+        if (!target) return;
+        const manifest = JSON.stringify({ clipId: target.id, title: target.title, verification: "verified", layer: "Sonic Provenance" });
+        const qrText = encodeURIComponent(manifest);
+        window.open(`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrText}`, '_blank');
+    }
+
+    function renderVoiceClips() {
+        const container = document.getElementById('voice-clips-list');
+        const emptyState = document.getElementById('scratchpad-empty-state');
+        
+        const currentCards = container.querySelectorAll('.clip-card');
+        currentCards.forEach(card => card.remove());
+
+        if (voiceClips.length === 0) {
+            emptyState.style.display = 'flex';
+            return;
+        }
+        
+        emptyState.style.display = 'none';
+
+        voiceClips.forEach(clip => {
+            const card = document.createElement('div');
+            card.className = 'clip-card';
+            card.innerHTML = `
+                <div class="clip-header">
+                    <span class="clip-title" title="${clip.title}">${clip.title.substring(0, 24)}${clip.title.length > 24 ? '...' : ''}</span>
+                    <button class="delete-clip-btn" onclick="deleteClip(${clip.id})">✖ Delete</button>
+                </div>
+                ${clip.url ? `
+                <audio class="clip-player" src="${clip.url}" controls></audio>
+                ` : `
+                <div style="font-size: 10px; color: #64748b; font-style: italic;">Audio stream cached for session</div>
+                `}
+                <div class="clip-text-container">
+                    <textarea class="clip-textarea" oninput="updateClipText(${clip.id}, this.value)" placeholder="Transcribe dictation here...">${clip.text}</textarea>
+                </div>
+                <div class="clip-actions">
+                    <button class="manifest-btn" onclick="generateProvenanceQR(${clip.id})">📜 QR Code</button>
+                    <button class="insert-btn" onclick="insertClipAtCursor('${clip.id}')">📋 Insert Text</button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function insertClipAtCursor(clipId) {
+        const targetClip = voiceClips.find(c => c.id === clipId);
+        if (!targetClip) return;
+        
+        const textToInsert = " " + targetClip.text.trim() + " ";
+        editor.focus();
+
+        let sel, range;
+        if (window.getSelection) {
+            sel = window.getSelection();
+            if (sel.getRangeAt && sel.rangeCount) {
+                range = sel.getRangeAt(0);
+                
+                let parentNode = range.commonAncestorContainer;
+                let insidePaper = false;
+                while (parentNode) {
+                    if (parentNode.id === 'word-view') {
+                        insidePaper = true;
+                        break;
+                    }
+                    parentNode = parentNode.parentNode;
+                }
+
+                if (insidePaper) {
+                    range.deleteContents();
+                    const textNode = document.createTextNode(textToInsert);
+                    range.insertNode(textNode);
+                    
+                    range.setStartAfter(textNode);
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                    handleInput();
+                    return;
+                }
+            }
+        }
+        
+        editor.innerHTML += textToInsert;
+        handleInput();
+    }
 </script>
 </body>
 </html>
