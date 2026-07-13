@@ -208,10 +208,10 @@
     </div>
 
     <script>
-        // Replace these with your actual generated Stripe live or test link configurations
+        // Real active URLs applied dynamically to keep verification paths open
         const stripePaymentLinks = {
-            "Writers Tier Sandbox": "YOUR_STRIPE_PAYMENT_LINK_FOR_WRITERS_TIER", 
-            "Creator Studio Pro Suite": "YOUR_STRIPE_PAYMENT_LINK_FOR_CREATOR_PRO" 
+            "Writers Tier Sandbox": "https://buy.stripe.com/test_6oU00k3fE3L85TXeFrbo405", 
+            "Creator Studio Pro Suite": "https://buy.stripe.com/test_aFaeVebMaepMfuxcxjbo406" 
         };
 
         let activePlanName = "Writers Tier Sandbox";
@@ -251,8 +251,8 @@
             e.preventDefault();
             const targetCheckoutUrl = stripePaymentLinks[activePlanName];
             
-            if (!targetCheckoutUrl || targetCheckoutUrl.includes("YOUR_STRIPE_PAYMENT_LINK")) {
-                alert("Configuration update required: Missing or placeholder link array pairing parameters.");
+            if (!targetCheckoutUrl) {
+                alert("Configuration update required: Missing link array pairing parameters.");
                 return;
             }
 
