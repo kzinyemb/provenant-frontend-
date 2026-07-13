@@ -54,7 +54,7 @@
 
         /* Left Side: Payment Form Details */
         .payment-form {
-            padding: 50px md:padding: 60px;
+            padding: 60px;
             background: #111827;
         }
 
@@ -98,7 +98,7 @@
             border: none;
             padding: 16px;
             border-radius: 50px;
-            结构font-weight: 800;
+            font-weight: 800;
             font-size: 15px;
             cursor: pointer;
             margin-top: 20px;
@@ -115,7 +115,7 @@
 
         /* Right Side: Order Summary Module */
         .order-summary {
-            padding: 50px md:padding: 60px;
+            padding: 60px;
             background: rgba(30, 41, 59, 0.2);
             border-left: 1px solid var(--brand-border);
             display: flex;
@@ -197,7 +197,7 @@
 
             <div>
                 <div class="total">
-                    <span style="font-size: 13px; color: white; font-weight: bold; uppercase; tracking-wider; margin-right: 4px;">Due Today:</span> $0.00
+                    <span style="font-size: 13px; color: white; font-weight: bold; text-transform: uppercase; tracking-wider; margin-right: 4px;">Due Today:</span> $0.00
                 </div>
 
                 <div style="margin-top: 30px; font-size: 11px; color: var(--text-muted); line-height: 1.6;">
@@ -210,8 +210,8 @@
     <script>
         // LIVE TEST LINKS ALIGNED SPECIFICALLY ONTO HIGH-CONVERTING CREATOR SUITES
         const stripePaymentLinks = {
-            "Writers Tier Sandbox": "https://buy.stripe.com/test_aFafZicQechEgyB2WJbo404", // Pair basic tier
-            "Creator Studio Pro Suite": "https://buy.stripe.com/test_14AaEY17w3L8dmpcxjbo401" // Pair premium suite
+            "Writers Tier Sandbox": "https://buy.stripe.com/test_aFafZicQechEgyB2WJbo404", 
+            "Creator Studio Pro Suite": "https://buy.stripe.com/test_14AaEY17w3L8dmpcxjbo401" 
         };
 
         let activePlanName = "Writers Tier Sandbox";
@@ -226,7 +226,6 @@
 
             if (planParam) {
                 const decodedPlan = decodeURIComponent(planParam);
-                // Dynamically intercept routing parameters passed straight out of user button clicks
                 if (decodedPlan === 'Creator Studio Pro Suite' || decodedPlan === 'Pro Content Suite' || decodedPlan === 'pro') {
                     activePlanName = "Creator Studio Pro Suite";
                     planPrice = "$29.00";
@@ -249,10 +248,8 @@
             document.getElementById('billing-timeline-disclosure').innerHTML = `After your 30-day forensic sandbox trial ends on <b>${genericFormattedDate}</b>, your verified payment vehicle will automatically clear a standard platform renewal step of <b>${planPrice}${structuralInterval}</b> unless paused via billing dashboards.`;
         };
 
-        // Form submission hands off buyer information securely to Stripe infrastructure
         document.getElementById('payment-form').onsubmit = function(e) {
             e.preventDefault();
-            
             const targetCheckoutUrl = stripePaymentLinks[activePlanName];
             
             if (!targetCheckoutUrl) {
@@ -260,7 +257,6 @@
                 return;
             }
 
-            // Route buyer directly onto Stripe hosted checkout screen arrays
             window.location.href = targetCheckoutUrl;
         };
     </script>
