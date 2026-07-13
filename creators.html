@@ -20,8 +20,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="/icon-192.png">
 
-    <title>Provenant™ Creator Studio | Biometric & Audio Provenance Workspace</title>
+    <title>Provenant™ Creator Studio | Shield Your Creativity From Generative AI</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap">
+    
     <style>
         :root {
             --brand-creator: #e11d48; /* Vibrant Rose */
@@ -345,6 +346,34 @@
             box-shadow: 0 6px 20px rgba(225, 29, 72, 0.4);
         }
 
+        /* Premium in-app toast notification element styles */
+        .custom-toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 13px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            z-index: 10000;
+            pointer-events: none;
+        }
+
+        .custom-toast.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         footer { text-align: center; padding: 60px 20px; border-top: 1px solid rgba(255, 255, 255, 0.05); color: var(--text-muted); font-size: 13px; }
     </style>
 </head>
@@ -360,8 +389,8 @@
 
     <!-- HERO PRESENTATION -->
     <section class="hero">
-        <h1>Write. Dictate. Authenticate.<br><span style="color: var(--brand-creator); text-shadow: 0 0 40px rgba(225, 29, 72, 0.4);">Creator Studio is Live.</span></h1>
-        <p>A hybrid forensic sandbox workspace designed specifically for creators, independent musicians, and professional authors. Capture original audio narratives, transcribe dictations live, and lock down your human biometric provenance footprints before distributing to publishers.</p>
+        <h1>Shield Your Creative Works.<br><span style="color: var(--brand-creator); text-shadow: 0 0 40px rgba(225, 29, 72, 0.4);">Immunity from Generative AI.</span></h1>
+        <p>A hybrid forensic workspace built exclusively to secure human authenticity. Dictate lyrics, write manuscripts, and record vocals inside our secure sandbox. Automatically generate cryptographic human-origin logs to inoculate your files from unauthorized AI voice-cloning, theft, and training models.</p>
         <a href="#sim-demo" class="action-btn">Try Creator Studio Simulator</a>
     </section>
 
@@ -429,24 +458,24 @@
     <section>
         <div style="text-align: center;">
             <h2 style="font-size: 2.2rem;">Core Features Built Inside the Creator Studio</h2>
-            <p style="color: var(--text-muted); margin-top: 10px;">Military-grade media forensic logging designed directly into a minimal, distraction-free environment.</p>
+            <p style="color: var(--text-muted); margin-top: 10px;">Forensic proof-of-human-creation designed directly to isolate your work from synthetic copycats.</p>
         </div>
 
         <div class="grid-3">
             <div class="feature-card">
                 <span class="icon">🎙️</span>
-                <h3>Vocal Scratchpad Transcription</h3>
-                <p>Record, import, and transcribe voice logs directly inside a collapsible workspace sidebar. Captures raw speech coordinates using on-device Speech API pipelines.</p>
+                <h3>Vocal Clone Protection</h3>
+                <p>Map and transcribe on-device dictations using native web streams. Generates an immutable, timestamped acoustic signature to prove your vocal custody before it hits distribution pipelines.</p>
             </div>
             <div class="feature-card">
                 <span class="icon">📊</span>
-                <h3>Keystroke Biometric Cadence</h3>
-                <p>Tracks typing variations and density ratios to compile a verified Human Integrity index. Automatically screens out copy-paste generative text loops.</p>
+                <h3>Anti-Scraping Cadence Logs</h3>
+                <p>Verify authorship by logging micro-WPM typing variations. Creates an adversarial human rhythm profile that algorithms and scrapers cannot replicate or mimic.</p>
             </div>
             <div class="feature-card">
                 <span class="icon">📜</span>
-                <h3>Cryptographic QR Certificates</h3>
-                <p>Generate verifiable, portable QR Code manifests of your creative recording steps. Easily distributed to record labels, publishers, and streaming agents.</p>
+                <h3>Cryptographic QR Proofs</h3>
+                <p>Generate verifiable, portable QR Code manifests of your raw recording tracks. Easily distributed to labels, agencies, and publishers to bypass automated "AI-Generated" distribution flags.</p>
             </div>
         </div>
     </section>
@@ -511,6 +540,12 @@
       }
     </script>
 
+    <!-- PREMIUM COMPLIANT TOAST PORTAL -->
+    <div id="sim-toast" class="custom-toast">
+        <span id="sim-toast-icon">🛡️</span>
+        <span id="sim-toast-msg">Handshaking Verified...</span>
+    </div>
+
     <!-- SIMULATOR JAVASCRIPT LOGIC CONTROLLING CLIENT INTERACTION -->
     <script>
         let simKeysCount = 0;
@@ -537,6 +572,18 @@
                     }
                 }
             };
+        }
+
+        // Custom toast helper replacing standard alerts
+        function triggerInAppToast(message, icon = "🛡️") {
+            const toast = document.getElementById('sim-toast');
+            document.getElementById('sim-toast-msg').innerText = message;
+            document.getElementById('sim-toast-icon').innerText = icon;
+            
+            toast.classList.add('active');
+            setTimeout(() => {
+                toast.classList.remove('active');
+            }, 3000);
         }
 
         // Collapse Sidebar drawer
@@ -591,6 +638,7 @@
 
                         simClips.unshift(newClip);
                         renderSimClips();
+                        triggerInAppToast("Audio trace captured and prepared for verification!");
                     };
 
                     simMediaRecorder.start();
@@ -603,7 +651,7 @@
                     dot.innerText = "■";
                     text.innerText = "Recording... Tap to Stop";
                 } catch (err) {
-                    alert("Microphone connection denied: Sandbox handshake layer blocked.");
+                    triggerInAppToast("Handshake Blocked: Mic connection layer denied.", "⚠️");
                     console.error(err);
                 }
             } else {
