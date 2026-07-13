@@ -215,6 +215,8 @@
             .hero h1 { font-size: 2.8rem; } 
             .switcher-container { flex-direction: column; gap: 10px; }
         }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -250,6 +252,7 @@
 
     <section class="process-section">
         
+        <!-- Process steps pane for Writers -->
         <div id="writer-process" class="grid-3 pane">
             <div class="process-step writer-step">
                 <div class="step-image-wrapper">
@@ -285,6 +288,7 @@
             </div>
         </div>
 
+        <!-- Process steps pane for Academic Labs -->
         <div id="edu-process" class="grid-3 pane hidden-pane">
             <div class="process-step">
                 <div class="step-image-wrapper">
@@ -373,7 +377,6 @@
         </div>
     </section>
 
-    <!-- NEW INTERACTIVE SUGGESTIONS, REQUESTS, & COMPLAINTS SECTION -->
     <section class="feedback-section-container">
         <h2 style="font-size: 2.5rem; color: #fff;">Connect with Compliance</h2>
         <p style="color: var(--text-muted); margin-top: 10px; max-width: 600px; margin-left: auto; margin-right: auto;">
@@ -381,21 +384,18 @@
         </p>
 
         <div class="feedback-card-wrapper">
-            <!-- Link 1: Suggestions -->
             <a href="mailto:provenantforensics@outlook.com?subject=Provenant™%20Platform%20Suggestion&body=Hey%20Provenant™%20Forensics%20Team,%0A%0AI%20have%20a%20suggestion%20regarding the Forensic Integrity Workstation layout:%0A" class="feedback-node-card writer-node">
                 <span style="font-size: 2rem;">💡</span>
                 <h4>Make a Suggestion</h4>
                 <p>Propose changes to our keyboard cadence algorithms or pad workspace styling controls.</p>
             </a>
 
-            <!-- Link 2: Feature Requests -->
             <a href="mailto:provenantforensics@outlook.com?subject=Provenant™%20LMS%20Integration%20Request&body=Hey%20Provenant™%20Forensics%20Team,%0A%0AI%20would%20like%20to%20request%20an%20integration tracking pipeline for the following framework/LMS:%0A" class="feedback-node-card edu-node">
                 <span style="font-size: 2rem;">🔌</span>
                 <h4>Request Feature</h4>
                 <p>Request bespoke integrations for private learning environments, headless CMS nodes, or specific LMS tools.</p>
             </a>
 
-            <!-- Link 3: Complaints & Support Issues -->
             <a href="mailto:provenantforensics@outlook.com?subject=Provenant™%20Priority%20Support%20/%20Complaint&body=Hey%20Provenant™%20Forensics%20Team,%0A%0AI%20am%20encountering%20the%20following%20issue%20with my active token sandbox or checkout link logic:%0A" class="feedback-node-card" style="border-color: rgba(239, 68, 68, 0.15);">
                 <span style="font-size: 2rem;">⚠️</span>
                 <h4 style="color: #f43f5e;">Report an Issue</h4>
@@ -418,7 +418,6 @@
         </p>
     </footer>
 
-    <!-- MODAL POPUP GATEWAY -->
     <div id="trial-modal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(8px); z-index: 9999; justify-content: center; align-items: center;">
         <div style="background: #1e293b; border: 1px solid rgba(255,255,255,0.1); width: 90%; max-width: 600px; border-radius: 24px; padding: 50px; position: relative; color: white;">
             <button onclick="closeTrial()" style="position: absolute; top: 20px; right: 20px; background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 20px;">✕</button>
@@ -482,6 +481,31 @@
             });
         }
 
+        let activeSelectedPlanForCheckout = "";
+
+        function openTrial(planName, planPrice) {
+            activeSelectedPlanForCheckout = encodeURIComponent(planName);
+            
+            if (planPrice === "Custom" || planName === "Institutional Campus Bundle") {
+                document.getElementById('enterprise-tier-zone').scrollIntoView({ behavior: 'smooth' });
+                document.getElementById('ent-input-field-1').focus();
+                return; 
+            }
+
+            document.getElementById('modal-plan-name').innerText = planName;
+            document.getElementById('modal-plan-desc').innerText = planName;
+            document.getElementById('modal-plan-price').innerText = planPrice;
+            
+            document.getElementById('modal-primary-action').setAttribute('onclick', `location.href='checkout.html?plan=${activeSelectedPlanForCheckout}'`);
+            document.getElementById('modal-secondary-action').setAttribute('onclick', `location.href='checkout.html?plan=${activeSelectedPlanForCheckout}'`);
+            
+            document.getElementById('trial-modal').style.display = 'flex';
+        }
+
+        function closeTrial() {
+            document.getElementById('trial-modal').style.display = 'none';
+        }
+
         function changeAudienceView(viewMode) {
             const bannerNode = document.querySelector('#top-alert-banner');
             const headlineNode = document.querySelector('#hero-headline');
@@ -521,6 +545,7 @@
                 document.getElementById('modal-primary-action').style.background = 'var(--brand-accent)';
                 document.getElementById('modal-primary-action').style.color = 'var(--brand-dark)';
 
+                // Toggle steps view correctly
                 eduProcess.classList.remove('hidden-pane');
                 writerProcess.classList.add('hidden-pane');
 
@@ -554,8 +579,9 @@
                 document.getElementById('modal-primary-action').style.background = 'var(--brand-writer)';
                 document.getElementById('modal-primary-action').style.color = '#ffffff';
 
-                eduProcess.classList.remove('hidden-pane');
-                writerProcess.classList.add('hidden-pane');
+                // Toggle steps view correctly
+                eduProcess.classList.add('hidden-pane');
+                writerProcess.classList.remove('hidden-pane');
 
                 entKicker.innerText = "Agencies & Newsrooms";
                 entKicker.style.color = "var(--brand-writer)";
@@ -576,31 +602,6 @@
             }
 
             renderPricing(viewMode);
-        }
-
-        let activeSelectedPlanForCheckout = "";
-
-        function openTrial(planName, planPrice) {
-            activeSelectedPlanForCheckout = encodeURIComponent(planName);
-            
-            if (planPrice === "Custom" || planName === "Institutional Campus Bundle") {
-                document.getElementById('enterprise-tier-zone').scrollIntoView({ behavior: 'smooth' });
-                document.getElementById('ent-input-field-1').focus();
-                return; 
-            }
-
-            document.getElementById('modal-plan-name').innerText = planName;
-            document.getElementById('modal-plan-desc').innerText = planName;
-            document.getElementById('modal-plan-price').innerText = planPrice;
-            
-            document.getElementById('modal-primary-action').setAttribute('onclick', `location.href='checkout.html?plan=${activeSelectedPlanForCheckout}'`);
-            document.getElementById('modal-secondary-action').setAttribute('onclick', `location.href='checkout.html?plan=${activeSelectedPlanForCheckout}'`);
-            
-            document.getElementById('trial-modal').style.display = 'flex';
-        }
-
-        function closeTrial() {
-            document.getElementById('trial-modal').style.display = 'none';
         }
 
         window.onload = function() {
