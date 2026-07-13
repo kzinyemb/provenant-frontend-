@@ -678,11 +678,35 @@
         document.body.removeChild(downloadAnchor);
     }
 
-    /* VOICE SCRATCHPAD CONTROLLER LOGIC */
+    /* VOICE SCRATCHPAD CONTROLLER LOGIC WITH SPEECH TRANSCRIPTION */
     let isRecordingActive = false;
     let voiceClips = [];
     let mediaRecorder = null;
     let audioChunks = [];
+    
+    // Set up Web Speech API parameters
+    let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognition = null;
+    let transcribedWordsBuffer = "";
+
+    if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = false;
+        recognition.lang = 'en-US';
+
+        recognition.onresult = (event) => {
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    transcribedWordsBuffer += event.results[i][0].transcript + ' ';
+                }
+            }
+        };
+        
+        recognition.onerror = (e) => {
+            console.warn("Speech recognition error logged:", e);
+        };
+    }
     
     function toggleScratchpad() {
         const sidebar = document.getElementById('scratchpad-sidebar');
@@ -709,6 +733,7 @@
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 mediaRecorder = new MediaRecorder(stream);
                 audioChunks = [];
+                transcribedWordsBuffer = ""; // Reset transcribed words buffer
 
                 mediaRecorder.ondataavailable = (event) => {
                     if (event.data.size > 0) audioChunks.push(event.data);
@@ -718,11 +743,14 @@
                     const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                     const audioUrl = URL.createObjectURL(audioBlob);
                     
+                    // Populate Speech Recognition result if available, otherwise use default fallback message
+                    const processedVoiceText = transcribedWordsBuffer.trim() || "New dictation captured. Refine transcript text or dictation details here...";
+                    
                     const newClip = {
                         id: Date.now(),
                         title: `Recorded Clip - ${new Date().toLocaleTimeString()}`,
                         url: audioUrl,
-                        text: "New dictation captured. Refine transcript text or dictation details here..."
+                        text: processedVoiceText
                     };
 
                     voiceClips.unshift(newClip);
@@ -731,6 +759,10 @@
                 };
 
                 mediaRecorder.start();
+                if (recognition) {
+                    recognition.start();
+                }
+                
                 isRecordingActive = true;
                 btn.classList.add('recording');
                 dot.innerText = "■";
@@ -745,6 +777,9 @@
             }
         } else {
             if (mediaRecorder) mediaRecorder.stop();
+            if (recognition) {
+                recognition.stop();
+            }
             isRecordingActive = false;
             btn.classList.remove('recording');
             dot.innerText = "●";
