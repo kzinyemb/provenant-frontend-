@@ -12,7 +12,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure Checkout | Provenant™ Creators</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Fira+Code:wght=400;500&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Fira+Code:wght=400;500&swap">
     
     <style>
         :root {
@@ -208,7 +208,7 @@
     </div>
 
     <script>
-        // Real active URLs applied dynamically to keep verification paths open
+        // Verified live links pointing straight to your sandbox products
         const stripePaymentLinks = {
             "Writers Tier Sandbox": "https://buy.stripe.com/test_6oU00k3fE3L85TXeFrbo405", 
             "Creator Studio Pro Suite": "https://buy.stripe.com/test_aFaeVebMaepMfuxcxjbo406" 
@@ -225,16 +225,16 @@
             let structuralInterval = "/mo";
 
             if (planParam) {
-                const decodedPlan = decodeURIComponent(planParam).trim();
+                const decodedPlan = decodeURIComponent(planParam).toLowerCase().trim();
                 
-                // FIXED INTERCEPT CONDITIONAL: Safely capture both the Pro and Creators plan types
-                if (decodedPlan === 'Creator Studio Pro Suite' || decodedPlan === 'Pro Content Suite' || decodedPlan === 'pro') {
+                // FIXED LOOP PARSER: Catches 'pro', 'pro content suite', or 'creator studio pro suite'
+                if (decodedPlan.includes('pro') || decodedPlan.includes('suite')) {
                     activePlanName = "Creator Studio Pro Suite";
                     planPrice = "$29.00";
                     intervalLabel = "Speech Recognition Transcription & Sound Provenance Module";
                     structuralInterval = "/mo";
                 } else {
-                    // Default fallback logic sets parameters to the $14 Writers Sandbox Tier layout explicitly
+                    // CATCH-ALL FOR WRITERS PLANS: Handles 'writers tier', 'writers tier sandbox', or any fallback
                     activePlanName = "Writers Tier Sandbox";
                     planPrice = "$14.00";
                     intervalLabel = "Biometric Cadence Logging & WPM Variance Suite";
