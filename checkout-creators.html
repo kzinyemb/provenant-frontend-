@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google tag (gtag.js) Preserved Exactly -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6B0NP15RYC"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -157,7 +156,6 @@
 <body>
 
     <div class="checkout-container">
-        <!-- FORM INTERACTION INTERFACE -->
         <div class="payment-form">
             <h2>Account Verification</h2>
             <form id="payment-form">
@@ -178,7 +176,6 @@
             </form>
         </div>
 
-        <!-- DYNAMIC ORDER PANEL MATCHED SYSTEM -->
         <div class="order-summary">
             <div>
                 <h3>Order Summary</h3>
@@ -211,9 +208,10 @@
     </div>
 
     <script>
+        // Replace these with your actual generated Stripe live or test link configurations
         const stripePaymentLinks = {
-            "Writers Tier Sandbox": "https://buy.stripe.com/test_aFafZicQechEgyB2WJbo404", 
-            "Creator Studio Pro Suite": "https://buy.stripe.com/test_14AaEY17w3L8dmpcxjbo401" 
+            "Writers Tier Sandbox": "YOUR_STRIPE_PAYMENT_LINK_FOR_WRITERS_TIER", 
+            "Creator Studio Pro Suite": "YOUR_STRIPE_PAYMENT_LINK_FOR_CREATOR_PRO" 
         };
 
         let activePlanName = "Writers Tier Sandbox";
@@ -253,8 +251,8 @@
             e.preventDefault();
             const targetCheckoutUrl = stripePaymentLinks[activePlanName];
             
-            if (!targetCheckoutUrl) {
-                alert("Configuration update required: Missing link array pairing parameters.");
+            if (!targetCheckoutUrl || targetCheckoutUrl.includes("YOUR_STRIPE_PAYMENT_LINK")) {
+                alert("Configuration update required: Missing or placeholder link array pairing parameters.");
                 return;
             }
 
