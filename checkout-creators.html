@@ -225,12 +225,19 @@
             let structuralInterval = "/mo";
 
             if (planParam) {
-                const decodedPlan = decodeURIComponent(planParam);
-                // Dynamically transform layouts when Creator Pro Suite target parameter intercepts
+                const decodedPlan = decodeURIComponent(planParam).trim();
+                
+                // FIXED INTERCEPT CONDITIONAL: Safely capture both the Pro and Creators plan types
                 if (decodedPlan === 'Creator Studio Pro Suite' || decodedPlan === 'Pro Content Suite' || decodedPlan === 'pro') {
                     activePlanName = "Creator Studio Pro Suite";
                     planPrice = "$29.00";
                     intervalLabel = "Speech Recognition Transcription & Sound Provenance Module";
+                    structuralInterval = "/mo";
+                } else {
+                    // Default fallback logic sets parameters to the $14 Writers Sandbox Tier layout explicitly
+                    activePlanName = "Writers Tier Sandbox";
+                    planPrice = "$14.00";
+                    intervalLabel = "Biometric Cadence Logging & WPM Variance Suite";
                     structuralInterval = "/mo";
                 }
             }
