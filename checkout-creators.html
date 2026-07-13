@@ -1,35 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6B0NP15RYC"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-6B0NP15RYC');
     </script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure Checkout | Provenant™ Creators</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Fira+Code:wght=400;500&display=swap">
+    
     <style>
         :root {
-            --brand-accent: #00b894;
-            --brand-dark: #0f172a;
+            --brand-creator: #e11d48; /* Vibrant Rose branding element alignment */
+            --brand-dark: #0f172a;    /* Deep Slate */
+            --brand-surface: #1e293b; /* Medium Slate */
+            --brand-glass: rgba(255, 255, 255, 0.03);
+            --brand-border: rgba(255, 255, 255, 0.1);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --brand-creator: #e11d48; /* Vibrant Rose branding element alignment */
-            --ig-gradient: linear-gradient(45deg, #f9ce34, #ee2a7b, #6228d7);
+            --brand-accent: #00b894;  /* Success Green */
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Inter', sans-serif;
-            background: #0f172a;
+            background: radial-gradient(circle at top, #310413 0%, #0f172a 100%);
             color: var(--text-main);
             display: flex;
             justify-content: center;
@@ -40,42 +41,55 @@
 
         .checkout-container {
             display: grid;
-            grid-template-columns: 1.5fr 1fr;
+            grid-template-columns: 1.3fr 1fr;
             width: 100%;
             max-width: 1000px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--brand-glass);
+            border: 1px solid var(--brand-border);
             border-radius: 24px;
             overflow: hidden;
             backdrop-filter: blur(10px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
         }
 
         /* Left Side: Payment Form Details */
         .payment-form {
-            padding: 60px;
-            background: #1e293b;
+            padding: 50px md:padding: 60px;
+            background: #111827;
         }
 
-        .payment-form h2 { margin-bottom: 30px; font-size: 1.8rem; font-weight: 900; }
+        .payment-form h2 { 
+            margin-bottom: 30px; 
+            font-size: 1.8rem; 
+            font-weight: 900; 
+            letter-spacing: -1px;
+        }
 
         .form-group { margin-bottom: 20px; }
-        label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+        
+        label { 
+            display: block; 
+            font-size: 11px; 
+            color: var(--text-muted); 
+            margin-bottom: 8px; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            font-weight: 800; 
+        }
         
         input {
             width: 100%;
             padding: 14px;
-            background: rgba(15, 23, 42, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--brand-border);
             border-radius: 8px;
             color: white;
-            font-size: 16px;
+            font-size: 15px;
             outline: none;
             transition: border-color 0.2s ease;
         }
 
         input:focus { border-color: var(--brand-creator); }
-
-        .row { display: flex; gap: 20px; }
 
         .secure-btn {
             width: 100%;
@@ -83,37 +97,58 @@
             color: white;
             border: none;
             padding: 16px;
-            border-radius: 12px;
-            font-weight: 800;
-            font-size: 16px;
+            border-radius: 50px;
+            结构font-weight: 800;
+            font-size: 15px;
             cursor: pointer;
             margin-top: 20px;
-            transition: 0.3s;
-            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 20px rgba(225, 29, 72, 0.3);
+            letter-spacing: 0.5px;
         }
 
-        .secure-btn:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(225, 29, 72, 0.5); }
+        .secure-btn:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 12px 25px rgba(225, 29, 72, 0.5); 
+            filter: brightness(1.1);
+        }
 
         /* Right Side: Order Summary Module */
         .order-summary {
-            padding: 60px;
-            background: rgba(255, 255, 255, 0.02);
-            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 50px md:padding: 60px;
+            background: rgba(30, 41, 59, 0.2);
+            border-left: 1px solid var(--brand-border);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .order-summary h3 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 5px;
         }
 
         .summary-item {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-top: 25px;
             padding-bottom: 20px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .total { font-size: 1.5rem; font-weight: 800; color: var(--brand-accent); margin-top: 20px; }
+        .total { 
+            font-size: 1.5rem; 
+            font-weight: 900; 
+            color: var(--brand-accent); 
+            margin-top: 30px; 
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
         @media (max-width: 850px) {
             .checkout-container { grid-template-columns: 1fr; }
-            .order-summary { order: -1; padding: 40px; }
+            .order-summary { order: -1; padding: 40px; border-left: none; border-bottom: 1px solid var(--brand-border); }
             .payment-form { padding: 40px; }
         }
     </style>
@@ -142,28 +177,32 @@
         </div>
 
         <div class="order-summary">
-            <h3>Order Summary</h3>
-            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 40px;">Review your selection</p>
-            
-            <div class="summary-item">
-                <div>
-                    <div id="summary-plan-name" style="font-weight: 700;">Provenant™ Identity Token</div>
-                    <div id="summary-billing-interval" style="font-size: 12px; color: var(--text-muted);">Creator Verification Plan</div>
+            <div>
+                <h3>Order Summary</h3>
+                <p style="color: var(--text-muted); font-size: 13px;">Review your verification portal selection</p>
+                
+                <div class="summary-item">
+                    <div>
+                        <div id="summary-plan-name" style="font-weight: 800; color: #fff;">Provenant™ Identity Token</div>
+                        <div id="summary-billing-interval" style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Creator Verification Plan</div>
+                    </div>
+                    <div id="summary-base-price" style="font-weight: 700;">$14.00</div>
                 </div>
-                <div id="summary-base-price">$14.00</div>
+
+                <div class="summary-item">
+                    <div style="color: var(--text-muted);">30-Day Trial Credit</div>
+                    <div id="summary-discount-price" style="color: var(--brand-accent); font-weight: 700;">- $14.00</div>
+                </div>
             </div>
 
-            <div class="summary-item">
-                <div>30-Day Trial Credit</div>
-                <div id="summary-discount-price" style="color: var(--brand-accent);">- $14.00</div>
-            </div>
+            <div>
+                <div class="total">
+                    <span style="font-size: 13px; color: white; font-weight: bold; uppercase; tracking-wider; margin-right: 4px;">Due Today:</span> $0.00
+                </div>
 
-            <div class="total">
-                <span style="font-size: 14px; color: white;">Due Today:</span> $0.00
-            </div>
-
-            <div style="margin-top: 40px; font-size: 12px; color: var(--text-muted); line-height: 1.6;">
-                <p id="billing-timeline-disclosure">After your 30-day sandbox trial ends, your payment method will execute a standard renewal charge unless canceled inside management logs.</p>
+                <div style="margin-top: 30px; font-size: 11px; color: var(--text-muted); line-height: 1.6;">
+                    <p id="billing-timeline-disclosure">After your 30-day sandbox trial ends, your payment method will execute a standard renewal charge unless canceled inside management logs.</p>
+                </div>
             </div>
         </div>
     </div>
@@ -171,32 +210,33 @@
     <script>
         // LIVE TEST LINKS ALIGNED SPECIFICALLY ONTO HIGH-CONVERTING CREATOR SUITES
         const stripePaymentLinks = {
-            "Identity Token": "https://buy.stripe.com/test_aFafZicQechEgyB2WJbo404", // Updated with your new active trial link
-            "Pro Content Suite": "https://buy.stripe.com/test_14AaEY17w3L8dmpcxjbo401"
+            "Writers Tier Sandbox": "https://buy.stripe.com/test_aFafZicQechEgyB2WJbo404", // Pair basic tier
+            "Creator Studio Pro Suite": "https://buy.stripe.com/test_14AaEY17w3L8dmpcxjbo401" // Pair premium suite
         };
 
-        let activePlanName = "Identity Token";
+        let activePlanName = "Writers Tier Sandbox";
 
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const planParam = urlParams.get('plan');
             
             let planPrice = "$14.00";
-            let intervalLabel = "Multi-Platform Identity Badge Protection Plan";
+            let intervalLabel = "Biometric Cadence Logging & WPM Variance Suite";
             let structuralInterval = "/mo";
 
             if (planParam) {
                 const decodedPlan = decodeURIComponent(planParam);
-                if (decodedPlan === 'Pro Content Suite' || decodedPlan === 'pro') {
-                    activePlanName = "Pro Content Suite";
-                    planPrice = "$39.00";
-                    intervalLabel = "Infinite Checkmark & Content Protection Suite";
+                // Dynamically intercept routing parameters passed straight out of user button clicks
+                if (decodedPlan === 'Creator Studio Pro Suite' || decodedPlan === 'Pro Content Suite' || decodedPlan === 'pro') {
+                    activePlanName = "Creator Studio Pro Suite";
+                    planPrice = "$29.00";
+                    intervalLabel = "Speech Recognition Transcription & Sound Provenance Module";
                     structuralInterval = "/mo";
                 }
             }
 
             // Bind values directly into Document Object Model nodes
-            document.getElementById('summary-plan-name').innerText = "Provenant™ " + activePlanName;
+            document.getElementById('summary-plan-name').innerText = activePlanName;
             document.getElementById('summary-billing-interval').innerText = intervalLabel;
             document.getElementById('summary-base-price').innerText = planPrice;
             document.getElementById('summary-discount-price').innerText = "- " + planPrice;
