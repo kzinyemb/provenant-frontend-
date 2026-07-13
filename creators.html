@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google tag (gtag.js) -->
+    <!-- Google tag (gtag.js) Preserved Exactly -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6B0NP15RYC"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -20,13 +20,15 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="/icon-192.png">
 
-    <title>Provenant™ | Deepfake Protection for Creators & Influencer Networks</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap">
+    <title>Provenant™ Creator Studio | Biometric & Audio Provenance Workspace</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap">
     <style>
         :root {
             --brand-creator: #e11d48; /* Vibrant Rose */
             --brand-dark: #0f172a;   /* Deep Slate */
+            --brand-surface: #1e293b; /* Medium Slate */
             --brand-glass: rgba(255, 255, 255, 0.03);
+            --brand-border: rgba(255, 255, 255, 0.1);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --success-green: #00b894;
@@ -41,6 +43,7 @@
             color: var(--text-main);
             line-height: 1.6;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         section { padding: 80px 20px; max-width: 1200px; margin: 0 auto; }
@@ -68,9 +71,9 @@
             filter: brightness(1.1);
         }
 
-        .hero { text-align: center; padding: 100px 20px 60px 20px; }
-        .hero h1 { font-size: 4rem; font-weight: 900; line-height: 1.1; margin-bottom: 25px; letter-spacing: -2px; }
-        .hero p { font-size: 1.2rem; color: var(--text-muted); max-width: 800px; margin: 0 auto 40px auto; }
+        .hero { text-align: center; padding: 80px 20px 40px 20px; }
+        .hero h1 { font-size: 3.5rem; font-weight: 900; line-height: 1.1; margin-bottom: 25px; letter-spacing: -2px; }
+        .hero p { font-size: 1.15rem; color: var(--text-muted); max-width: 800px; margin: 0 auto 40px auto; }
 
         .grid-3 {
             display: grid;
@@ -97,121 +100,167 @@
         .feature-card p { color: var(--text-muted); font-size: 0.95rem; }
         .icon { font-size: 2rem; margin-bottom: 15px; display: block; }
 
-        .badge-callout {
-            background: linear-gradient(135deg, rgba(225, 29, 72, 0.1) 0%, rgba(15, 23, 42, 0.6) 100%);
-            border: 1px solid rgba(225, 29, 72, 0.2);
+        /* Interactive Simulator Layout */
+        .workspace-simulator-container {
+            width: 100%;
+            max-width: 1100px;
+            background: #090d16;
+            border: 1.5px solid var(--brand-border);
             border-radius: 24px;
-            padding: 60px;
-            margin-top: 60px;
+            margin: 50px auto;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+        }
+
+        .workspace-sim-header {
+            background: #0f172a;
+            border-bottom: 1.5px solid var(--brand-border);
+            padding: 12px 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 40px;
         }
 
-        .badge-callout-text {
-            flex: 1;
+        .workspace-split {
+            display: flex;
+            flex-direction: row;
+            height: 480px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .sim-paper-pane {
+            flex-grow: 1;
+            padding: 30px;
+            background: #111827;
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        .sim-paper {
+            background: white;
+            color: #0f172a;
+            width: 100%;
+            max-width: 600px;
+            min-height: 100%;
+            padding: 40px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .sim-sidebar {
+            width: 320px;
+            min-width: 320px;
+            background: #1e293b;
+            border-left: 1.5px solid var(--brand-border);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .sim-sidebar.closed {
+            width: 0;
+            min-width: 0;
+            border-left: none;
+        }
+
+        .sim-sidebar-content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            height: 100%;
+            overflow-y: auto;
+            width: 320px;
+        }
+
+        .sim-rec-btn {
+            background: #e11d48;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .sim-rec-btn.recording {
+            background: #0f172a;
+            color: #f43f5e;
+            border: 2px solid #f43f5e;
+            animation: simPulse 1.5s infinite;
+        }
+
+        @keyframes simPulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        .sim-clip-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1.5px solid var(--brand-border);
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
             text-align: left;
         }
 
-        .badge-callout-visual-frame {
-            flex: 0 0 300px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        @media (max-width: 768px) {
-            .badge-callout { flex-direction: column; text-align: center; padding: 40px 24px; }
-            .badge-callout-text { text-align: center; }
-            .badge-callout-visual-frame { flex: 1; }
-        }
-
-        .mock-avatar-container {
-            position: relative;
-            width: 170px;
-            height: 170px;
-            border-radius: 50%;
-            background: var(--ig-gradient);
-            padding: 5px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .mock-avatar-image {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 4px solid #0f172a;
-            background-image: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=300&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-        }
-
-        .mock-checkmark-badge {
-            position: absolute;
-            top: 2px;
-            right: 2px;
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: #0f172a;
-            border: 3px solid #0f172a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 12;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-        }
-
-        .mock-checkmark-badge svg {
-            color: var(--success-green);
-            width: 22px;
-            height: 22px;
-        }
-
-        .mock-capsule-tag {
-            position: absolute;
-            bottom: -14px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-            width: 150px;
-            background: linear-gradient(135deg, #ee2a7b 0%, #a21caf 100%);
-            border: 1.5px solid #0f172a;
-            border-radius: 8px;
-            padding: 5px 8px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-        }
-
-        .mock-capsule-tag .tag-line-main {
-            color: #ffffff;
-            font-size: 10px;
-            font-weight: 900;
-            letter-spacing: 0.8px;
-            line-height: 1.1;
-            text-transform: uppercase;
-        }
-
-        .mock-capsule-tag .tag-line-highlight {
+        .sim-textarea {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 8px;
             font-size: 11px;
-            font-weight: 900;
-            font-style: italic;
-            color: #ffffff;
-            letter-spacing: 0.5px;
-            line-height: 1.1;
-            margin: 1px 0;
+            color: #e2e8f0;
+            resize: none;
+            height: 60px;
+            font-family: inherit;
         }
 
-        .mock-capsule-tag .tag-line-sub {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 7.5px;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-            text-transform: uppercase;
-            line-height: 1;
+        .sim-badge-trigger {
+            background: none;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #94a3b8;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .sim-badge-trigger:hover {
+            border-color: var(--brand-creator);
+            color: #fff;
         }
 
+        .sim-insert-btn {
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 10px;
+            cursor: pointer;
+        }
+
+        /* Pricing Elements */
         .pricing-section-container {
             text-align: center;
             padding: 60px 20px 100px 20px;
@@ -231,7 +280,7 @@
             border-radius: 24px;
             padding: 45px 35px;
             width: 100%;
-            max-width: 460px;
+            max-width: 420px;
             text-align: left;
             display: flex;
             flex-direction: column;
@@ -246,21 +295,7 @@
             box-shadow: 0 10px 35px rgba(225, 29, 72, 0.15);
         }
 
-        .pricing-card.popular::before {
-            content: "30-DAY FREE TRIAL";
-            position: absolute;
-            top: -12px;
-            left: 35px;
-            background: var(--brand-creator);
-            color: #fff;
-            font-size: 10px;
-            font-weight: 900;
-            padding: 4px 14px;
-            border-radius: 20px;
-            letter-spacing: 1px;
-        }
-
-        .pricing-card h4 { font-size: 1.6rem; font-weight: 900; color: #fff; margin-bottom: 8px; }
+        .pricing-card h4 { font-size: 1.5rem; font-weight: 900; color: #fff; margin-bottom: 8px; }
         .pricing-card .price { font-size: 2.8rem; font-weight: 900; color: #fff; margin-bottom: 15px; }
         .pricing-card .price span { font-size: 1.1rem; color: var(--text-muted); font-weight: 500; }
         .pricing-card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 30px; line-height: 1.4; }
@@ -299,7 +334,7 @@
             cursor: pointer;
             text-align: center;
             text-decoration: none;
-            font-size: 15px;
+            font-size: 14px;
             transition: all 0.25s ease;
             box-shadow: 0 4px 15px rgba(225, 29, 72, 0.2);
         }
@@ -325,81 +360,131 @@
 
     <!-- HERO PRESENTATION -->
     <section class="hero">
-        <h1>Certify Your Media.<br><span style="color: var(--brand-creator); text-shadow: 0 0 40px rgba(225, 29, 72, 0.4);">Authenticate Video Feeds.</span></h1>
-        <p>Protect your brand partnerships and intellectual property from automated copycats. Provenant™ scans raw file exports to generate verified cryptographic origin certifications for premium creators, influencers, and media agencies.</p>
+        <h1>Write. Dictate. Authenticate.<br><span style="color: var(--brand-creator); text-shadow: 0 0 40px rgba(225, 29, 72, 0.4);">Creator Studio is Live.</span></h1>
+        <p>A hybrid forensic sandbox workspace designed specifically for creators, independent musicians, and professional authors. Capture original audio narratives, transcribe dictations live, and lock down your human biometric provenance footprints before distributing to publishers.</p>
+        <a href="#sim-demo" class="action-btn">Try Creator Studio Simulator</a>
+    </section>
+
+    <!-- THE LIVE INTERACTIVE WORKSPACE SIMULATOR -->
+    <section id="sim-demo" style="padding-top: 20px; text-align: center;">
+        <div style="margin-bottom: 30px;">
+            <h2 style="font-size: 2.2rem;">Try the Hybrid Workspace Demo</h2>
+            <p style="color: var(--text-muted); margin-top: 10px; max-width: 700px; margin-left: auto; margin-right: auto;">See exactly how the workspace works. Type on our biometric paper, run live vocal recordings inside the Voice Scratchpad sidebar, and insert the final text directly into your manuscript template.</p>
+        </div>
+
+        <div class="workspace-simulator-container">
+            <!-- Simulated Workspace Header Bar -->
+            <div class="workspace-sim-header">
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <div style="background: #e11d48; width: 12px; height: 12px; border-radius: 50%;"></div>
+                    <span style="font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">Human Integrity: <span id="sim-integrity-percentage" style="color:#00b894;">0%</span></span>
+                </div>
+                <div style="font-weight: bold; font-size: 12px; color: #f1f5f9;">Interactive Simulator Paper</div>
+                <button onclick="toggleSimSidebar()" style="background: transparent; border: 1px solid rgba(255,255,255,0.1); color: #94a3b8; font-size: 11px; font-weight: bold; padding: 4px 10px; border-radius: 6px; cursor: pointer;">
+                    🎙️ Toggle Scratchpad
+                </button>
+            </div>
+
+            <!-- Workspace Columns -->
+            <div class="workspace-split">
+                <!-- Left: Biometric Paper Area -->
+                <div class="sim-paper-pane">
+                    <div id="sim-paper-editor" class="sim-paper" contenteditable="true" oninput="handleSimTyping(this)">Start drafting or testing dictation loops in this interactive paper...</div>
+                </div>
+
+                <!-- Right: Voice Scratchpad Sidebar -->
+                <div id="sim-sidebar-wrapper" class="sim-sidebar">
+                    <div class="sim-sidebar-content">
+                        <div>
+                            <h3 style="font-size: 12px; font-weight: 800; color: #38bdf8; text-transform: uppercase;">Voice Scratchpad</h3>
+                            <p style="font-size: 10px; color: #94a3b8; margin-top: 4px; line-height: 1.4;">Record dictation streams to run Web Speech-to-text conversion inside notes arrays.</p>
+                        </div>
+
+                        <div class="voice-controls" style="background: rgba(15,23,42,0.4); border: 1px solid rgba(255,255,255,0.05); padding: 12px; border-radius: 10px;">
+                            <button id="sim-rec-btn" class="sim-rec-btn w-full" onclick="toggleSimRecording()">
+                                <span id="sim-rec-dot">●</span> <span id="sim-rec-text">Record Voice Note</span>
+                            </button>
+                        </div>
+
+                        <div id="sim-clips-list" style="display: flex; flex-direction: column; gap: 10px;">
+                            <!-- Placeholder empty state -->
+                            <div id="sim-empty" class="empty-placeholder" style="padding: 20px 10px; border-color: rgba(255,255,255,0.05);">
+                                <span style="font-size: 18px;">🎙️</span>
+                                <p style="font-size: 10px; color: #64748b;">No speech notes captured yet. Tap record to transcribe.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sim Status Bar -->
+            <div style="background: #0f172a; padding: 6px 20px; display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8; border-top: 1px solid var(--brand-border);">
+                <div>Words: <span id="sim-words">10</span> | Keystrokes Logged: <span id="sim-keys">0</span></div>
+                <div style="color: #00b894; font-weight: bold;">Verified Human Origin Sandbox</div>
+            </div>
+        </div>
     </section>
 
     <!-- MATRIX OVERVIEW -->
     <section>
         <div style="text-align: center;">
-            <h2 style="font-size: 2.2rem;">How the Verification Matrix Secures Your Content</h2>
-            <p style="color: var(--text-muted); margin-top: 10px;">Military-grade media forensic logging from local camera sensor to distribution channels.</p>
+            <h2 style="font-size: 2.2rem;">Core Features Built Inside the Creator Studio</h2>
+            <p style="color: var(--text-muted); margin-top: 10px;">Military-grade media forensic logging designed directly into a minimal, distraction-free environment.</p>
         </div>
 
         <div class="grid-3">
             <div class="feature-card">
-                <span class="icon">🔍</span>
-                <h3>Frame Auditing</h3>
-                <p>Scans multi-layer frames to track rendering variations, identifying algorithmic inconsistencies caused by deepfake synthetic rendering modules.</p>
-            </div>
-            <div class="feature-card">
                 <span class="icon">🎙️</span>
-                <h3>Vocal Frequency Sweeps</h3>
-                <p>Analyzes voice tracks to identify synthetic audio anomalies or voice clone matching footprints, ensuring audio track authenticity.</p>
+                <h3>Vocal Scratchpad Transcription</h3>
+                <p>Record, import, and transcribe voice logs directly inside a collapsible workspace sidebar. Captures raw speech coordinates using on-device Speech API pipelines.</p>
             </div>
             <div class="feature-card">
-                <span class="icon">📷</span>
-                <h3>C2PA Hardware Tracking</h3>
-                <p>Extracts and seals camera lens metadata variables directly from original capture hardware, maintaining an immutable line of origin.</p>
+                <span class="icon">📊</span>
+                <h3>Keystroke Biometric Cadence</h3>
+                <p>Tracks typing variations and density ratios to compile a verified Human Integrity index. Automatically screens out copy-paste generative text loops.</p>
             </div>
-        </div>
-    </section>
-
-    <!-- COMMERCIAL OUTCOMES -->
-    <section style="padding-top: 20px;">
-        <div class="badge-callout">
-            <div class="badge-callout-text">
-                <h2 style="font-size: 2.5rem; margin-bottom: 20px; color: #fff;">Secure Higher-Paying Brand Deals</h2>
-                <p style="color: var(--text-muted); max-width: 650px; margin-bottom: 30px; font-size: 1.1rem;">Include an embeddable watermark, certified media kit parameters, or cryptographic asset index verification records to give corporate sponsors mathematical proof of asset safety.</p>
-            </div>
-            
-            <div class="badge-callout-visual-frame">
-                <div class="mock-avatar-container">
-                    <div class="mock-avatar-image"></div>
-                    <div class="mock-checkmark-badge">
-                        <svg fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                    </div>
-                    <div class="mock-capsule-tag">
-                        <div class="tag-line-main">Provenant</div>
-                        <div class="tag-line-highlight">100% Original</div>
-                        <div class="tag-line-sub">Verified Human</div>
-                    </div>
-                </div>
+            <div class="feature-card">
+                <span class="icon">📜</span>
+                <h3>Cryptographic QR Certificates</h3>
+                <p>Generate verifiable, portable QR Code manifests of your creative recording steps. Easily distributed to record labels, publishers, and streaming agents.</p>
             </div>
         </div>
     </section>
 
     <!-- CONSOLIDATED PRICE PLAN GATEWAY -->
     <section class="pricing-section-container">
-        <h2 style="font-size: 2.5rem; color: #fff;">Get Protected Instantly</h2>
-        <p style="color: var(--text-muted); margin-top: 10px; max-width: 600px; margin-left: auto; margin-right: auto;">Start your 30-day cryptographic sandbox trial. Access every identity token layout and individual post checkmark tool in one simple plan.</p>
+        <h2 style="font-size: 2.5rem; color: #fff;">Choose Your Entry Portal</h2>
+        <p style="color: var(--text-muted); margin-top: 10px; max-width: 600px; margin-left: auto; margin-right: auto;">Start your 30-day cryptographic sandbox trial. Select the workspace depth tailored perfectly to your creative medium.</p>
         
         <div class="pricing-grid">
-            <div class="pricing-card popular">
-                <h4>Identity & Content Token Suite</h4>
+            <!-- Tier 1: Writers sandbox -->
+            <div class="pricing-card">
+                <h4>Writers Tier Sandbox</h4>
                 <div class="price">$14<span>/mo</span></div>
-                <p>Complete biometric profile protection backed by our real-time pixel and audio forensic scanning engine.</p>
+                <p>Complete biometric profile protection backed by our real-time typing forensic verification engine.</p>
                 <ul class="pricing-features">
-                    <li>Transparent Profile Badges (Social, Dating, Pro variants)</li>
-                    <li>Individual Post Verification Checkmark Stamps</li>
-                    <li>Real-time Deepfake Face-Swap Rendering Audits</li>
-                    <li>Adversarial Audio Frequency Voice-Clone Sweeps</li>
-                    <li>C2PA Cryptographic Asset Hardware Metadata Seals</li>
-                    <li>Immutable Decentralized Human Ledger Registration</li>
+                    <li>Interactive Writing Pad Canvas Workspace</li>
+                    <li>Biometric Cadence Logging and WPM Variance Charts</li>
+                    <li>Verified Human PDF Origin Validation Stamps</li>
+                    <li>Document auto-saves and HTML code replication</li>
                 </ul>
-                <button class="pricing-btn" onclick="location.href='checkout-creators.html?plan=Identity%20Token'">Start 30-Day Free Trial</button>
+                <button class="pricing-btn" onclick="location.href='checkout.html?plan=Writers%20Tier'">Start 30-Day Free Trial</button>
+            </div>
+
+            <!-- Tier 2: Studio Pro -->
+            <div class="pricing-card popular">
+                <div style="position: absolute; top: -12px; right: 35px; background: var(--brand-creator); color: #fff; font-size: 10px; font-weight: 900; padding: 4px 14px; border-radius: 20px; letter-spacing: 1px;">RECOMMENDED FOR AUDIO</div>
+                <h4>Creator Studio Pro Suite</h4>
+                <div class="price">$29<span>/mo</span></div>
+                <p>Bespoke transcription scratchpads and audio metadata capture designed specifically for vocalists and podcasters.</p>
+                <ul class="pricing-features">
+                    <li>Includes ALL Basic Writers Sandbox Features</li>
+                    <li>Collapsible Hybrid Vocal Scratchpad Sidebar</li>
+                    <li>On-Device Web Audio Capture and local `.webm` downloads</li>
+                    <li>Real-time Speech Recognition Transcription Engine</li>
+                    <li>Exportable Cryptographic QR Manifest Certificates</li>
+                </ul>
+                <button class="pricing-btn" onclick="location.href='checkout-creators.html?plan=Pro%20Content%20Suite'">Start 30-Day Free Trial</button>
             </div>
         </div>
     </section>
@@ -407,7 +492,7 @@
     <!-- FOOTER WITH OUTLOOK LINKS ATTACHED -->
     <footer>
         <div style="margin-bottom: 30px; display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;">
-            <a href="mailto:provenantforensics@outlook.com?subject=Provenant™%20Feature%20Suggestion&body=Hey%20Provenant™%20Team,%0A%0AI%20have%20a%20suggestion%20to%20improve%20the%20creator%20suite:%0A" 
+            <a href="mailto:provenantforensics@outlook.com?subject=Provenant™%20Feature%20Suggestion&body=Hey%20Provenant™%20Team,%0A%0AI%20have%20a%20suggestion%20to%20improve%20the%20creator%20studio:%0A" 
                style="color: var(--text-muted); text-decoration: none; font-size: 12px; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'">💡 Suggest a Feature</a>
             
             <a href="mailto:provenantforensics@outlook.com?subject=Provenant™%20Integration%20Request&body=Hey%20Provenant™%20Team,%0A%0AI%20would%20like%20to%20request%20protection%20for%20a%20specific%20platform/media%20kit%20format:%0A" 
@@ -426,5 +511,208 @@
       }
     </script>
 
+    <!-- SIMULATOR JAVASCRIPT LOGIC CONTROLLING CLIENT INTERACTION -->
+    <script>
+        let simKeysCount = 0;
+        let simKeystrokeLog = [];
+        let isSimRecording = false;
+        let simClips = [];
+        let simMediaRecorder = null;
+        let simAudioChunks = [];
+        
+        let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let simRecognition = null;
+        let simTranscribedText = "";
+
+        if (SpeechRecognition) {
+            simRecognition = new SpeechRecognition();
+            simRecognition.continuous = true;
+            simRecognition.interimResults = false;
+            simRecognition.lang = 'en-US';
+
+            simRecognition.onresult = (event) => {
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        simTranscribedText += event.results[i][0].transcript + ' ';
+                    }
+                }
+            };
+        }
+
+        // Collapse Sidebar drawer
+        function toggleSimSidebar() {
+            const sidebar = document.getElementById('sim-sidebar-wrapper');
+            sidebar.classList.toggle('closed');
+        }
+
+        // Keystroke logic tracking
+        function handleSimTyping(editor) {
+            simKeysCount++;
+            document.getElementById('sim-keys').innerText = simKeysCount;
+
+            const text = editor.innerText.trim();
+            const words = text === "" ? 0 : text.split(/\s+/).length;
+            document.getElementById('sim-words').innerText = words;
+
+            // Compute math integrity score on-the-fly
+            let score = text.length > 0 ? Math.min(100, (simKeysCount / text.length) * 100) : 0;
+            document.getElementById('sim-integrity-percentage').innerText = Math.floor(score) + "%";
+        }
+
+        // Recording controls
+        async function toggleSimRecording() {
+            const btn = document.getElementById('sim-rec-btn');
+            const dot = document.getElementById('sim-rec-dot');
+            const text = document.getElementById('sim-rec-text');
+
+            if (!isSimRecording) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    simMediaRecorder = new MediaRecorder(stream);
+                    simAudioChunks = [];
+                    simTranscribedText = "";
+
+                    simMediaRecorder.ondataavailable = (event) => {
+                        if (event.data.size > 0) simAudioChunks.push(event.data);
+                    };
+
+                    simMediaRecorder.onstop = () => {
+                        const audioBlob = new Blob(simAudioChunks, { type: 'audio/webm' });
+                        const audioUrl = URL.createObjectURL(audioBlob);
+                        
+                        const finalTranscriptText = simTranscribedText.trim() || "New dictation captured. Refine transcript text or dictation details here...";
+                        
+                        const newClip = {
+                            id: Date.now(),
+                            title: `Sandbox Take - ${new Date().toLocaleTimeString()}`,
+                            url: audioUrl,
+                            text: finalTranscriptText
+                        };
+
+                        simClips.unshift(newClip);
+                        renderSimClips();
+                    };
+
+                    simMediaRecorder.start();
+                    if (simRecognition) {
+                        simRecognition.start();
+                    }
+                    
+                    isSimRecording = true;
+                    btn.classList.add('recording');
+                    dot.innerText = "■";
+                    text.innerText = "Recording... Tap to Stop";
+                } catch (err) {
+                    alert("Microphone connection denied: Sandbox handshake layer blocked.");
+                    console.error(err);
+                }
+            } else {
+                if (simMediaRecorder) simMediaRecorder.stop();
+                if (simRecognition) {
+                    simRecognition.stop();
+                }
+                isSimRecording = false;
+                btn.classList.remove('recording');
+                dot.innerText = "●";
+                text.innerText = "Record Voice Note";
+            }
+        }
+
+        // Render clips into sidebar DOM
+        function renderSimClips() {
+            const container = document.getElementById('sim-clips-list');
+            const emptyState = document.getElementById('sim-empty');
+            
+            const currentCards = container.querySelectorAll('.sim-clip-card');
+            currentCards.forEach(card => card.remove());
+
+            if (simClips.length === 0) {
+                emptyState.style.display = 'flex';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+
+            simClips.forEach(clip => {
+                const card = document.createElement('div');
+                card.className = 'sim-clip-card';
+                card.setAttribute('data-clip-id', clip.id);
+                card.innerHTML = `
+                    <div class="clip-header">
+                        <span class="clip-title" style="font-weight: 800; font-size:11px;">${clip.title}</span>
+                    </div>
+                    <audio class="clip-player" src="${clip.url}" controls style="width: 100%; height: 24px; margin: 4px 0;"></audio>
+                    <div class="clip-text-container">
+                        <textarea class="sim-textarea" oninput="updateSimClipText(${clip.id}, this.value)" placeholder="Dictation transcript...">${clip.text}</textarea>
+                    </div>
+                    <div class="clip-actions" style="display:flex; justify-content:space-between; margin-top: 4px; align-items:center;">
+                        <button class="sim-badge-trigger" onclick="generateSimProvenanceQR(${clip.id})">📜 QR Code</button>
+                        <button class="sim-insert-btn" onclick="insertSimClipText('${clip.id}')">📋 Insert Text</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function updateSimClipText(id, newText) {
+            const idx = simClips.findIndex(c => c.id === id);
+            if (idx !== -1) {
+                simClips[idx].text = newText;
+            }
+        }
+
+        function generateSimProvenanceQR(id) {
+            const target = simClips.find(c => c.id === id);
+            if (!target) return;
+            const manifest = JSON.stringify({ clipId: target.id, title: target.title, verification: "verified", layer: "Sonic Provenance" });
+            const qrText = encodeURIComponent(manifest);
+            window.open(`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrText}`, '_blank');
+        }
+
+        // Focus and insert text directly inside the editable canvas
+        function insertSimClipText(clipId) {
+            const target = simClips.find(c => c.id === clipId);
+            if (!target) return;
+
+            const textToInsert = " " + target.text.trim() + " ";
+            const editor = document.getElementById('sim-paper-editor');
+            editor.focus();
+
+            let inserted = false;
+            if (window.getSelection) {
+                const sel = window.getSelection();
+                if (sel.getRangeAt && sel.rangeCount) {
+                    const range = sel.getRangeAt(0);
+                    
+                    let parentNode = range.commonAncestorContainer;
+                    let insidePaper = false;
+                    while (parentNode) {
+                        if (parentNode.id === 'sim-paper-editor') {
+                            insidePaper = true;
+                            break;
+                        }
+                        parentNode = parentNode.parentNode;
+                    }
+
+                    if (insidePaper) {
+                        range.deleteContents();
+                        const textNode = document.createTextNode(textToInsert);
+                        range.insertNode(textNode);
+                        
+                        range.setStartAfter(textNode);
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                        inserted = true;
+                    }
+                }
+            }
+            
+            if (!inserted) {
+                editor.innerHTML += textToInsert;
+            }
+
+            handleSimTyping(editor);
+        }
+    </script>
 </body>
 </html>
