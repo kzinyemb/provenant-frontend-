@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google tag (gtag.js) Preserved Exactly -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6B0NP15RYC"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -52,7 +53,7 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
         }
 
-        /* Left Side: Payment Form Details */
+        /* Form side visual matching update */
         .payment-form {
             padding: 60px;
             background: #111827;
@@ -113,7 +114,7 @@
             filter: brightness(1.1);
         }
 
-        /* Right Side: Order Summary Module */
+        /* Realigned Module Sidebar Details */
         .order-summary {
             padding: 60px;
             background: rgba(30, 41, 59, 0.2);
@@ -156,6 +157,7 @@
 <body>
 
     <div class="checkout-container">
+        <!-- FORM INTERACTION INTERFACE -->
         <div class="payment-form">
             <h2>Account Verification</h2>
             <form id="payment-form">
@@ -176,6 +178,7 @@
             </form>
         </div>
 
+        <!-- DYNAMIC ORDER PANEL MATCHED SYSTEM -->
         <div class="order-summary">
             <div>
                 <h3>Order Summary</h3>
@@ -183,8 +186,8 @@
                 
                 <div class="summary-item">
                     <div>
-                        <div id="summary-plan-name" style="font-weight: 800; color: #fff;">Provenant™ Identity Token</div>
-                        <div id="summary-billing-interval" style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Creator Verification Plan</div>
+                        <div id="summary-plan-name" style="font-weight: 800; color: #fff;">Writers Tier Sandbox</div>
+                        <div id="summary-billing-interval" style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Biometric Cadence Logging & WPM Variance Suite</div>
                     </div>
                     <div id="summary-base-price" style="font-weight: 700;">$14.00</div>
                 </div>
@@ -208,7 +211,6 @@
     </div>
 
     <script>
-        // LIVE TEST LINKS ALIGNED SPECIFICALLY ONTO HIGH-CONVERTING CREATOR SUITES
         const stripePaymentLinks = {
             "Writers Tier Sandbox": "https://buy.stripe.com/test_aFafZicQechEgyB2WJbo404", 
             "Creator Studio Pro Suite": "https://buy.stripe.com/test_14AaEY17w3L8dmpcxjbo401" 
@@ -226,6 +228,7 @@
 
             if (planParam) {
                 const decodedPlan = decodeURIComponent(planParam);
+                // Dynamically transform layouts when Creator Pro Suite target parameter intercepts
                 if (decodedPlan === 'Creator Studio Pro Suite' || decodedPlan === 'Pro Content Suite' || decodedPlan === 'pro') {
                     activePlanName = "Creator Studio Pro Suite";
                     planPrice = "$29.00";
@@ -234,13 +237,11 @@
                 }
             }
 
-            // Bind values directly into Document Object Model nodes
             document.getElementById('summary-plan-name').innerText = activePlanName;
             document.getElementById('summary-billing-interval').innerText = intervalLabel;
             document.getElementById('summary-base-price').innerText = planPrice;
             document.getElementById('summary-discount-price').innerText = "- " + planPrice;
             
-            // Generate automated billing milestone timeline disclosures for conversion optimization
             const targetTrialExpiration = new Date();
             targetTrialExpiration.setDate(targetTrialExpiration.getDate() + 30);
             const genericFormattedDate = targetTrialExpiration.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
