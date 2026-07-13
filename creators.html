@@ -497,7 +497,8 @@
                     <li>Verified Human PDF Origin Validation Stamps</li>
                     <li>Document auto-saves and HTML code replication</li>
                 </ul>
-                <button class="pricing-btn" onclick="location.href='checkout.html?plan=Writers%20Tier'">Start 30-Day Free Trial</button>
+                <!-- ROUTING CORRECTION PLACED HERE -->
+                <button class="pricing-btn" onclick="location.href='checkout.html?plan=Writers%20Tier%20Sandbox'">Start 30-Day Free Trial</button>
             </div>
 
             <!-- Tier 2: Studio Pro -->
@@ -513,7 +514,7 @@
                     <li>Real-time Speech Recognition Transcription Engine</li>
                     <li>Exportable Cryptographic QR Manifest Certificates</li>
                 </ul>
-                <button class="pricing-btn" onclick="location.href='checkout-creators.html?plan=Pro%20Content%20Suite'">Start 30-Day Free Trial</button>
+                <button class="pricing-btn" onclick="location.href='checkout.html?plan=Creator%20Studio%20Pro%20Suite'">Start 30-Day Free Trial</button>
             </div>
         </div>
     </section>
@@ -702,6 +703,7 @@
             });
         }
 
+        // Focus and insert text directly inside the editable canvas
         function updateSimClipText(id, newText) {
             const idx = simClips.findIndex(c => c.id === id);
             if (idx !== -1) {
@@ -717,7 +719,6 @@
             window.open(`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrText}`, '_blank');
         }
 
-        // Focus and insert text directly inside the editable canvas
         function insertSimClipText(clipId) {
             const target = simClips.find(c => c.id === clipId);
             if (!target) return;
