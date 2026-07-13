@@ -359,7 +359,12 @@
     <div onclick="location.href='index.html'" style="cursor:pointer" title="Exit Storefront Dashboard">🏠</div>
     <div onclick="manualSave()" id="save-icon" style="cursor:pointer" title="Save Now">💾</div>
     <div style="background: var(--brand-accent); padding: 2px 12px; border-radius: 50px; font-weight: 800; font-size: 11px;">Human Integrity: <span id="trust-score">0%</span></div>
-    <span id="doc-name" style="margin-left:auto; font-weight:bold; font-size:12px; cursor:pointer;" onclick="renameDoc()">Untitled Manuscript</span>
+    
+    <!-- Title alignment with contextual plain text downloader nested below -->
+    <div style="margin-left:auto; display: flex; flex-direction: column; align-items: flex-end; gap: 2px;">
+        <span id="doc-name" style="font-weight:bold; font-size:12px; cursor:pointer;" onclick="renameDoc()">Untitled Manuscript</span>
+        <span onclick="downloadManuscriptRaw()" style="font-size: 10px; color: var(--brand-accent); cursor: pointer; text-decoration: underline; font-weight: bold;" title="Download current writing pad draft as .txt file">⬇ Download Draft</span>
+    </div>
 </div>
 
 <div class="tabs">
@@ -658,6 +663,21 @@
         a.click(); 
     }
 
+    /* MANUSCRIPT RAW WRITING PAD TEXT DOWNLOADER */
+    function downloadManuscriptRaw() {
+        const rawContent = editor.innerText || editor.textContent;
+        const currentTitle = document.getElementById('doc-name').innerText.trim() || "manuscript_draft";
+        
+        const blob = new Blob([rawContent], { type: "text/plain;charset=utf-8" });
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.href = URL.createObjectURL(blob);
+        downloadAnchor.download = currentTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase() + "_draft.txt";
+        
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        document.body.removeChild(downloadAnchor);
+    }
+
     /* VOICE SCRATCHPAD CONTROLLER LOGIC */
     let isRecordingActive = false;
     let voiceClips = [];
@@ -782,6 +802,32 @@
         renderVoiceClips();
     }
 
+    /* DOWNLOAD CHOSEN AUDIO RECORDED FILE DIRECTLY TO LOCAL HARD DRIVE */
+    function saveRecordedClipLocalFile(clipId) {
+        const target = voiceClips.find(c => c.id === clipId);
+        if (!target || !target.url) return;
+        
+        // Dynamically save textarea edits to commit text workspace loop values
+        const cardTextarea = document.querySelector(`.clip-card[data-clip-id="${clipId}"] .clip-textarea`);
+        if (cardTextarea) {
+            updateClipText(clipId, cardTextarea.value);
+        }
+
+        const downloadLink = document.createElement('a');
+        downloadLink.href = target.url;
+        downloadLink.download = target.title.replace(/[^a-z0-9]/gi, '_').toLowerCase() + ".webm";
+        
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        
+        autoSave(); // Save workspace
+        
+        const saveStatus = document.getElementById('save-status');
+        saveStatus.innerText = "Clip & Text Workspace Saved!";
+        setTimeout(() => { saveStatus.innerText = "Auto-save Enabled"; }, 2500);
+    }
+
     function updateClipText(id, newText) {
         const idx = voiceClips.findIndex(c => c.id === id);
         if (idx !== -1) {
@@ -815,6 +861,7 @@
         voiceClips.forEach(clip => {
             const card = document.createElement('div');
             card.className = 'clip-card';
+            card.setAttribute('data-clip-id', clip.id);
             card.innerHTML = `
                 <div class="clip-header">
                     <span class="clip-title" title="${clip.title}">${clip.title.substring(0, 24)}${clip.title.length > 24 ? '...' : ''}</span>
@@ -830,26 +877,35 @@
                 </div>
                 <div class="clip-actions">
                     <button class="manifest-btn" onclick="generateProvenanceQR(${clip.id})">📜 QR Code</button>
-                    <button class="insert-btn" onclick="insertClipAtCursor('${clip.id}')">📋 Insert Text</button>
+                    <div style="display: flex; gap: 6px;">
+                        <button class="insert-btn" style="background-color:#00b894; color:#0f172a;" onclick="saveRecordedClipLocalFile(${clip.id})" title="Save recorded sound file locally & write current progress.">💾 Save File</button>
+                        <button class="insert-btn" onclick="insertClipAtCursor(${clip.id})">📋 Insert Text</button>
+                    </div>
                 </div>
             `;
             container.appendChild(card);
         });
     }
 
+    /* CARET-AWARE EXACT RANGE RICH TEXT INSERTION ENGINE */
     function insertClipAtCursor(clipId) {
         const targetClip = voiceClips.find(c => c.id === clipId);
         if (!targetClip) return;
         
-        const textToInsert = " " + targetClip.text.trim() + " ";
+        // Grab the latest text from the actual active DOM textarea node to avoid stale state buffers
+        const cardTextarea = document.querySelector(`.clip-card[data-clip-id="${clipId}"] .clip-textarea`);
+        const clipTextVal = cardTextarea ? cardTextarea.value.trim() : targetClip.text.trim();
+        
+        const textToInsert = " " + clipTextVal + " ";
         editor.focus();
 
-        let sel, range;
+        let inserted = false;
         if (window.getSelection) {
-            sel = window.getSelection();
+            const sel = window.getSelection();
             if (sel.getRangeAt && sel.rangeCount) {
-                range = sel.getRangeAt(0);
+                const range = sel.getRangeAt(0);
                 
+                // Confirm caret position sits cleanly inside editor boundaries
                 let parentNode = range.commonAncestorContainer;
                 let insidePaper = false;
                 while (parentNode) {
@@ -865,16 +921,33 @@
                     const textNode = document.createTextNode(textToInsert);
                     range.insertNode(textNode);
                     
+                    // Reposition caret selection directly after newly appended block
                     range.setStartAfter(textNode);
                     sel.removeAllRanges();
                     sel.addRange(range);
-                    handleInput();
-                    return;
+                    inserted = true;
                 }
             }
         }
         
-        editor.innerHTML += textToInsert;
+        // Focus Fallback: if selection is outside paper or unselected, default append to end
+        if (!inserted) {
+            editor.focus();
+            const sel = window.getSelection();
+            const range = document.createRange();
+            range.selectNodeContents(editor);
+            range.collapse(false); // Collapse to end
+            sel.removeAllRanges();
+            sel.addRange(range);
+            
+            const textNode = document.createTextNode(textToInsert);
+            range.insertNode(textNode);
+            
+            range.setStartAfter(textNode);
+            sel.removeAllRanges();
+            sel.addRange(range);
+        }
+        
         handleInput();
     }
 </script>
