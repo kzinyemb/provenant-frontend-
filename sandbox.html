@@ -565,7 +565,8 @@
             editor.style.display = 'block';
             document.getElementById('data-view-container').style.display = 'none';
             document.getElementById(id + '-ribbon').style.display = 'flex';
-            document.getElementById('tab-' + id).classList.add('active');
+            const targetsTab = document.getElementById('tab-' + id);
+            if (targetsTab) targetsTab.classList.add('active');
         }
     }
 
