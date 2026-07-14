@@ -277,7 +277,7 @@
             border-radius: 24px;
             padding: 45px 35px;
             width: 100%;
-            max-width: 420px;
+            max-width: 460px;
             text-align: left;
             display: flex;
             flex-direction: column;
@@ -470,26 +470,14 @@
         <p style="color: var(--text-muted); margin-top: 10px; max-width: 600px; margin-left: auto; margin-right: auto;">Start your 30-day cryptographic sandbox trial. Select the workspace depth tailored perfectly to your creative medium.</p>
         
         <div class="pricing-grid">
-            <div class="pricing-card">
-                <h4>Writers Tier Sandbox</h4>
-                <div class="price">$14<span>/mo</span></div>
-                <p>Complete biometric profile protection backed by our real-time typing forensic verification engine.</p>
-                <ul class="pricing-features">
-                    <li>Interactive Writing Pad Canvas Workspace</li>
-                    <li>Biometric Cadence Logging and WPM Variance Charts</li>
-                    <li>Verified Human PDF Origin Validation Stamps</li>
-                    <li>Document auto-saves and HTML code replication</li>
-                </ul>
-                <button class="pricing-btn" onclick="location.href='checkout-creators.html?plan=Writers%20Tier%20Sandbox'">Start 30-Day Free Trial</button>
-            </div>
-
             <div class="pricing-card popular">
-                <div style="position: absolute; top: -12px; right: 35px; background: var(--brand-creator); color: #fff; font-size: 10px; font-weight: 900; padding: 4px 14px; border-radius: 20px; letter-spacing: 1px;">RECOMMENDED FOR AUDIO</div>
+                <div style="position: absolute; top: -12px; right: 35px; background: var(--brand-creator); color: #fff; font-size: 10px; font-weight: 900; padding: 4px 14px; border-radius: 20px; letter-spacing: 1px;">RECOMMENDED PLATFORM LAUNCH TIER</div>
                 <h4>Creator Studio Pro Suite</h4>
                 <div class="price">$29<span>/mo</span></div>
-                <p>Bespoke transcription scratchpads and audio metadata capture designed specifically for vocalists and podcasters.</p>
+                <p>Bespoke transcription scratchpads and audio metadata capture designed specifically for vocalists, authors, and podcasters.</p>
                 <ul class="pricing-features">
-                    <li>Includes ALL Basic Writers Sandbox Features</li>
+                    <li>Interactive Writing Pad Canvas Workspace</li>
+                    <li>Biometric Cadence Logging & WPM Variance Analysis</li>
                     <li>Collapsible Hybrid Vocal Scratchpad Sidebar</li>
                     <li>On-Device Web Audio Capture and local `.webm` downloads</li>
                     <li>Real-time Speech Recognition Transcription Engine</li>
@@ -563,11 +551,13 @@
             }, 3000);
         }
 
+        // Collapse Sidebar drawer
         function toggleSimSidebar() {
             const sidebar = document.getElementById('sim-sidebar-wrapper');
             sidebar.classList.toggle('closed');
         }
 
+        // Keystroke logic tracking
         function handleSimTyping(editor) {
             simKeysCount++;
             document.getElementById('sim-keys').innerText = simKeysCount;
@@ -580,6 +570,7 @@
             document.getElementById('sim-integrity-percentage').innerText = Math.floor(score) + "%";
         }
 
+        // Recording controls
         async function toggleSimRecording() {
             const btn = document.getElementById('sim-rec-btn');
             const dot = document.getElementById('sim-rec-dot');
