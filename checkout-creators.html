@@ -206,37 +206,18 @@
     </div>
 
     <script>
+        // Single optimized launch tier target route map
         const stripePaymentLinks = {
-            "Writers Tier Sandbox": "https://buy.stripe.com/test_6oU00k3fE3L85TXeFrbo405", 
             "Creator Studio Pro Suite": "https://buy.stripe.com/test_aFaeVebMaepMfuxcxjbo406" 
         };
 
-        let activePlanName = "Writers Tier Sandbox";
+        let activePlanName = "Creator Studio Pro Suite";
 
         window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const planParam = urlParams.get('plan');
-            
-            let planPrice = "$14.00";
-            let intervalLabel = "Biometric Cadence Logging & WPM Variance Suite";
+            // Defaults explicitly to the single premium tier structure
+            let planPrice = "$29.00";
+            let intervalLabel = "Speech Recognition Transcription & Sound Provenance Module";
             let structuralInterval = "/mo";
-
-            if (planParam) {
-                const decodedPlan = decodeURIComponent(planParam).toLowerCase().trim();
-                
-                // FIXED LOOP PARSER: Targets 'creator studio pro suite' securely
-                if (decodedPlan.includes('pro') || decodedPlan.includes('suite')) {
-                    activePlanName = "Creator Studio Pro Suite";
-                    planPrice = "$29.00";
-                    intervalLabel = "Speech Recognition Transcription & Sound Provenance Module";
-                    structuralInterval = "/mo";
-                } else {
-                    activePlanName = "Writers Tier Sandbox";
-                    planPrice = "$14.00";
-                    intervalLabel = "Biometric Cadence Logging & WPM Variance Suite";
-                    structuralInterval = "/mo";
-                }
-            }
 
             document.getElementById('summary-plan-name').innerText = activePlanName;
             document.getElementById('summary-billing-interval').innerText = intervalLabel;
