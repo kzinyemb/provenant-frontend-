@@ -417,7 +417,7 @@
             <button class="btn-ribbon" onclick="document.execCommand('justifyCenter')">Center</button>
             <button class="btn-ribbon" onclick="document.execCommand('justifyRight')">Right</button>
         </div>
-        <select onchange="document.getElementById('word-view').style.lineHeight = this.value" style="margin-top:5px;">
+        <select onchange="document.execCommand('lineHeight', false, this.value)" style="margin-top:5px;">
             <option value="1.0">1.0 spacing</option>
             <option value="1.15">1.15 spacing</option>
             <option value="1.5">1.5 spacing</option>
@@ -854,7 +854,7 @@
         
         const saveStatus = document.getElementById('save-status');
         saveStatus.innerText = "Clip & Text Workspace Saved!";
-        setTimeout(() => { saveStatus.innerText = "Auto-save Enabled"; }, 2500);
+        setTimeout(() => { saveStatus.innerText = "Auto-save Enabled"; }, 2000);
     }
 
     function updateClipText(id, newText) {
