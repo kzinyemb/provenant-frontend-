@@ -99,7 +99,6 @@
         .feature-card p { color: var(--text-muted); font-size: 0.95rem; }
         .icon { font-size: 2rem; margin-bottom: 15px; display: block; }
 
-        /* Interactive Simulator Layout */
         .workspace-simulator-container {
             width: 100%;
             max-width: 1100px;
@@ -259,7 +258,6 @@
             cursor: pointer;
         }
 
-        /* Pricing Elements */
         .pricing-section-container {
             text-align: center;
             padding: 60px 20px 100px 20px;
@@ -344,7 +342,6 @@
             box-shadow: 0 6px 20px rgba(225, 29, 72, 0.4);
         }
 
-        /* Premium in-app toast notification element styles */
         .custom-toast {
             position: fixed;
             bottom: 24px;
@@ -483,7 +480,7 @@
                     <li>Verified Human PDF Origin Validation Stamps</li>
                     <li>Document auto-saves and HTML code replication</li>
                 </ul>
-                <button class="pricing-btn" onclick="location.href='checkout.html?plan=Writers%20Tier%20Sandbox'">Start 30-Day Free Trial</button>
+                <button class="pricing-btn" onclick="location.href='checkout-creators.html?plan=Writers%20Tier%20Sandbox'">Start 30-Day Free Trial</button>
             </div>
 
             <div class="pricing-card popular">
@@ -498,7 +495,7 @@
                     <li>Real-time Speech Recognition Transcription Engine</li>
                     <li>Exportable Cryptographic QR Manifest Certificates</li>
                 </ul>
-                <button class="pricing-btn" onclick="location.href='checkout.html?plan=Creator%20Studio%20Pro%20Suite'">Start 30-Day Free Trial</button>
+                <button class="pricing-btn" onclick="location.href='checkout-creators.html?plan=Creator%20Studio%20Pro%20Suite'">Start 30-Day Free Trial</button>
             </div>
         </div>
     </section>
@@ -555,7 +552,6 @@
             };
         }
 
-        // Custom toast helper replacing standard alerts
         function triggerInAppToast(message, icon = "🛡️") {
             const toast = document.getElementById('sim-toast');
             document.getElementById('sim-toast-msg').innerText = message;
@@ -567,13 +563,11 @@
             }, 3000);
         }
 
-        // Collapse Sidebar drawer
         function toggleSimSidebar() {
             const sidebar = document.getElementById('sim-sidebar-wrapper');
             sidebar.classList.toggle('closed');
         }
 
-        // Keystroke logic tracking
         function handleSimTyping(editor) {
             simKeysCount++;
             document.getElementById('sim-keys').innerText = simKeysCount;
@@ -582,12 +576,10 @@
             const words = text === "" ? 0 : text.split(/\s+/).length;
             document.getElementById('sim-words').innerText = words;
 
-            // Compute math integrity score on-the-fly
             let score = text.length > 0 ? Math.min(100, (simKeysCount / text.length) * 100) : 0;
             document.getElementById('sim-integrity-percentage').innerText = Math.floor(score) + "%";
         }
 
-        // Recording controls
         async function toggleSimRecording() {
             const btn = document.getElementById('sim-rec-btn');
             const dot = document.getElementById('sim-rec-dot');
@@ -647,7 +639,6 @@
             }
         }
 
-        // Render clips into sidebar DOM
         function renderSimClips() {
             const container = document.getElementById('sim-clips-list');
             const emptyState = document.getElementById('sim-empty');
@@ -683,7 +674,6 @@
             });
         }
 
-        // Focus and insert text directly inside the editable canvas
         function updateSimClipText(id, newText) {
             const idx = simClips.findIndex(c => c.id === id);
             if (idx !== -1) {
@@ -691,7 +681,6 @@
             }
         }
 
-        UX helpers
         function generateSimProvenanceQR(id) {
             const target = simClips.find(c => c.id === id);
             if (!target) return;
