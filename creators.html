@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google tag (gtag.js) Preserved Exactly -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6B0NP15RYC"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -14,7 +13,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- PWA Integration Tags -->
     <link rel="manifest" href="/manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -379,7 +377,6 @@
 </head>
 <body>
 
-    <!-- NAVIGATION BAR -->
     <div style="padding: 20px; max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
         <div style="display: flex; align-items: center; gap: 10px; cursor: pointer;" onclick="location.href='index.html'">
             <span style="font-weight: 900; font-size: 24px; letter-spacing: -1px; color: #fff;">PROVEN<span style="color: var(--brand-creator);">ANT</span>™</span>
@@ -387,14 +384,12 @@
         <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600;">← Back to Main Hub</a>
     </div>
 
-    <!-- HERO PRESENTATION -->
     <section class="hero">
         <h1>Shield Your Creative Works.<br><span style="color: var(--brand-creator); text-shadow: 0 0 40px rgba(225, 29, 72, 0.4);">Immunity from Generative AI.</span></h1>
         <p>A hybrid forensic workspace built exclusively to secure human authenticity. Dictate lyrics, write manuscripts, and record vocals inside our secure sandbox. Automatically generate cryptographic human-origin logs to inoculate your files from unauthorized AI voice-cloning, theft, and training models.</p>
         <a href="#sim-demo" class="action-btn">Try Creator Studio Simulator</a>
     </section>
 
-    <!-- THE LIVE INTERACTIVE WORKSPACE SIMULATOR -->
     <section id="sim-demo" style="padding-top: 20px; text-align: center;">
         <div style="margin-bottom: 30px;">
             <h2 style="font-size: 2.2rem;">Try the Hybrid Workspace Demo</h2>
@@ -402,7 +397,6 @@
         </div>
 
         <div class="workspace-simulator-container">
-            <!-- Simulated Workspace Header Bar -->
             <div class="workspace-sim-header">
                 <div style="display: flex; gap: 12px; align-items: center;">
                     <div style="background: #e11d48; width: 12px; height: 12px; border-radius: 50%;"></div>
@@ -414,14 +408,11 @@
                 </button>
             </div>
 
-            <!-- Workspace Columns -->
             <div class="workspace-split">
-                <!-- Left: Biometric Paper Area -->
                 <div class="sim-paper-pane">
                     <div id="sim-paper-editor" class="sim-paper" contenteditable="true" oninput="handleSimTyping(this)">Start drafting or testing dictation loops in this interactive paper...</div>
                 </div>
 
-                <!-- Right: Voice Scratchpad Sidebar -->
                 <div id="sim-sidebar-wrapper" class="sim-sidebar">
                     <div class="sim-sidebar-content">
                         <div>
@@ -436,7 +427,6 @@
                         </div>
 
                         <div id="sim-clips-list" style="display: flex; flex-direction: column; gap: 10px;">
-                            <!-- Placeholder empty state -->
                             <div id="sim-empty" class="empty-placeholder" style="padding: 20px 10px; border-color: rgba(255,255,255,0.05);">
                                 <span style="font-size: 18px;">🎙️</span>
                                 <p style="font-size: 10px; color: #64748b;">No speech notes captured yet. Tap record to transcribe.</p>
@@ -446,7 +436,6 @@
                 </div>
             </div>
             
-            <!-- Sim Status Bar -->
             <div style="background: #0f172a; padding: 6px 20px; display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8; border-top: 1px solid var(--brand-border);">
                 <div>Words: <span id="sim-words">10</span> | Keystrokes Logged: <span id="sim-keys">0</span></div>
                 <div style="color: #00b894; font-weight: bold;">Verified Human Origin Sandbox</div>
@@ -454,7 +443,6 @@
         </div>
     </section>
 
-    <!-- MATRIX OVERVIEW -->
     <section>
         <div style="text-align: center;">
             <h2 style="font-size: 2.2rem;">Core Features Built Inside the Creator Studio</h2>
@@ -480,13 +468,11 @@
         </div>
     </section>
 
-    <!-- CONSOLIDATED PRICE PLAN GATEWAY -->
     <section class="pricing-section-container">
         <h2 style="font-size: 2.5rem; color: #fff;">Choose Your Entry Portal</h2>
         <p style="color: var(--text-muted); margin-top: 10px; max-width: 600px; margin-left: auto; margin-right: auto;">Start your 30-day cryptographic sandbox trial. Select the workspace depth tailored perfectly to your creative medium.</p>
         
         <div class="pricing-grid">
-            <!-- Tier 1: Writers sandbox -->
             <div class="pricing-card">
                 <h4>Writers Tier Sandbox</h4>
                 <div class="price">$14<span>/mo</span></div>
@@ -497,11 +483,9 @@
                     <li>Verified Human PDF Origin Validation Stamps</li>
                     <li>Document auto-saves and HTML code replication</li>
                 </ul>
-                <!-- ROUTING CORRECTION PLACED HERE -->
                 <button class="pricing-btn" onclick="location.href='checkout.html?plan=Writers%20Tier%20Sandbox'">Start 30-Day Free Trial</button>
             </div>
 
-            <!-- Tier 2: Studio Pro -->
             <div class="pricing-card popular">
                 <div style="position: absolute; top: -12px; right: 35px; background: var(--brand-creator); color: #fff; font-size: 10px; font-weight: 900; padding: 4px 14px; border-radius: 20px; letter-spacing: 1px;">RECOMMENDED FOR AUDIO</div>
                 <h4>Creator Studio Pro Suite</h4>
@@ -519,7 +503,6 @@
         </div>
     </section>
 
-    <!-- FOOTER WITH OUTLOOK LINKS ATTACHED -->
     <footer>
         <div style="margin-bottom: 30px; display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;">
             <a href="mailto:provenantforensics@outlook.com?subject=Provenant™%20Feature%20Suggestion&body=Hey%20Provenant™%20Team,%0A%0AI%20have%20a%20suggestion%20to%20improve%20the%20creator%20studio:%0A" 
@@ -534,20 +517,17 @@
         <p>&copy; 2026 Provenant™. All rights reserved. Strategic Media Presenter Node. Security Framework Tier 1.</p>
     </footer>
 
-    <!-- Service Worker Registration Script -->
     <script>
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js');
       }
     </script>
 
-    <!-- PREMIUM COMPLIANT TOAST PORTAL -->
     <div id="sim-toast" class="custom-toast">
         <span id="sim-toast-icon">🛡️</span>
         <span id="sim-toast-msg">Handshaking Verified...</span>
     </div>
 
-    <!-- SIMULATOR JAVASCRIPT LOGIC CONTROLLING CLIENT INTERACTION -->
     <script>
         let simKeysCount = 0;
         let simKeystrokeLog = [];
@@ -711,6 +691,7 @@
             }
         }
 
+        UX helpers
         function generateSimProvenanceQR(id) {
             const target = simClips.find(c => c.id === id);
             if (!target) return;
