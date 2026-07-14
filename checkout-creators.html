@@ -12,7 +12,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure Checkout | Provenant™ Creators</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Fira+Code:wght=400;500&swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Fira+Code:wght=400;500&display=swap">
     
     <style>
         :root {
@@ -208,7 +208,7 @@
     </div>
 
     <script>
-        // Verified live links pointing straight to your sandbox products
+        // Real active URLs applied dynamically to keep verification paths open
         const stripePaymentLinks = {
             "Writers Tier Sandbox": "https://buy.stripe.com/test_6oU00k3fE3L85TXeFrbo405", 
             "Creator Studio Pro Suite": "https://buy.stripe.com/test_aFaeVebMaepMfuxcxjbo406" 
@@ -242,6 +242,7 @@
                 }
             }
 
+            // Clean DOM replacement mappings
             document.getElementById('summary-plan-name').innerText = activePlanName;
             document.getElementById('summary-billing-interval').innerText = intervalLabel;
             document.getElementById('summary-base-price').innerText = planPrice;
