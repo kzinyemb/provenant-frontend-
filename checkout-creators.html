@@ -52,7 +52,6 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
         }
 
-        /* Form side visual matching update */
         .payment-form {
             padding: 60px;
             background: #111827;
@@ -113,7 +112,6 @@
             filter: brightness(1.1);
         }
 
-        /* Realigned Module Sidebar Details */
         .order-summary {
             padding: 60px;
             background: rgba(30, 41, 59, 0.2);
@@ -183,15 +181,15 @@
                 
                 <div class="summary-item">
                     <div>
-                        <div id="summary-plan-name" style="font-weight: 800; color: #fff;">Writers Tier Sandbox</div>
-                        <div id="summary-billing-interval" style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Biometric Cadence Logging & WPM Variance Suite</div>
+                        <div id="summary-plan-name" style="font-weight: 800; color: #fff; min-height: 20px;"></div>
+                        <div id="summary-billing-interval" style="font-size: 12px; color: var(--text-muted); margin-top: 4px; min-height: 18px;"></div>
                     </div>
-                    <div id="summary-base-price" style="font-weight: 700;">$14.00</div>
+                    <div id="summary-base-price" style="font-weight: 700;"></div>
                 </div>
 
                 <div class="summary-item">
                     <div style="color: var(--text-muted);">30-Day Trial Credit</div>
-                    <div id="summary-discount-price" style="color: var(--brand-accent); font-weight: 700;">- $14.00</div>
+                    <div id="summary-discount-price" style="color: var(--brand-accent); font-weight: 700;"></div>
                 </div>
             </div>
 
@@ -201,14 +199,13 @@
                 </div>
 
                 <div style="margin-top: 30px; font-size: 11px; color: var(--text-muted); line-height: 1.6;">
-                    <p id="billing-timeline-disclosure">After your 30-day sandbox trial ends, your payment method will execute a standard renewal charge unless canceled inside management logs.</p>
+                    <p id="billing-timeline-disclosure"></p>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Real active URLs bound directly into production parameters
         const stripePaymentLinks = {
             "Writers Tier Sandbox": "https://buy.stripe.com/test_6oU00k3fE3L85TXeFrbo405", 
             "Creator Studio Pro Suite": "https://buy.stripe.com/test_aFaeVebMaepMfuxcxjbo406" 
@@ -227,14 +224,13 @@
             if (planParam) {
                 const decodedPlan = decodeURIComponent(planParam).toLowerCase().trim();
                 
-                // FIXED LOOP PARSER: Catches 'pro', 'pro content suite', or 'creator studio pro suite'
+                // FIXED LOOP PARSER: Targets 'creator studio pro suite' securely
                 if (decodedPlan.includes('pro') || decodedPlan.includes('suite')) {
                     activePlanName = "Creator Studio Pro Suite";
                     planPrice = "$29.00";
                     intervalLabel = "Speech Recognition Transcription & Sound Provenance Module";
                     structuralInterval = "/mo";
                 } else {
-                    // CATCH-ALL FOR WRITERS PLANS: Handles 'writers tier', 'writers tier sandbox', or any fallback
                     activePlanName = "Writers Tier Sandbox";
                     planPrice = "$14.00";
                     intervalLabel = "Biometric Cadence Logging & WPM Variance Suite";
@@ -242,7 +238,6 @@
                 }
             }
 
-            // Clean DOM replacement mappings
             document.getElementById('summary-plan-name').innerText = activePlanName;
             document.getElementById('summary-billing-interval').innerText = intervalLabel;
             document.getElementById('summary-base-price').innerText = planPrice;
