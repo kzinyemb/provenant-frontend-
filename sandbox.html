@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google tag (gtag.js) Preserved Exactly -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6B0NP15RYC"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -90,7 +89,7 @@
             transition: margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             z-index: 80;
-            overflow: visible; /* Crucial to keep the toggle handle visible when closed */
+            overflow: visible; 
         }
 
         .scratchpad-sidebar.closed {
@@ -360,7 +359,6 @@
     <div onclick="manualSave()" id="save-icon" style="cursor:pointer" title="Save Now">💾</div>
     <div style="background: var(--brand-accent); padding: 2px 12px; border-radius: 50px; font-weight: 800; font-size: 11px;">Human Integrity: <span id="trust-score">0%</span></div>
     
-    <!-- Title alignment with contextual plain text downloader nested below -->
     <div style="margin-left:auto; display: flex; flex-direction: column; align-items: flex-end; gap: 2px;">
         <span id="doc-name" style="font-weight:bold; font-size:12px; cursor:pointer;" onclick="renameDoc()">Untitled Manuscript</span>
         <span onclick="downloadManuscriptRaw()" style="font-size: 10px; color: var(--brand-accent); cursor: pointer; text-decoration: underline; font-weight: bold;" title="Download current writing pad draft as .txt file">⬇ Download Draft</span>
@@ -368,12 +366,12 @@
 </div>
 
 <div class="tabs">
-    <div class="tab" onclick="setView('file')">File</div>
-    <div class="tab active" id="tab-home" onclick="setView('home')">Home</div>
+    <div class="tab active" id="tab-file" onclick="setView('file')">File</div>
+    <div class="tab" id="tab-home" onclick="setView('home')">Home</div>
     <div class="tab" id="tab-data" onclick="setView('data')" style="background:#00b894; color:white">Forensics</div>
 </div>
 
-<div class="ribbon-content" id="file-ribbon">
+<div class="ribbon-content active" id="file-ribbon">
     <div class="group">
         <div class="btn-row">
             <button class="btn-ribbon btn-big" onclick="newDoc()"><span>📄</span>New</button>
@@ -396,7 +394,7 @@
     </div>
 </div>
 
-<div class="ribbon-content active" id="home-ribbon">
+<div class="ribbon-content" id="home-ribbon">
     <div class="group">
         <select onchange="document.execCommand('fontName', false, this.value)" style="width: 130px; margin-bottom: 5px;">
             <option value="Arial">Arial</option>
@@ -433,7 +431,6 @@
     <button class="action-btn" style="padding: 10px 20px; font-size: 11px;" onclick="addBadge()">Get Certification Badge</button>
 </div>
 
-<!-- SPLIT SCREEN FRAME WRAPPING WORKSPACE AND SIDEBAR -->
 <div class="app-split-container">
     <div class="workspace">
         <div id="word-view" class="paper" contenteditable="true" oninput="handleInput()">Start composing text or narrative content loops...</div>
@@ -455,7 +452,6 @@
         </div>
     </div>
 
-    <!-- COLLAPSIBLE HYBRID VOICE SCRATCHPAD SIDEBAR -->
     <div id="scratchpad-sidebar" class="scratchpad-sidebar closed">
         <div class="scratchpad-toggle-handle" onclick="toggleScratchpad()">
             <span id="scratchpad-toggle-arrow" style="font-size: 20px;">◀</span>
@@ -484,7 +480,6 @@
             </div>
 
             <div id="voice-clips-list" class="voice-clips-list">
-                <!-- Fallback Empty State -->
                 <div id="scratchpad-empty-state" class="empty-placeholder">
                     <span style="font-size: 24px;">🎙️</span>
                     <p>No audio captures mapped yet. Record your voice or import a local sound file to start parsing dictation logs.</p>
@@ -499,7 +494,6 @@
     <div id="save-status">Auto-save Enabled</div>
 </div>
 
-<!-- Custom Dialog Overlay (Eliminating native alerts and confirms completely) -->
 <div id="custom-modal-overlay" class="modal-overlay">
     <div class="modal-box">
         <div id="custom-modal-title" class="modal-title">Verification Shield</div>
