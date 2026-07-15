@@ -355,7 +355,6 @@
 <body>
 
 <div class="quick-access">
-    <div onclick="location.href='index.html'" style="cursor:pointer" title="Exit Storefront Dashboard">🏠</div>
     <div onclick="manualSave()" id="save-icon" style="cursor:pointer" title="Save Now">💾</div>
     <div style="background: var(--brand-accent); padding: 2px 12px; border-radius: 50px; font-weight: 800; font-size: 11px;">Human Integrity: <span id="trust-score">0%</span></div>
     
@@ -658,7 +657,6 @@
         a.click(); 
     }
 
-    /* MANUSCRIPT RAW WRITING PAD TEXT DOWNLOADER */
     function downloadManuscriptRaw() {
         const rawContent = editor.innerText || editor.textContent;
         const currentTitle = document.getElementById('doc-name').innerText.trim() || "manuscript_draft";
@@ -673,13 +671,11 @@
         document.body.removeChild(downloadAnchor);
     }
 
-    /* VOICE SCRATCHPAD CONTROLLER LOGIC WITH SPEECH TRANSCRIPTION */
     let isRecordingActive = false;
     let voiceClips = [];
     let mediaRecorder = null;
     let audioChunks = [];
     
-    // Set up Web Speech API parameters
     let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     let recognition = null;
     let transcribedWordsBuffer = "";
@@ -728,7 +724,7 @@
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 mediaRecorder = new MediaRecorder(stream);
                 audioChunks = [];
-                transcribedWordsBuffer = ""; // Reset transcribed words buffer
+                transcribedWordsBuffer = ""; 
 
                 mediaRecorder.ondataavailable = (event) => {
                     if (event.data.size > 0) audioChunks.push(event.data);
@@ -738,7 +734,6 @@
                     const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                     const audioUrl = URL.createObjectURL(audioBlob);
                     
-                    // Populate Speech Recognition result if available, otherwise use default fallback message
                     const processedVoiceText = transcribedWordsBuffer.trim() || "New dictation captured. Refine transcript text or dictation details here...";
                     
                     const newClip = {
@@ -797,7 +792,7 @@
         voiceClips.unshift(newClip);
         saveVoiceClips();
         renderVoiceClips();
-        input.value = ''; // Reset input target
+        input.value = '';
     }
 
     function saveVoiceClips() {
@@ -832,12 +827,10 @@
         renderVoiceClips();
     }
 
-    /* DOWNLOAD CHOSEN AUDIO RECORDED FILE DIRECTLY TO LOCAL HARD DRIVE */
     function saveRecordedClipLocalFile(clipId) {
         const target = voiceClips.find(c => c.id === clipId);
         if (!target || !target.url) return;
         
-        // Dynamically save textarea edits to commit text workspace loop values
         const cardTextarea = document.querySelector(`.clip-card[data-clip-id="${clipId}"] .clip-textarea`);
         if (cardTextarea) {
             updateClipText(clipId, cardTextarea.value);
@@ -851,7 +844,7 @@
         downloadLink.click();
         document.body.removeChild(downloadLink);
         
-        autoSave(); // Save workspace
+        autoSave(); 
         
         const saveStatus = document.getElementById('save-status');
         saveStatus.innerText = "Clip & Text Workspace Saved!";
@@ -917,12 +910,10 @@
         });
     }
 
-    /* CARET-AWARE EXACT RANGE RICH TEXT INSERTION ENGINE */
     function insertClipAtCursor(clipId) {
         const targetClip = voiceClips.find(c => c.id === clipId);
         if (!targetClip) return;
         
-        // Grab the latest text from the actual active DOM textarea node to avoid stale state buffers
         const cardTextarea = document.querySelector(`.clip-card[data-clip-id="${clipId}"] .clip-textarea`);
         const clipTextVal = cardTextarea ? cardTextarea.value.trim() : targetClip.text.trim();
         
@@ -935,7 +926,6 @@
             if (sel.getRangeAt && sel.rangeCount) {
                 const range = sel.getRangeAt(0);
                 
-                // Confirm caret position sits cleanly inside editor boundaries
                 let parentNode = range.commonAncestorContainer;
                 let insidePaper = false;
                 while (parentNode) {
@@ -951,7 +941,6 @@
                     const textNode = document.createTextNode(textToInsert);
                     range.insertNode(textNode);
                     
-                    // Reposition caret selection directly after newly appended block
                     range.setStartAfter(textNode);
                     sel.removeAllRanges();
                     sel.addRange(range);
@@ -960,13 +949,12 @@
             }
         }
         
-        // Focus Fallback: if selection is outside paper or unselected, default append to end
         if (!inserted) {
             editor.focus();
             const sel = window.getSelection();
             const range = document.createRange();
             range.selectNodeContents(editor);
-            range.collapse(false); // Collapse to end
+            range.collapse(false);
             sel.removeAllRanges();
             sel.addRange(range);
             
