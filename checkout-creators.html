@@ -92,6 +92,14 @@
 
         input:focus { border-color: var(--brand-creator); }
 
+        .code-input {
+            font-family: 'Fira Code', monospace;
+            font-size: 22px;
+            letter-spacing: 8px;
+            text-align: center;
+            padding: 12px;
+        }
+
         .secure-btn {
             width: 100%;
             background: var(--brand-creator);
@@ -173,7 +181,7 @@
             font-family: 'Fira Code', monospace;
             font-size: 13px;
             color: #38bdf8;
-            margin: 12px 0 24px 0;
+            margin: 12px 0 20px 0;
             word-break: break-all;
         }
 
@@ -246,20 +254,30 @@
                 <div class="verify-badge">📩</div>
                 <h2 style="margin-bottom: 10px;">Check Your Inbox</h2>
                 <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">
-                    We've sent a verification code to confirm your account ownership before completing payment setup.
+                    Enter the 6-digit verification code sent to your email to continue.
                 </p>
 
                 <div class="target-email-display" id="confirmed-email-target">creator@domain.com</div>
 
-                <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
-                    <button type="button" class="secure-btn" onclick="proceedToStripeCheckout()" style="margin-top: 0;">
-                        I Verified — Proceed to Payment
-                    </button>
-                    
-                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
-                        <button type="button" class="secondary-btn" id="resend-btn" onclick="resendVerificationEmail()">Resend Email</button>
-                        <button type="button" class="secondary-btn" onclick="editEmailAddress()">Edit Email</button>
+                <!-- VERIFICATION CODE FORM -->
+                <form id="code-verification-form" style="width: 100%;">
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label>6-Digit Verification Code</label>
+                        <input type="text" id="verification-code-input" class="code-input" maxlength="6" placeholder="123456" required autocomplete="off">
                     </div>
+
+                    <p id="code-error-msg" style="font-size: 12px; color: #e11d48; margin-bottom: 10px; display: none;">
+                        ❌ Invalid verification code. Please try again.
+                    </p>
+
+                    <button type="submit" class="secure-btn" style="margin-top: 5px;">
+                        Verify & Proceed to Payment
+                    </button>
+                </form>
+                    
+                <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                    <button type="button" class="secondary-btn" id="resend-btn" onclick="resendVerificationEmail()">Resend Email</button>
+                    <button type="button" class="secondary-btn" onclick="editEmailAddress()">Edit Email</button>
                 </div>
 
                 <p id="resend-status-msg" style="font-size: 11px; color: var(--brand-accent); margin-top: 15px; display: none;"></p>
@@ -306,6 +324,7 @@
 
         let activePlanName = "Creator Studio Pro Suite";
         let currentEmail = "";
+        let activeCode = ""; // Stores generated code for validation
 
         window.onload = function() {
             let planPrice = "$29.00";
@@ -324,14 +343,15 @@
             document.getElementById('billing-timeline-disclosure').innerHTML = `After your 30-day forensic sandbox trial ends on <b>${genericFormattedDate}</b>, your verified payment vehicle will automatically clear a standard platform renewal step of <b>${planPrice}${structuralInterval}</b> unless paused via billing dashboards.`;
         };
 
-        // Helper to trigger Worker request
+        // Sends request to Cloudflare Worker
         async function sendVerificationApi(email) {
-            const code = Math.floor(100000 + Math.random() * 900000).toString();
+            // Generate fresh 6-digit code
+            activeCode = Math.floor(100000 + Math.random() * 900000).toString();
             
             const response = await fetch(WORKER_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email: email, code: code })
+                body: JSON.stringify({ email: email, code: activeCode })
             });
 
             if (!response.ok) {
@@ -342,7 +362,7 @@
             return await response.json();
         }
 
-        // Form Submit: Triggers Cloudflare Worker API & View Switch
+        // Form 1 Submit: Dispatches Email via Worker
         document.getElementById('payment-form').onsubmit = async function(e) {
             e.preventDefault();
             currentEmail = document.getElementById('user-email-input').value.trim();
@@ -351,7 +371,7 @@
             if (!currentEmail) return;
 
             submitBtn.disabled = true;
-            submitBtn.innerText = "Sending Verification...";
+            submitBtn.innerText = "Sending Verification Code...";
 
             try {
                 await sendVerificationApi(currentEmail);
@@ -359,7 +379,11 @@
                 // Set email in verification view
                 document.getElementById('confirmed-email-target').innerText = currentEmail;
 
-                // Toggle Panel States
+                // Reset code input field and error messages
+                document.getElementById('verification-code-input').value = '';
+                document.getElementById('code-error-msg').style.display = 'none';
+
+                // Switch Panels
                 document.getElementById('checkout-form-step').style.display = 'none';
                 document.getElementById('verification-step').style.display = 'flex';
             } catch (err) {
@@ -370,23 +394,31 @@
             }
         };
 
-        // Redirects to Stripe Checkout once verified (pre-filling email)
-        function proceedToStripeCheckout() {
-            let targetCheckoutUrl = stripePaymentLinks[activePlanName];
-            
-            if (!targetCheckoutUrl) {
-                alert("Configuration update required: Missing link array pairing parameters.");
-                return;
-            }
+        // Form 2 Submit: Validates Code & Redirects to Stripe
+        document.getElementById('code-verification-form').onsubmit = function(e) {
+            e.preventDefault();
+            const enteredCode = document.getElementById('verification-code-input').value.trim();
+            const errorMsg = document.getElementById('code-error-msg');
 
-            // Append prefilled email parameter to Stripe link if present
-            if (currentEmail) {
+            if (enteredCode === activeCode) {
+                errorMsg.style.display = 'none';
+                
+                let targetCheckoutUrl = stripePaymentLinks[activePlanName];
+                if (!targetCheckoutUrl) {
+                    alert("Configuration update required: Missing link array pairing parameters.");
+                    return;
+                }
+
+                // Append prefilled email parameter to Stripe link
                 const separator = targetCheckoutUrl.includes('?') ? '&' : '?';
                 targetCheckoutUrl += `${separator}prefilled_email=${encodeURIComponent(currentEmail)}`;
-            }
 
-            window.location.href = targetCheckoutUrl;
-        }
+                // Redirect to Stripe
+                window.location.href = targetCheckoutUrl;
+            } else {
+                errorMsg.style.display = 'block';
+            }
+        };
 
         // Resend Verification Email Action
         async function resendVerificationEmail() {
@@ -402,6 +434,7 @@
                 await sendVerificationApi(currentEmail);
                 msg.style.color = "var(--brand-accent)";
                 msg.innerText = "✓ Fresh verification code sent to your inbox.";
+                document.getElementById('code-error-msg').style.display = 'none';
             } catch (err) {
                 msg.style.color = "#e11d48";
                 msg.innerText = "Failed to resend code. Please try again.";
