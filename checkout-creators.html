@@ -114,6 +114,12 @@
             filter: brightness(1.1);
         }
 
+        .secure-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .secondary-btn {
             background: transparent;
             border: 1px solid var(--brand-border);
@@ -227,7 +233,7 @@
                         <input type="text" id="user-name-input" placeholder="First and Last Name or Brand Legal Name" required>
                     </div>
                     
-                    <button type="submit" class="secure-btn">Continue to Secure Setup</button>
+                    <button type="submit" id="submit-btn" class="secure-btn">Continue to Secure Setup</button>
                     
                     <p style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 20px;">
                         🔒 Secured by Stripe. You will not be billed during your 30-day forensic trial pipeline.
@@ -240,7 +246,7 @@
                 <div class="verify-badge">📩</div>
                 <h2 style="margin-bottom: 10px;">Check Your Inbox</h2>
                 <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">
-                    We've sent a verification link to confirm your account ownership before completing payment setup.
+                    We've sent a verification code to confirm your account ownership before completing payment setup.
                 </p>
 
                 <div class="target-email-display" id="confirmed-email-target">creator@domain.com</div>
@@ -251,14 +257,12 @@
                     </button>
                     
                     <div style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
-                        <button type="button" class="secondary-btn" onclick="resendVerificationEmail()">Resend Email</button>
+                        <button type="button" class="secondary-btn" id="resend-btn" onclick="resendVerificationEmail()">Resend Email</button>
                         <button type="button" class="secondary-btn" onclick="editEmailAddress()">Edit Email</button>
                     </div>
                 </div>
 
-                <p id="resend-status-msg" style="font-size: 11px; color: var(--brand-accent); margin-top: 15px; display: none;">
-                    ✓ Fresh verification code sent to your inbox.
-                </p>
+                <p id="resend-status-msg" style="font-size: 11px; color: var(--brand-accent); margin-top: 15px; display: none;"></p>
             </div>
         </div>
 
@@ -294,11 +298,14 @@
     </div>
 
     <script>
+        const WORKER_URL = "https://verify-email.kzinyemb.workers.dev/";
+
         const stripePaymentLinks = {
             "Creator Studio Pro Suite": "https://buy.stripe.com/test_dRm7sM17wa9wcil8h3bo408" 
         };
 
         let activePlanName = "Creator Studio Pro Suite";
+        let currentEmail = "";
 
         window.onload = function() {
             let planPrice = "$29.00";
@@ -317,38 +324,91 @@
             document.getElementById('billing-timeline-disclosure').innerHTML = `After your 30-day forensic sandbox trial ends on <b>${genericFormattedDate}</b>, your verified payment vehicle will automatically clear a standard platform renewal step of <b>${planPrice}${structuralInterval}</b> unless paused via billing dashboards.`;
         };
 
-        // Form Submit: Triggers Email Verification View
-        document.getElementById('payment-form').onsubmit = function(e) {
+        // Helper to trigger Worker request
+        async function sendVerificationApi(email) {
+            const code = Math.floor(100000 + Math.random() * 900000).toString();
+            
+            const response = await fetch(WORKER_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: email, code: code })
+            });
+
+            if (!response.ok) {
+                const errData = await response.json();
+                throw new Error(errData.error || "Failed to dispatch verification email.");
+            }
+
+            return await response.json();
+        }
+
+        // Form Submit: Triggers Cloudflare Worker API & View Switch
+        document.getElementById('payment-form').onsubmit = async function(e) {
             e.preventDefault();
-            const userEmail = document.getElementById('user-email-input').value.trim();
+            currentEmail = document.getElementById('user-email-input').value.trim();
+            const submitBtn = document.getElementById('submit-btn');
 
-            if (!userEmail) return;
+            if (!currentEmail) return;
 
-            // Set email in verification view
-            document.getElementById('confirmed-email-target').innerText = userEmail;
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Sending Verification...";
 
-            // Toggle Panel States
-            document.getElementById('checkout-form-step').style.display = 'none';
-            document.getElementById('verification-step').style.display = 'flex';
+            try {
+                await sendVerificationApi(currentEmail);
+
+                // Set email in verification view
+                document.getElementById('confirmed-email-target').innerText = currentEmail;
+
+                // Toggle Panel States
+                document.getElementById('checkout-form-step').style.display = 'none';
+                document.getElementById('verification-step').style.display = 'flex';
+            } catch (err) {
+                alert("Error sending verification email: " + err.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Continue to Secure Setup";
+            }
         };
 
-        // Redirects to Stripe Checkout once verified
+        // Redirects to Stripe Checkout once verified (pre-filling email)
         function proceedToStripeCheckout() {
-            const targetCheckoutUrl = stripePaymentLinks[activePlanName];
+            let targetCheckoutUrl = stripePaymentLinks[activePlanName];
             
             if (!targetCheckoutUrl) {
                 alert("Configuration update required: Missing link array pairing parameters.");
                 return;
             }
 
+            // Append prefilled email parameter to Stripe link if present
+            if (currentEmail) {
+                const separator = targetCheckoutUrl.includes('?') ? '&' : '?';
+                targetCheckoutUrl += `${separator}prefilled_email=${encodeURIComponent(currentEmail)}`;
+            }
+
             window.location.href = targetCheckoutUrl;
         }
 
         // Resend Verification Email Action
-        function resendVerificationEmail() {
+        async function resendVerificationEmail() {
             const msg = document.getElementById('resend-status-msg');
+            const resendBtn = document.getElementById('resend-btn');
+
+            resendBtn.disabled = true;
+            msg.style.color = "var(--text-muted)";
+            msg.innerText = "Sending fresh code...";
             msg.style.display = 'block';
-            setTimeout(() => { msg.style.display = 'none'; }, 4000);
+
+            try {
+                await sendVerificationApi(currentEmail);
+                msg.style.color = "var(--brand-accent)";
+                msg.innerText = "✓ Fresh verification code sent to your inbox.";
+            } catch (err) {
+                msg.style.color = "#e11d48";
+                msg.innerText = "Failed to resend code. Please try again.";
+            } finally {
+                resendBtn.disabled = false;
+                setTimeout(() => { msg.style.display = 'none'; }, 4000);
+            }
         }
 
         // Return to Form to edit email
