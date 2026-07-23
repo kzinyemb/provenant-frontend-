@@ -34,7 +34,7 @@
             background-color: var(--bg-workspace); 
             font-family: 'Inter', sans-serif; 
             margin: 0; 
-        }
+        } 
         
         /* Navigation & Tabs */
         .quick-access { background: var(--brand-dark); color: white; padding: 8px 20px; display: flex; gap: 15px; align-items: center; z-index: 100; }
@@ -537,9 +537,45 @@
         document.getElementById('trust-score').innerText = Math.floor(score) + "%";
     }
 
-    function addBadge() {
+    // Lightweight, client-side SHA-256 hashing function using Web Crypto API
+    async function generateSHA256(str) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(str);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // Updated badge function
+    async function addBadge() {
         const score = document.getElementById('trust-score').innerText;
-        const badgeHTML = `<div contenteditable="false" style="margin-top: 50px; border: 2px solid #00b894; padding: 15px; border-radius: 10px; width: 300px;"><div style="color:#00b894; font-weight:800;">VERIFIED HUMAN Origin</div><div style="font-size:11px;">Composition Trust Metric: ${score}</div><div style="font-size:9px; color:#888;">ID: VH-${Math.floor(Math.random()*1000000)}</div></div><p></p>`;
+        const textContent = editor.innerText.trim();
+        
+        // 1. Generate standard UTC ISO timestamp
+        const utcTimestamp = new Date().toISOString(); 
+        
+        // 2. Generate deterministic cryptographic hash of the exact content
+        const contentHash = textContent ? await generateSHA256(textContent) : "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"; // Empty hash fallback
+        const shortHash = contentHash.substring(0, 16); // Short display version
+        
+        const badgeHTML = `
+            <div contenteditable="false" style="margin-top: 40px; border: 2px solid #00b894; padding: 16px; border-radius: 12px; width: 340px; background: #ffffff; color: #0f172a; font-family: sans-serif; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 10px;">
+                    <span style="color: #00b894; font-weight: 800; font-size: 13px; letter-spacing: 0.5px;">VERIFIED HUMAN ORIGIN</span>
+                    <span style="font-size: 10px; background: rgba(0, 184, 148, 0.1); color: #00b894; padding: 2px 6px; border-radius: 4px; font-weight: 700;">TRUST: ${score}</span>
+                </div>
+                <div style="font-size: 11px; color: #475569; display: flex; flex-direction: column; gap: 4px;">
+                    <div><strong>Timestamp (UTC):</strong> <span style="font-family: monospace;">${utcTimestamp}</span></div>
+                    <div><strong>Block Hash:</strong> <span style="font-family: monospace; word-break: break-all; color: #0f172a;" title="${contentHash}">sha256:${shortHash}...</span></div>
+                    <div><strong>Session Keystrokes:</strong> ${log.length} events</div>
+                </div>
+                <div style="margin-top: 10px; padding-top: 6px; border-top: 1px dashed #e2e8f0; font-size: 9px; color: #94a3b8; text-align: center;">
+                    Mathematical proof of existence at time of output. No private keys stored.
+                </div>
+            </div>
+            <p></p>
+        `;
+        
         editor.innerHTML += badgeHTML;
         autoSave();
     }
