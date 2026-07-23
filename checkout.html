@@ -14,7 +14,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure Checkout | Provenant™ Forensics</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;500&display=swap">
     
     <style>
         :root {
@@ -23,6 +23,7 @@
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --brand-writer: #3b82f6;
+            --brand-border: rgba(255, 255, 255, 0.1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -89,6 +90,14 @@
 
         input:focus { border-color: var(--brand-writer); }
 
+        .code-input {
+            font-family: 'Fira Code', monospace;
+            font-size: 22px;
+            letter-spacing: 8px;
+            text-align: center;
+            padding: 12px;
+        }
+
         .secure-btn {
             width: 100%;
             background: var(--brand-writer);
@@ -105,6 +114,63 @@
         }
 
         .secure-btn:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5); }
+
+        .secure-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .secondary-btn {
+            background: transparent;
+            border: 1px solid var(--brand-border);
+            color: var(--text-muted);
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .secondary-btn:hover {
+            border-color: #f8fafc;
+            color: #f8fafc;
+        }
+
+        /* Email Verification Pending State Panel */
+        .verification-panel {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .verify-badge {
+            width: 64px;
+            height: 64px;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .target-email-display {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--brand-border);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            color: #38bdf8;
+            margin: 12px 0 20px 0;
+            word-break: break-all;
+        }
 
         /* Right Side: Order Summary */
         .order-summary {
@@ -151,23 +217,60 @@
 
         <!-- MAIN ACCOUNT INPUT LAYOUT FORM -->
         <div class="payment-form" id="main-payment-pane">
-            <h2>Account Verification</h2>
-            <form id="payment-form">
-                <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="email" placeholder="name@domain.com" required>
-                </div>
-                <div class="form-group">
-                    <label>Full Name</label>
-                    <input type="text" placeholder="First and Last Name" required>
-                </div>
-                
-                <button type="submit" class="secure-btn">Continue to Secure Setup</button>
-                
-                <p style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 20px;">
-                    🔒 Secured by Stripe. You will not be billed during your 30-day forensic trial pipeline.
+            <!-- STEP 1: INITIAL SIGNUP FORM -->
+            <div id="checkout-form-step">
+                <h2>Account Verification</h2>
+                <form id="payment-form">
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="user-email-input" placeholder="name@domain.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="user-name-input" placeholder="First and Last Name" required>
+                    </div>
+                    
+                    <button type="submit" id="submit-btn" class="secure-btn">Continue to Secure Setup</button>
+                    
+                    <p style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 20px;">
+                        🔒 Secured by Stripe. You will not be billed during your 30-day forensic trial pipeline.
+                    </p>
+                </form>
+            </div>
+
+            <!-- STEP 2: EMAIL VERIFICATION PENDING STATE -->
+            <div id="verification-step" class="verification-panel">
+                <div class="verify-badge">📩</div>
+                <h2 style="margin-bottom: 10px;">Check Your Inbox</h2>
+                <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">
+                    Enter the 6-digit verification code sent to your email to continue.
                 </p>
-            </form>
+
+                <div class="target-email-display" id="confirmed-email-target">name@domain.com</div>
+
+                <!-- VERIFICATION CODE FORM -->
+                <form id="code-verification-form" style="width: 100%;">
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label>6-Digit Verification Code</label>
+                        <input type="text" id="verification-code-input" class="code-input" maxlength="6" placeholder="123456" required autocomplete="off">
+                    </div>
+
+                    <p id="code-error-msg" style="font-size: 12px; color: #e11d48; margin-bottom: 10px; display: none;">
+                        ❌ Invalid verification code. Please try again.
+                    </p>
+
+                    <button type="submit" class="secure-btn" style="margin-top: 5px;">
+                        Verify & Proceed to Payment
+                    </button>
+                </form>
+                    
+                <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                    <button type="button" class="secondary-btn" id="resend-btn" onclick="resendVerificationEmail()">Resend Email</button>
+                    <button type="button" class="secondary-btn" onclick="editEmailAddress()">Edit Email</button>
+                </div>
+
+                <p id="resend-status-msg" style="font-size: 11px; color: var(--brand-accent); margin-top: 15px; display: none;"></p>
+            </div>
         </div>
 
         <!-- MANIFEST BASKET PRICING MODULE -->
@@ -199,6 +302,8 @@
     </div>
 
     <script>
+        const WORKER_URL = "https://verify-email.kzinyemb.workers.dev/";
+
         const stripePaymentLinks = {
             "Writers Tier": "https://buy.stripe.com/test_dRm14o03s81ocilcxjbo402",
             "Editorial Enterprise Suite": "https://buy.stripe.com/test_14AaEY17w3L8dmpcxjbo401",
@@ -209,6 +314,8 @@
         const ENTERPRISE_SECRET_PASSCODE = "NEWSROOM2026"; 
 
         let activePlanName = "Writers Tier";
+        let currentEmail = "";
+        let activeCode = ""; // Stores generated code for validation
 
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -254,8 +361,8 @@
                 document.getElementById('billing-timeline-disclosure').innerHTML = "Our engineering implementation team will email you a formal corporate pricing proposal loop based directly on your campus enrollment matrix.";
                 
                 document.getElementById('payment-form').style.opacity = "0.5";
-                document.querySelector('.secure-btn').innerText = "Contact Sales Pending";
-                document.querySelector('.secure-btn').disabled = true;
+                document.querySelector('#submit-btn').innerText = "Contact Sales Pending";
+                document.querySelector('#submit-btn').disabled = true;
             } else {
                 document.getElementById('summary-base-price').innerText = planPrice;
                 document.getElementById('summary-discount-price').innerText = "- " + planPrice;
@@ -287,16 +394,111 @@
             }
         }
 
-        document.getElementById('payment-form').onsubmit = function(e) {
-            e.preventDefault();
-            const targetCheckoutUrl = stripePaymentLinks[activePlanName];
+        // Helper to trigger Cloudflare Worker API
+        async function sendVerificationApi(email) {
+            activeCode = Math.floor(100000 + Math.random() * 900000).toString();
             
-            if (!targetCheckoutUrl) {
-                alert("Configuration update required: Missing link array pairing parameter string logic matches.");
-                return;
+            const response = await fetch(WORKER_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: email, code: activeCode })
+            });
+
+            if (!response.ok) {
+                const errData = await response.json();
+                throw new Error(errData.error || "Failed to dispatch verification email.");
             }
-            window.location.href = targetCheckoutUrl;
+
+            return await response.json();
+        }
+
+        // Form 1 Submit: Dispatches Email via Worker
+        document.getElementById('payment-form').onsubmit = async function(e) {
+            e.preventDefault();
+            currentEmail = document.getElementById('user-email-input').value.trim();
+            const submitBtn = document.getElementById('submit-btn');
+
+            if (!currentEmail) return;
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Sending Verification Code...";
+
+            try {
+                await sendVerificationApi(currentEmail);
+
+                // Set email in verification view
+                document.getElementById('confirmed-email-target').innerText = currentEmail;
+
+                // Reset code input field and error messages
+                document.getElementById('verification-code-input').value = '';
+                document.getElementById('code-error-msg').style.display = 'none';
+
+                // Switch Panels
+                document.getElementById('checkout-form-step').style.display = 'none';
+                document.getElementById('verification-step').style.display = 'flex';
+            } catch (err) {
+                alert("Error sending verification email: " + err.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Continue to Secure Setup";
+            }
         };
+
+        // Form 2 Submit: Validates Code & Redirects to Stripe
+        document.getElementById('code-verification-form').onsubmit = function(e) {
+            e.preventDefault();
+            const enteredCode = document.getElementById('verification-code-input').value.trim();
+            const errorMsg = document.getElementById('code-error-msg');
+
+            if (enteredCode === activeCode) {
+                errorMsg.style.display = 'none';
+                
+                let targetCheckoutUrl = stripePaymentLinks[activePlanName];
+                if (!targetCheckoutUrl) {
+                    alert("Configuration update required: Missing link array pairing parameter string logic matches.");
+                    return;
+                }
+
+                // Append prefilled email parameter to Stripe link
+                const separator = targetCheckoutUrl.includes('?') ? '&' : '?';
+                targetCheckoutUrl += `${separator}prefilled_email=${encodeURIComponent(currentEmail)}`;
+
+                // Redirect to Stripe
+                window.location.href = targetCheckoutUrl;
+            } else {
+                errorMsg.style.display = 'block';
+            }
+        };
+
+        // Resend Verification Email Action
+        async function resendVerificationEmail() {
+            const msg = document.getElementById('resend-status-msg');
+            const resendBtn = document.getElementById('resend-btn');
+
+            resendBtn.disabled = true;
+            msg.style.color = "var(--text-muted)";
+            msg.innerText = "Sending fresh code...";
+            msg.style.display = 'block';
+
+            try {
+                await sendVerificationApi(currentEmail);
+                msg.style.color = "var(--brand-accent)";
+                msg.innerText = "✓ Fresh verification code sent to your inbox.";
+                document.getElementById('code-error-msg').style.display = 'none';
+            } catch (err) {
+                msg.style.color = "#e11d48";
+                msg.innerText = "Failed to resend code. Please try again.";
+            } finally {
+                resendBtn.disabled = false;
+                setTimeout(() => { msg.style.display = 'none'; }, 4000);
+            }
+        }
+
+        // Return to Form to edit email
+        function editEmailAddress() {
+            document.getElementById('verification-step').style.display = 'none';
+            document.getElementById('checkout-form-step').style.display = 'block';
+        }
     </script>
 </body>
 </html>
