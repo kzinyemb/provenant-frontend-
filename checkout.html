@@ -124,10 +124,10 @@
     <div class="checkout-container" id="container">
         <!-- Main Form -->
         <div class="payment-form" id="payment-form-pane">
-            <h2>Complete Editorial Enterprise Setup</h2>
+            <h2 id="form-heading">Complete Setup</h2>
             <form id="pay-form">
-                <input type="email" placeholder="Manager Email Address" required>
-                <input type="text" placeholder="Manager Full Name" required>
+                <input type="email" id="email-field" placeholder="Email Address" required>
+                <input type="text" id="name-field" placeholder="Full Name" required>
                 
                 <label class="legal-check">
                     <input type="checkbox" required>
@@ -171,6 +171,21 @@
             const plan = decodeURIComponent(rawPlan);
             const displayPrice = planPrices[plan] || "$89.00/mo";
             
+            // Align Heading Title dynamically with selected product plan
+            document.getElementById('form-heading').innerText = `Complete ${plan} Setup`;
+
+            // Adjust form input placeholders depending on individual vs group suite plans
+            const emailField = document.getElementById('email-field');
+            const nameField = document.getElementById('name-field');
+            if (plan.includes('Enterprise') || plan.includes('Academic')) {
+                emailField.placeholder = "Manager Email Address";
+                nameField.placeholder = "Manager Full Name";
+            } else {
+                emailField.placeholder = "User Email Address";
+                nameField.placeholder = "Full Name";
+            }
+
+            // Populate Order Summary pane
             document.getElementById('summary-content').innerHTML = `
                 <div class="summary-item">
                     <div style="font-weight: 700; color: #fff;">${plan}</div>
@@ -193,10 +208,10 @@
             const rawPlan = params.get('plan') || "Editorial Enterprise Suite";
             const plan = decodeURIComponent(rawPlan);
 
-            const emailInput = e.target.querySelector('input[type="email"]').value;
+            const emailInput = document.getElementById('email-field').value;
             let targetUrl = stripeLinks[plan] || stripeLinks["Editorial Enterprise Suite"];
             
-            // Append prefilled manager email to Stripe URL
+            // Append prefilled manager/user email to Stripe URL
             const separator = targetUrl.includes('?') ? '&' : '?';
             targetUrl += `${separator}prefilled_email=${encodeURIComponent(emailInput)}`;
 
