@@ -42,6 +42,16 @@
         .workspace { flex-grow: 1; overflow: auto; display: flex; flex-direction: column; align-items: center; padding: 40px; position: relative; }
         .paper { background: white; width: 8.5in; min-height: 11in; padding: 1in; box-shadow: var(--card-shadow); outline: none; position: relative; line-height: 1.15; transition: 0.3s; }
         
+        /* Authors Section Header */
+        .author-section { margin-bottom: 25px; border-bottom: 2px solid #edebe9; padding-bottom: 15px; }
+        .author-title { font-size: 12px; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
+        .author-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+        .author-tag { background: #e2e8f0; color: #0f172a; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+        .author-remove { cursor: pointer; color: #ef4444; font-weight: bold; }
+        .author-input-row { display: flex; gap: 8px; margin-top: 8px; }
+        .author-input { font-size: 12px; padding: 6px 12px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; width: 220px; }
+        .author-add-btn { background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; }
+
         /* Floating Badge Button */
         .badge-trigger { position: fixed; top: 160px; right: 40px; z-index: 10; display: flex; flex-direction: column; gap: 10px; }
 
@@ -128,7 +138,20 @@
 </div>
 
 <div class="workspace">
-    <div id="word-view" class="paper" contenteditable="true" oninput="handleInput()">Start composing text or narrative content loops...</div>
+    <div class="paper">
+        <!-- Authors Section -->
+        <div class="author-section" contenteditable="false">
+            <div class="author-title">Document Authors / Writing Team</div>
+            <div class="author-list" id="author-container"></div>
+            <div class="author-input-row">
+                <input type="text" id="new-author-input" class="author-input" placeholder="Enter author name...">
+                <button class="author-add-btn" onclick="addAuthor()">+ Add Author</button>
+            </div>
+        </div>
+
+        <!-- Editable Writing Canvas -->
+        <div id="word-view" contenteditable="true" oninput="handleInput()" style="outline:none; min-height:8in;">Start composing text or narrative content loops...</div>
+    </div>
     
     <div id="data-view-container" style="display:none; width: 100%; max-width: 800px; background: white; padding: 40px; border-radius: 15px;">
         <h2>Velocity Forensics</h2>
@@ -154,13 +177,51 @@
 
 <script>
     let log = [], startTime = null, chartInstance = null;
+    let authors = [];
     const editor = document.getElementById('word-view');
 
     window.onload = () => {
         const savedText = localStorage.getItem('hv_content');
         if (savedText) editor.innerHTML = savedText;
+        
+        const savedAuthors = localStorage.getItem('hv_authors');
+        if (savedAuthors) {
+            authors = JSON.parse(savedAuthors);
+        } else {
+            authors = ["Primary Author"];
+        }
+        renderAuthors();
         updateStats();
     };
+
+    /* Author Management */
+    function renderAuthors() {
+        const container = document.getElementById('author-container');
+        container.innerHTML = '';
+        authors.forEach((author, index) => {
+            const tag = document.createElement('div');
+            tag.className = 'author-tag';
+            tag.innerHTML = `👤 ${author} <span class="author-remove" onclick="removeAuthor(${index})">×</span>`;
+            container.appendChild(tag);
+        });
+    }
+
+    function addAuthor() {
+        const input = document.getElementById('new-author-input');
+        const name = input.value.trim();
+        if (name) {
+            authors.push(name);
+            input.value = '';
+            renderAuthors();
+            localStorage.setItem('hv_authors', JSON.stringify(authors));
+        }
+    }
+
+    function removeAuthor(index) {
+        authors.splice(index, 1);
+        renderAuthors();
+        localStorage.setItem('hv_authors', JSON.stringify(authors));
+    }
 
     function handleInput() { updateStats(); autoSave(); calculateTrustScore(); }
     
@@ -184,9 +245,28 @@
         document.getElementById('trust-score').innerText = Math.floor(score) + "%";
     }
 
+    /* Updated Badge Generation with Author List & Timestamp on Top */
     function addBadge() {
         const score = document.getElementById('trust-score').innerText;
-        const badgeHTML = `<div contenteditable="false" style="margin-top: 50px; border: 2px solid #00b894; padding: 15px; border-radius: 10px; width: 300px;"><div style="color:#00b894; font-weight:800;">VERIFIED HUMAN Origin</div><div style="font-size:11px;">Composition Trust Metric: ${score}</div><div style="font-size:9px; color:#888;">ID: VH-${Math.floor(Math.random()*1000000)}</div></div><p></p>`;
+        const now = new Date();
+        const timestamp = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + 
+                          ' at ' + 
+                          now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        
+        const authorListStr = authors.length > 0 ? authors.join(', ') : 'Unspecified Author';
+
+        const badgeHTML = `
+            <div contenteditable="false" style="margin-top: 50px; border: 2px solid #00b894; padding: 18px; border-radius: 12px; width: 340px; background: #f8fafc; font-family: 'Inter', sans-serif;">
+                <div style="font-size: 11px; color: #475569; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px; margin-bottom: 10px;">
+                    <div><strong>Author(s):</strong> ${authorListStr}</div>
+                    <div><strong>Certified On:</strong> ${timestamp}</div>
+                </div>
+                <div style="color:#00b894; font-weight:800; font-size: 14px;">VERIFIED HUMAN Origin</div>
+                <div style="font-size:12px; color: #0f172a; font-weight: 600; margin-top: 4px;">Composition Trust Metric: ${score}</div>
+                <div style="font-size:9px; color:#888; margin-top: 6px;">ID: VH-${Math.floor(Math.random()*1000000)}</div>
+            </div>
+            <p></p>
+        `;
         editor.innerHTML += badgeHTML;
         autoSave();
     }
