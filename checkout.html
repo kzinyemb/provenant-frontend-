@@ -193,7 +193,13 @@
             const rawPlan = params.get('plan') || "Editorial Enterprise Suite";
             const plan = decodeURIComponent(rawPlan);
 
-            const targetUrl = stripeLinks[plan] || stripeLinks["Editorial Enterprise Suite"];
+            const emailInput = e.target.querySelector('input[type="email"]').value;
+            let targetUrl = stripeLinks[plan] || stripeLinks["Editorial Enterprise Suite"];
+            
+            // Append prefilled manager email to Stripe URL
+            const separator = targetUrl.includes('?') ? '&' : '?';
+            targetUrl += `${separator}prefilled_email=${encodeURIComponent(emailInput)}`;
+
             window.location.href = targetUrl;
         };
     </script>
