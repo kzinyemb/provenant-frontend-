@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Newsroom Authorization | Provenant™</title>
+    <title>Team Authorization | Provenant™</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap">
     <style>
         :root {
@@ -158,7 +158,7 @@
     <!-- Manager Post-Checkout Success Banner -->
     <div class="key-banner" id="manager-success-banner">
         <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 5px;">🎉 Subscription Activated!</h3>
-        <p style="color: var(--text-muted); font-size: 13px;">Here is your Master Newsroom License Token. Share this code with your writing team to give them access to the writing pad.</p>
+        <p style="color: var(--text-muted); font-size: 13px;">Here is your Master Editorial License Token. Share this code with your writing and research teams to give them access to the writing pad.</p>
         <div>
             <div class="key-badge">
                 <span id="token-text">NEWSROOM2026</span>
@@ -169,7 +169,7 @@
 
     <!-- Authorization Screen -->
     <div class="auth-card" id="auth-gate">
-        <h2>Newsroom Authorization</h2>
+        <h2>Editorial Enterprise Authorization</h2>
         <p>This high-volume tier requires key validation.</p>
         
         <div class="form-row">
@@ -182,7 +182,7 @@
             <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px;">
                 Subscribed but missing your team key?
             </p>
-            <a href="mailto:provenantforensics@outlook.com?subject=Newsroom%20License%20Key%20Retrieval%20Request&body=Hello%20Provenant%20Team,%0A%0AI%20recently%20subscribed%20to%20the%20Editorial%20Enterprise%20Suite%20and%20need%20my%20Newsroom%20Authorization%20Token.%0A%0AAccount%20Email:%20%0AOrganization%20Name:%20" 
+            <a href="mailto:provenantforensics@outlook.com?subject=Editorial%20Enterprise%20License%20Key%20Retrieval%20Request&body=Hello%20Provenant%20Team,%0A%0AI%20recently%20subscribed%20to%20the%20Editorial%20Enterprise%20Suite%20and%20need%20my%20Enterprise%20Authorization%20Token.%0A%0AAccount%20Email:%20%0AOrganization%20Name:%20" 
                style="color: var(--brand-writer); font-size: 13px; font-weight: bold; text-decoration: none;">
                 📩 Request Key Retrieval from Operations
             </a>
@@ -220,7 +220,7 @@
                 localStorage.setItem('provenant_newsroom_session', 'active');
                 window.location.href = "writingpad.html";
             } else {
-                alert("Invalid Token. Please check your newsroom license code.");
+                alert("Invalid Token. Please check your enterprise license code.");
             }
         }
 
