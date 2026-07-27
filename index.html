@@ -381,12 +381,12 @@
             <h2 style="font-size: 2rem; margin-bottom: 10px;">Explore <span id="modal-plan-name" style="color: var(--brand-writer);">Plan</span> for free</h2>
             <p style="color: var(--text-muted); margin-bottom: 30px;">Get the apps, security, and forensic storage you need to accomplish your goals.</p>
             <div style="display: flex; gap: 15px; margin-bottom: 40px;">
-                <button class="action-btn" id="modal-primary-action" style="background: var(--brand-writer); color: white;" onclick="location.href='checkout.html'">Start your free trial</button>
-                <button class="action-btn" id="modal-secondary-action" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.1);" onclick="location.href='checkout.html'">Buy now</button>
+                <button class="action-btn" id="modal-primary-action" style="background: var(--brand-writer); color: white;" onclick="proceedToCheckout()">Start your free trial</button>
+                <button class="action-btn" id="modal-secondary-action" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.1);" onclick="proceedToCheckout()">Buy now</button>
             </div>
             <div style="text-align: left; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; font-size: 13px; color: var(--text-muted);">
                 <p style="color: white; font-weight: bold; margin-bottom: 10px;">It’s time to sign up for free. You can cancel anytime.</p>
-                <p>Note that you'll be asked to provide a method of payment so there's no interruption in your service after 30 days. After the trial, <span id="modal-plan-desc">this plan</span> is <b id="modal-plan-price">$0.00</b>/year. Subscription can be easily canceled by turning off recurring billing.</p>
+                <p>Note that you'll be asked to provide a method of payment so there's no interruption in your service after 30 days. After the trial, <span id="modal-plan-desc">this plan</span> is <b id="modal-plan-price">$0.00</b>. Subscription can be easily canceled by turning off recurring billing.</p>
             </div>
         </div>
     </div>
@@ -438,20 +438,20 @@
             });
         }
 
-        let activeSelectedPlanForCheckout = "";
+        let activeSelectedPlanForCheckout = "Writers Tier";
 
         function openTrial(planName, planPrice) {
-            activeSelectedPlanForCheckout = encodeURIComponent(planName);
+            activeSelectedPlanForCheckout = planName;
             
-            // Redirect to standard checkout for all plans, now that enterprise form is removed
             document.getElementById('modal-plan-name').innerText = planName;
             document.getElementById('modal-plan-desc').innerText = planName;
             document.getElementById('modal-plan-price').innerText = planPrice;
             
-            document.getElementById('modal-primary-action').setAttribute('onclick', `location.href='checkout.html?plan=${activeSelectedPlanForCheckout}'`);
-            document.getElementById('modal-secondary-action').setAttribute('onclick', `location.href='checkout.html?plan=${activeSelectedPlanForCheckout}'`);
-            
             document.getElementById('trial-modal').style.display = 'flex';
+        }
+
+        function proceedToCheckout() {
+            window.location.href = `checkout.html?plan=${encodeURIComponent(activeSelectedPlanForCheckout)}`;
         }
 
         function closeTrial() {
