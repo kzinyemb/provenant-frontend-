@@ -1,21 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6B0NP15RYC"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-6B0NP15RYC');
-    </script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure Checkout | Provenant™ Forensics</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Fira+Code:wght@400;500&display=swap">
-    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap">
     <style>
         :root {
             --brand-accent: #00b894;
@@ -23,7 +12,6 @@
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --brand-writer: #3b82f6;
-            --brand-border: rgba(255, 255, 255, 0.1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -51,160 +39,12 @@
             backdrop-filter: blur(10px);
         }
 
-        /* Newsroom Secure Lock Panel */
-        #newsroom-lock-screen {
-            grid-column: span 2;
-            background: #1e293b;
-            padding: 60px;
-            text-align: center;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            animation: fadeIn 0.3s ease;
-        }
-
-        /* Left Side: Payment Form */
-        .payment-form {
-            padding: 60px;
-            background: #1e293b;
-        }
-
+        /* Payment Forms */
+        .payment-form { padding: 60px; background: #1e293b; }
         .payment-form h2 { margin-bottom: 30px; font-size: 1.8rem; font-weight: 900; }
-
         .form-group { margin-bottom: 20px; }
-        label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
-        
-        input {
-            width: 100%;
-            padding: 14px;
-            background: rgba(15, 23, 42, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            color: white;
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.2s ease;
-        }
-
-        input:focus { border-color: var(--brand-writer); }
-
-        .code-input {
-            font-family: 'Fira Code', monospace;
-            font-size: 22px;
-            letter-spacing: 8px;
-            text-align: center;
-            padding: 12px;
-        }
-
-        .secure-btn {
-            width: 100%;
-            background: var(--brand-writer);
-            color: white;
-            border: none;
-            padding: 16px;
-            border-radius: 12px;
-            font-weight: 800;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: 0.3s;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
-
-        .secure-btn:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5); }
-
-        .secure-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .secondary-btn {
-            background: transparent;
-            border: 1px solid var(--brand-border);
-            color: var(--text-muted);
-            padding: 12px 20px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .secondary-btn:hover {
-            border-color: #f8fafc;
-            color: #f8fafc;
-        }
-
-        /* Email Verification Pending State Panel */
-        .verification-panel {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-
-        .verify-badge {
-            width: 64px;
-            height: 64px;
-            background: rgba(56, 189, 248, 0.1);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            margin-bottom: 20px;
-        }
-
-        .target-email-display {
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid var(--brand-border);
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-family: 'Fira Code', monospace;
-            font-size: 13px;
-            color: #38bdf8;
-            margin: 12px 0 20px 0;
-            word-break: break-all;
-        }
-
-        /* Right Side: Order Summary */
-        .order-summary {
-            padding: 60px;
-            background: rgba(255, 255, 255, 0.02);
-            border-left: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .summary-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .total { font-size: 1.5rem; font-weight: 800; color: var(--brand-accent); margin-top: 20px; }
-
-        @media (max-width: 850px) {
-            .checkout-container { grid-template-columns: 1fr; }
-            #newsroom-lock-screen { grid-column: span 1; padding: 40px; }
-            .order-summary { border-left: none; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding: 40px; order: -1; }
-            .payment-form { padding: 40px; }
-        }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
-</head>
-<body>
-
-    <div class="checkout-container">
-        
         <!-- SECURED INTERCEPTION MODAL GATEWAY -->
-        <div id="newsroom-lock-screen">
+        <div id="newsroom-lock-screen" style="display: none;">
             <span style="font-size: 3rem;">🏢</span>
             <h2 style="font-weight: 900; font-size: 2rem;">Newsroom Authorization Required</h2>
             <p style="color: var(--text-muted); font-size: 14px; max-width: 480px; margin: 0 auto;">
@@ -217,233 +57,23 @@
 
         <!-- MAIN ACCOUNT INPUT LAYOUT FORM -->
         <div class="payment-form" id="main-payment-pane">
-            <!-- STEP 1: INITIAL SIGNUP FORM -->
-            <div id="checkout-form-step">
-                <h2>Account Verification</h2>
-                <form id="payment-form">
-                    <div class="form-group">
-                        <label>Email Address</label>
-                        <input type="email" id="user-email-input" placeholder="name@domain.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Full Name</label>
-                        <input type="text" id="user-name-input" placeholder="First and Last Name" required>
-                    </div>
-                    
-                    <button type="submit" id="submit-btn" class="secure-btn">Continue to Secure Setup</button>
-                    
-                    <p style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 20px;">
-                        🔒 Secured by Stripe. You will not be billed during your 30-day forensic trial pipeline.
-                    </p>
-                </form>
-            </div>
-
-            <!-- STEP 2: EMAIL VERIFICATION PENDING STATE -->
-            <div id="verification-step" class="verification-panel">
-                <div class="verify-badge">📩</div>
-                <h2 style="margin-bottom: 10px;">Check Your Inbox</h2>
-                <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">
-                    Enter the 6-digit verification code sent to your email to continue.
-                </p>
-
-                <div class="target-email-display" id="confirmed-email-target">name@domain.com</div>
-
-                <!-- VERIFICATION CODE FORM -->
-                <form id="code-verification-form" style="width: 100%;">
-                    <div class="form-group" style="margin-bottom: 10px;">
-                        <label>6-Digit Verification Code</label>
-                        <input type="text" id="verification-code-input" class="code-input" maxlength="6" placeholder="123456" required autocomplete="off">
-                    </div>
-
-                    <p id="code-error-msg" style="font-size: 12px; color: #e11d48; margin-bottom: 10px; display: none;">
-                        ❌ Invalid verification code. Please try again.
-                    </p>
-
-                    <button type="submit" class="secure-btn" style="margin-top: 5px;">
-                        Verify & Proceed to Payment
-                    </button>
-                </form>
-                    
-                <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                    <button type="button" class="secondary-btn" id="resend-btn" onclick="resendVerificationEmail()">Resend Email</button>
-                    <button type="button" class="secondary-btn" onclick="editEmailAddress()">Edit Email</button>
+            <h2 id="checkout-title">Complete Your Sandbox Setup</h2>
+            <form id="payment-form">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="name@domain.com" required>
                 </div>
-
-                <p id="resend-status-msg" style="font-size: 11px; color: var(--brand-accent); margin-top: 15px; display: none;"></p>
-            </div>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" placeholder="First and Last Name" required>
+                </div>
+                <button type="submit" class="secure-btn">Continue to Secure Setup</button>
+            </form>
         </div>
 
-        <!-- MANIFEST BASKET PRICING MODULE -->
+        <!-- Summary -->
         <div class="order-summary" id="main-summary-pane">
             <h3>Order Summary</h3>
-            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 40px;">Review your selection</p>
-            
-            <div class="summary-item">
-                <div>
-                    <div id="summary-plan-name" style="font-weight: 700;">Provenant™ Workspace</div>
-                    <div id="summary-billing-interval" style="font-size: 12px; color: var(--text-muted);">Monthly Subscription Plan</div>
-                </div>
-                <div id="summary-base-price">$14.99</div>
-            </div>
-
-            <div class="summary-item">
-                <div>30-Day Trial Credit</div>
-                <div id="summary-discount-price" style="color: var(--brand-accent);">- $14.99</div>
-            </div>
-
-            <div class="total">
-                <span style="font-size: 14px; color: white;">Due Today:</span> $0.00
-            </div>
-
-            <div style="margin-top: 40px; font-size: 12px; color: var(--text-muted); line-height: 1.6;">
-                <p id="billing-timeline-disclosure">After your 30-day sandbox trial ends, your payment method will execute a standard renewal charge unless canceled inside management logs.</p>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const WORKER_URL = "https://verify-email.kzinyemb.workers.dev/";
-
-        const stripePaymentLinks = {
-            "Writers Tier": "https://buy.stripe.com/test_dRm14o03s81ocilcxjbo402",
-            "Editorial Enterprise Suite": "https://buy.stripe.com/test_14AaEY17w3L8dmpcxjbo401",
-            "Academic Suite": "https://buy.stripe.com/test_bJe8wQ17w81o2HL54Rbo403"
-        };
-
-        // SHARED LICENSE GATEWAY ACCESS CODE KEY
-        const ENTERPRISE_SECRET_PASSCODE = "NEWSROOM2026"; 
-
-        let activePlanName = "Writers Tier";
-        let currentEmail = "";
-        let activeCode = ""; // Stores generated code for validation
-
-        window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const planParam = urlParams.get('plan');
-            
-            let planPrice = "$14.99";
-            let intervalLabel = "Individual Author Workspace Bundle";
-            let structuralInterval = "/mo";
-
-            if (planParam) {
-                const decodedPlan = decodeURIComponent(planParam);
-                
-                if (decodedPlan === 'Editorial Enterprise Suite') {
-                    activePlanName = "Editorial Enterprise Suite";
-                    planPrice = "$89.00";
-                    intervalLabel = "Multi-Author Base Workstation Bundle";
-                    structuralInterval = "/mo";
-
-                    // TRIPPED SECURITY ROUTE: Lock workspace presentation if Enterprise selection is parsed
-                    document.getElementById('main-payment-pane').style.display = 'none';
-                    document.getElementById('main-summary-pane').style.display = 'none';
-                    document.getElementById('newsroom-lock-screen').style.display = 'flex';
-                } else if (decodedPlan === 'Academic Suite') {
-                    activePlanName = "Academic Suite";
-                    planPrice = "$12.99";
-                    intervalLabel = "Departmental Professor Seat Plan";
-                    structuralInterval = "/prof/mo";
-                } else if (decodedPlan === 'Institutional Campus Bundle' || decodedPlan === 'Custom') {
-                    activePlanName = "Institutional Campus Bundle";
-                    planPrice = "Custom Quote";
-                    intervalLabel = "District Licensing Agreement";
-                    structuralInterval = "";
-                }
-            }
-
-            // Bind values directly onto DOM layout tracking points
-            document.getElementById('summary-plan-name').innerText = "Provenant™ " + activePlanName;
-            document.getElementById('summary-billing-interval').innerText = intervalLabel;
-            
-            if (planPrice === "Custom Quote") {
-                document.getElementById('summary-base-price').innerText = "Pending";
-                document.getElementById('summary-discount-price').innerText = "N/A";
-                document.getElementById('billing-timeline-disclosure').innerHTML = "Our engineering implementation team will email you a formal corporate pricing proposal loop based directly on your campus enrollment matrix.";
-                
-                document.getElementById('payment-form').style.opacity = "0.5";
-                document.querySelector('#submit-btn').innerText = "Contact Sales Pending";
-                document.querySelector('#submit-btn').disabled = true;
-            } else {
-                document.getElementById('summary-base-price').innerText = planPrice;
-                document.getElementById('summary-discount-price').innerText = "- " + planPrice;
-                
-                const targetTrialExpiration = new Date();
-                targetTrialExpiration.setDate(targetTrialExpiration.getDate() + 30);
-                const genericFormattedDate = targetTrialExpiration.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-                
-                document.getElementById('billing-timeline-disclosure').innerHTML = `After your 30-day forensic sandbox trial ends on <b>${genericFormattedDate}</b>, your verified payment vehicle will automatically clear a standard platform renewal step of <b>${planPrice}${structuralInterval}</b> unless paused via billing dashboards.`;
-            }
-        };
-
-        // CONDITIONAL ACCESS TOKEN EVALUATION FUNCTION
-        function verifyNewsroomToken() {
-            const userInput = document.getElementById('newsroom-passcode-input').value;
-
-            if (userInput === ENTERPRISE_SECRET_PASSCODE) {
-                // Dissolve blocker panel structures and slide purchase frames back to inline tracks
-                document.getElementById('newsroom-lock-screen').style.display = 'none';
-                document.getElementById('main-payment-pane').style.display = 'block';
-                document.getElementById('main-summary-pane').style.display = 'block';
-                
-                const checkoutContainer = document.querySelector('.checkout-container');
-                if (window.innerWidth > 850) {
-                    checkoutContainer.style.display = 'grid';
-                }
-            } else {
-                alert("⚠️ Access Refused: Invalid organizational license token key. Verify newsroom provisioning credentials.");
-            }
-        }
-
-        // Helper to trigger Cloudflare Worker API
-        async function sendVerificationApi(email) {
-            activeCode = Math.floor(100000 + Math.random() * 900000).toString();
-            
-            const response = await fetch(WORKER_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email: email, code: activeCode })
-            });
-
-            if (!response.ok) {
-                const errData = await response.json();
-                throw new Error(errData.error || "Failed to dispatch verification email.");
-            }
-
-            return await response.json();
-        }
-
-        // Form 1 Submit: Dispatches Email via Worker
-        document.getElementById('payment-form').onsubmit = async function(e) {
-            e.preventDefault();
-            currentEmail = document.getElementById('user-email-input').value.trim();
-            const submitBtn = document.getElementById('submit-btn');
-
-            if (!currentEmail) return;
-
-            submitBtn.disabled = true;
-            submitBtn.innerText = "Sending Verification Code...";
-
-            try {
-                await sendVerificationApi(currentEmail);
-
-                // Set email in verification view
-                document.getElementById('confirmed-email-target').innerText = currentEmail;
-
-                // Reset code input field and error messages
-                document.getElementById('verification-code-input').value = '';
-                document.getElementById('code-error-msg').style.display = 'none';
-
-                // Switch Panels
-                document.getElementById('checkout-form-step').style.display = 'none';
-                document.getElementById('verification-step').style.display = 'flex';
-            } catch (err) {
-                alert("Error sending verification email: " + err.message);
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerText = "Continue to Secure Setup";
-            }
-        };
-
         // Form 2 Submit: Validates Code & Redirects to Stripe
         document.getElementById('code-verification-form').onsubmit = function(e) {
             e.preventDefault();
@@ -452,53 +82,28 @@
 
             if (enteredCode === activeCode) {
                 errorMsg.style.display = 'none';
-                
-                let targetCheckoutUrl = stripePaymentLinks[activePlanName];
-                if (!targetCheckoutUrl) {
-                    alert("Configuration update required: Missing link array pairing parameter string logic matches.");
-                    return;
+
+                // IF ENTERPRISE: Trigger lock screen instead of Stripe redirect
+                if (activePlanName === "Editorial Enterprise Suite") {
+                    document.getElementById('main-payment-pane').style.display = 'none';
+                    document.getElementById('main-summary-pane').style.display = 'none';
+                    document.getElementById('newsroom-lock-screen').style.display = 'flex';
+                } else {
+                    // Standard redirect path
+                    let targetCheckoutUrl = stripePaymentLinks[activePlanName];
+                    const separator = targetCheckoutUrl.includes('?') ? '&' : '?';
+                    targetCheckoutUrl += `${separator}prefilled_email=${encodeURIComponent(currentEmail)}`;
+                    window.location.href = targetCheckoutUrl;
                 }
-
-                // Append prefilled email parameter to Stripe link
-                const separator = targetCheckoutUrl.includes('?') ? '&' : '?';
-                targetCheckoutUrl += `${separator}prefilled_email=${encodeURIComponent(currentEmail)}`;
-
-                // Redirect to Stripe
-                window.location.href = targetCheckoutUrl;
             } else {
                 errorMsg.style.display = 'block';
             }
         };
 
-        // Resend Verification Email Action
-        async function resendVerificationEmail() {
-            const msg = document.getElementById('resend-status-msg');
-            const resendBtn = document.getElementById('resend-btn');
-
-            resendBtn.disabled = true;
-            msg.style.color = "var(--text-muted)";
-            msg.innerText = "Sending fresh code...";
-            msg.style.display = 'block';
-
-            try {
-                await sendVerificationApi(currentEmail);
-                msg.style.color = "var(--brand-accent)";
-                msg.innerText = "✓ Fresh verification code sent to your inbox.";
-                document.getElementById('code-error-msg').style.display = 'none';
-            } catch (err) {
-                msg.style.color = "#e11d48";
-                msg.innerText = "Failed to resend code. Please try again.";
-            } finally {
-                resendBtn.disabled = false;
-                setTimeout(() => { msg.style.display = 'none'; }, 4000);
-            }
-        }
-
-        // Return to Form to edit email
-        function editEmailAddress() {
-            document.getElementById('verification-step').style.display = 'none';
-            document.getElementById('checkout-form-step').style.display = 'block';
-        }
+        document.getElementById('payment-form').onsubmit = function(e) {
+            e.preventDefault();
+            window.location.href = stripePaymentLinks["Writers Tier"];
+        };
     </script>
 </body>
 </html>
