@@ -22,7 +22,7 @@
         body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; background-color: var(--bg-workspace); font-family: 'Inter', sans-serif; margin: 0; }
         
         /* Navigation & Tabs */
-        .quick-access { background: var(--brand-dark); color: white; padding: 8px 20px; display: flex; gap: 15px; align-items: center; z-index: 100; }
+        .quick-access { background: var(--brand-dark); color: white; padding: 8px 20px; display: flex; gap: 15px; align-items: center; z-index: 100; flex-wrap: wrap; }
         .tabs { background: var(--brand-dark); display: flex; padding-left: 10px; z-index: 50; }
         .tab { padding: 10px 20px; color: rgba(255,255,255,0.7); cursor: pointer; font-size: 13px; font-weight: 600; border-radius: 8px 8px 0 0; }
         .tab.active { background: var(--ribbon-bg); color: var(--brand-dark); }
@@ -42,15 +42,14 @@
         .workspace { flex-grow: 1; overflow: auto; display: flex; flex-direction: column; align-items: center; padding: 40px; position: relative; }
         .paper { background: white; width: 8.5in; min-height: 11in; padding: 1in; box-shadow: var(--card-shadow); outline: none; position: relative; line-height: 1.15; transition: 0.3s; }
         
-        /* Authors Section Header */
-        .author-section { margin-bottom: 25px; border-bottom: 2px solid #edebe9; padding-bottom: 15px; }
-        .author-title { font-size: 12px; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
-        .author-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
-        .author-tag { background: #e2e8f0; color: #0f172a; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
-        .author-remove { cursor: pointer; color: #ef4444; font-weight: bold; }
-        .author-input-row { display: flex; gap: 8px; margin-top: 8px; }
-        .author-input { font-size: 12px; padding: 6px 12px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; width: 220px; }
-        .author-add-btn { background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; }
+        /* Quick Access Authors Styling */
+        .header-authors-wrapper { display: flex; align-items: center; gap: 8px; margin-left: auto; background: rgba(255,255,255,0.08); padding: 4px 10px; border-radius: 8px; }
+        .author-list { display: flex; align-items: center; gap: 6px; }
+        .author-tag { background: #334155; color: #f8fafc; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+        .author-remove { cursor: pointer; color: #f87171; font-weight: bold; margin-left: 2px; }
+        .author-input-row { display: flex; gap: 4px; }
+        .author-input { font-size: 11px; padding: 4px 8px; border: 1px solid #475569; background: #0f172a; color: #fff; border-radius: 4px; outline: none; width: 130px; }
+        .author-add-btn { background: #3b82f6; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer; }
 
         /* Floating Badge Button */
         .badge-trigger { position: fixed; top: 160px; right: 40px; z-index: 10; display: flex; flex-direction: column; gap: 10px; }
@@ -68,7 +67,17 @@
     <div onclick="location.href='index.html'" style="cursor:pointer" title="Exit Storefront Dashboard">🏠</div>
     <div onclick="manualSave()" id="save-icon" style="cursor:pointer" title="Save Now">💾</div>
     <div style="background: var(--brand-accent); padding: 2px 12px; border-radius: 50px; font-weight: 800; font-size: 11px;">Human Integrity: <span id="trust-score">0%</span></div>
-    <span id="doc-name" style="margin-left:auto; font-weight:bold; font-size:12px; cursor:pointer;" onclick="renameDoc()">Untitled Manuscript</span>
+    
+    <!-- Title & Authors Header Group -->
+    <div class="header-authors-wrapper">
+        <span id="doc-name" style="font-weight:bold; font-size:12px; cursor:pointer; color: #38bdf8;" onclick="renameDoc()">Untitled Manuscript</span>
+        <span style="color: #64748b; font-size: 12px;">|</span>
+        <div class="author-list" id="author-container"></div>
+        <div class="author-input-row">
+            <input type="text" id="new-author-input" class="author-input" placeholder="+ Author name...">
+            <button class="author-add-btn" onclick="addAuthor()">Add</button>
+        </div>
+    </div>
 </div>
 
 <div class="tabs">
@@ -139,18 +148,8 @@
 
 <div class="workspace">
     <div class="paper">
-        <!-- Authors Section -->
-        <div class="author-section" contenteditable="false">
-            <div class="author-title">Document Authors / Writing Team</div>
-            <div class="author-list" id="author-container"></div>
-            <div class="author-input-row">
-                <input type="text" id="new-author-input" class="author-input" placeholder="Enter author name...">
-                <button class="author-add-btn" onclick="addAuthor()">+ Add Author</button>
-            </div>
-        </div>
-
         <!-- Editable Writing Canvas -->
-        <div id="word-view" contenteditable="true" oninput="handleInput()" style="outline:none; min-height:8in;">Start composing text or narrative content loops...</div>
+        <div id="word-view" contenteditable="true" oninput="handleInput()" style="outline:none; min-height:8.5in;">Start composing text or narrative content loops...</div>
     </div>
     
     <div id="data-view-container" style="display:none; width: 100%; max-width: 800px; background: white; padding: 40px; border-radius: 15px;">
@@ -194,7 +193,7 @@
         updateStats();
     };
 
-    /* Author Management */
+    /* Author Management in Quick Access Header */
     function renderAuthors() {
         const container = document.getElementById('author-container');
         container.innerHTML = '';
@@ -245,7 +244,7 @@
         document.getElementById('trust-score').innerText = Math.floor(score) + "%";
     }
 
-    /* Updated Badge Generation with Author List & Timestamp on Top */
+    /* Certification Badge (Kept identical) */
     function addBadge() {
         const score = document.getElementById('trust-score').innerText;
         const now = new Date();
