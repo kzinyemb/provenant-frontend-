@@ -39,9 +39,14 @@
         .btn-big span { font-size: 20px; }
 
         /* Workspace & Paper */
-        .workspace { flex-grow: 1; overflow: auto; display: flex; flex-direction: column; align-items: center; padding: 40px; position: relative; }
-        .paper { background: white; width: 8.5in; min-height: 11in; padding: 1in; box-shadow: var(--card-shadow); outline: none; position: relative; line-height: 1.15; transition: 0.3s; }
+        .workspace { flex-grow: 1; overflow: auto; display: flex; flex-direction: column; align-items: center; padding: 40px; position: relative; gap: 30px; }
+        .paper-container { display: flex; flex-direction: column; gap: 30px; align-items: center; width: 100%; }
+        .paper { background: white; width: 8.5in; min-height: 11in; padding: 1in; box-shadow: var(--card-shadow); outline: none; position: relative; line-height: 1.15; transition: 0.3s; box-sizing: border-box; }
         
+        /* Pagination Controls */
+        .add-page-btn { background: #3b82f6; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s ease; margin-bottom: 40px; }
+        .add-page-btn:hover { background: #2563eb; transform: translateY(-1px); }
+
         /* Quick Access Authors Styling */
         .header-authors-wrapper { display: flex; align-items: center; gap: 8px; margin-left: auto; background: rgba(255,255,255,0.08); padding: 4px 10px; border-radius: 8px; }
         .author-list { display: flex; align-items: center; gap: 6px; }
@@ -132,7 +137,7 @@
             <button class="btn-ribbon" onclick="document.execCommand('justifyCenter')">Center</button>
             <button class="btn-ribbon" onclick="document.execCommand('justifyRight')">Right</button>
         </div>
-        <select onchange="document.getElementById('word-view').style.lineHeight = this.value" style="margin-top:5px;">
+        <select onchange="setLineHeight(this.value)" style="margin-top:5px;">
             <option value="1.0">1.0 spacing</option>
             <option value="1.15">1.15 spacing</option>
             <option value="1.5">1.5 spacing</option>
@@ -146,11 +151,13 @@
     <button class="action-btn" style="padding: 10px 20px; font-size: 11px;" onclick="addBadge()">Get Certification Badge</button>
 </div>
 
-<div class="workspace">
-    <div class="paper">
-        <!-- Editable Writing Canvas -->
-        <div id="word-view" contenteditable="true" oninput="handleInput()" style="outline:none; min-height:8.5in;">Start composing text or narrative content loops...</div>
+<div class="workspace" id="workspace-area">
+    <div class="paper-container" id="paper-container">
+        <!-- Dynamic Paper Pages appended here -->
+        <div class="paper word-page" contenteditable="true" oninput="handleInput(this)" onkeydown="handleKeyDown(event)">Start composing text or narrative content loops...</div>
     </div>
+
+    <button class="add-page-btn" onclick="addNewPage()">+ Add Page</button>
     
     <div id="data-view-container" style="display:none; width: 100%; max-width: 800px; background: white; padding: 40px; border-radius: 15px;">
         <h2>Velocity Forensics</h2>
@@ -177,11 +184,12 @@
 <script>
     let log = [], startTime = null, chartInstance = null;
     let authors = [];
-    const editor = document.getElementById('word-view');
 
     window.onload = () => {
         const savedText = localStorage.getItem('hv_content');
-        if (savedText) editor.innerHTML = savedText;
+        if (savedText) {
+            document.getElementById('paper-container').innerHTML = savedText;
+        }
         
         const savedAuthors = localStorage.getItem('hv_authors');
         if (savedAuthors) {
@@ -193,7 +201,39 @@
         updateStats();
     };
 
-    /* Author Management in Quick Access Header */
+    /* Page Operations */
+    function addNewPage() {
+        const container = document.getElementById('paper-container');
+        const newPaper = document.createElement('div');
+        newPaper.className = 'paper word-page';
+        newPaper.contentEditable = 'true';
+        newPaper.setAttribute('oninput', 'handleInput(this)');
+        newPaper.setAttribute('onkeydown', 'handleKeyDown(event)');
+        newPaper.style.outline = 'none';
+        container.appendChild(newPaper);
+        newPaper.focus();
+        autoSave();
+    }
+
+    function checkPageOverflow(page) {
+        if (page.scrollHeight > page.clientHeight) {
+            const container = document.getElementById('paper-container');
+            const pages = Array.from(container.children);
+            const currentIndex = pages.indexOf(page);
+            
+            if (currentIndex === pages.length - 1) {
+                addNewPage();
+            }
+        }
+    }
+
+    function setLineHeight(val) {
+        document.querySelectorAll('.word-page').forEach(page => {
+            page.style.lineHeight = val;
+        });
+    }
+
+    /* Author Management */
     function renderAuthors() {
         const container = document.getElementById('author-container');
         container.innerHTML = '';
@@ -222,12 +262,17 @@
         localStorage.setItem('hv_authors', JSON.stringify(authors));
     }
 
-    function handleInput() { updateStats(); autoSave(); calculateTrustScore(); }
+    function handleInput(page) { 
+        updateStats(); 
+        autoSave(); 
+        calculateTrustScore(); 
+        checkPageOverflow(page);
+    }
     
-    editor.addEventListener('keydown', (e) => { 
+    function handleKeyDown(e) { 
         if (!startTime) startTime = Date.now(); 
         log.push({ k: e.key, t: Date.now() - startTime }); 
-    });
+    }
 
     function manualSave() {
         autoSave();
@@ -238,13 +283,17 @@
         setTimeout(() => { icon.style.color = "white"; status.innerText = "Auto-save Enabled"; }, 2000);
     }
 
+    function getAllText() {
+        return Array.from(document.querySelectorAll('.word-page')).map(p => p.innerText).join(' ');
+    }
+
     function calculateTrustScore() {
-        const text = editor.innerText.trim();
+        const text = getAllText().trim();
         let score = text.length > 0 ? Math.min(100, (log.length / text.length) * 100) : 0;
         document.getElementById('trust-score').innerText = Math.floor(score) + "%";
     }
 
-    /* Certification Badge (Kept identical) */
+    /* Certification Badge */
     function addBadge() {
         const score = document.getElementById('trust-score').innerText;
         const now = new Date();
@@ -266,14 +315,22 @@
             </div>
             <p></p>
         `;
-        editor.innerHTML += badgeHTML;
+        
+        const pages = document.querySelectorAll('.word-page');
+        const activePage = pages[pages.length - 1];
+        activePage.innerHTML += badgeHTML;
         autoSave();
     }
 
     function toggleCitations() {
         const cv = document.getElementById('citation-view');
-        editor.style.display = (cv.style.display === 'block') ? 'block' : 'none';
-        cv.style.display = (cv.style.display === 'block') ? 'none' : 'block';
+        const container = document.getElementById('paper-container');
+        const addBtn = document.querySelector('.add-page-btn');
+        
+        const isVisible = (cv.style.display === 'block');
+        container.style.display = isVisible ? 'flex' : 'none';
+        addBtn.style.display = isVisible ? 'block' : 'none';
+        cv.style.display = isVisible ? 'none' : 'block';
     }
 
     function setView(id) {
@@ -281,13 +338,18 @@
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.getElementById('citation-view').style.display = 'none';
         
+        const container = document.getElementById('paper-container');
+        const addBtn = document.querySelector('.add-page-btn');
+
         if(id === 'data') {
-            editor.style.display = 'none';
+            container.style.display = 'none';
+            addBtn.style.display = 'none';
             document.getElementById('data-view-container').style.display = 'block';
             document.getElementById('tab-data').classList.add('active');
             updateChart();
         } else {
-            editor.style.display = 'block';
+            container.style.display = 'flex';
+            addBtn.style.display = 'block';
             document.getElementById('data-view-container').style.display = 'none';
             document.getElementById(id + '-ribbon').style.display = 'flex';
             document.getElementById('tab-' + id).classList.add('active');
@@ -308,18 +370,32 @@
     }
 
     function updateStats() { 
-        const t = editor.innerText.trim(); 
+        const t = getAllText().trim(); 
         document.getElementById('word-count').innerText = t===""?0:t.split(/\s+/).length; 
         document.getElementById('key-count').innerText = log.length; 
     }
 
-    function autoSave() { localStorage.setItem('hv_content', editor.innerHTML); }
-    function exportPDF() { html2pdf().from(editor).save('VerifyHuman_Manuscript_Report.pdf'); }
+    function autoSave() { 
+        const container = document.getElementById('paper-container');
+        localStorage.setItem('hv_content', container.innerHTML); 
+    }
+    
+    function exportPDF() { 
+        const container = document.getElementById('paper-container');
+        html2pdf().from(container).save('VerifyHuman_Manuscript_Report.pdf'); 
+    }
     
     function renameDoc() { let n = prompt("Name:"); if(n) document.getElementById('doc-name').innerText = n; }
     function newDoc() { if(confirm("New document?")) { localStorage.clear(); location.reload(); } }
     function deleteDoc() { if(confirm("Delete document?")) { localStorage.clear(); location.reload(); } }
-    function createCopy() { const blob = new Blob([editor.innerHTML], {type: "text/html"}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "Manuscript_Copy.html"; a.click(); }
+    function createCopy() { 
+        const container = document.getElementById('paper-container');
+        const blob = new Blob([container.innerHTML], {type: "text/html"}); 
+        const a = document.createElement('a'); 
+        a.href = URL.createObjectURL(blob); 
+        a.download = "Manuscript_Copy.html"; 
+        a.click(); 
+    }
 </script>
 </body>
 </html>
