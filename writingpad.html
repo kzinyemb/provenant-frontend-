@@ -18,8 +18,19 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="style.css">
     <style>
-        :root { --ribbon-bg: #ffffff; --border-color: #edebe9; --bg-workspace: #f4f7f6; }
-        body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; background-color: var(--bg-workspace); font-family: 'Inter', sans-serif; margin: 0; }
+        :root { --ribbon-bg: #ffffff; --border-color: #edebe9; --bg-workspace: #f4f7f6; --brand-dark: #0f172a; --brand-accent: #00b894; }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body { 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+            overflow: hidden; 
+            background-color: var(--bg-workspace); 
+            font-family: 'Inter', sans-serif; 
+            user-select: none; /* Prevents non-canvas selection */
+        }
         
         /* Navigation & Tabs */
         .quick-access { background: var(--brand-dark); color: white; padding: 8px 20px; display: flex; gap: 15px; align-items: center; z-index: 100; flex-wrap: wrap; }
@@ -38,35 +49,91 @@
         .btn-big { flex-direction: column; display: flex; min-width: 55px; text-align: center; }
         .btn-big span { font-size: 20px; }
 
-        /* Workspace & Paper */
-        .workspace { flex-grow: 1; overflow: auto; display: flex; flex-direction: column; align-items: center; padding: 40px; position: relative; gap: 30px; }
-        .paper-container { display: flex; flex-direction: column; gap: 30px; align-items: center; width: 100%; }
-        .paper { background: white; width: 8.5in; min-height: 11in; padding: 1in; box-shadow: var(--card-shadow); outline: none; position: relative; line-height: 1.15; transition: 0.3s; box-sizing: border-box; }
-        
-        /* Pagination Controls */
-        .add-page-btn { background: #3b82f6; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s ease; margin-bottom: 40px; }
-        .add-page-btn:hover { background: #2563eb; transform: translateY(-1px); }
-
         /* Quick Access Authors Styling */
         .header-authors-wrapper { display: flex; align-items: center; gap: 8px; margin-left: auto; background: rgba(255,255,255,0.08); padding: 4px 10px; border-radius: 8px; }
         .author-list { display: flex; align-items: center; gap: 6px; }
         .author-tag { background: #334155; color: #f8fafc; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
         .author-remove { cursor: pointer; color: #f87171; font-weight: bold; margin-left: 2px; }
         .author-input-row { display: flex; gap: 4px; }
-        .author-input { font-size: 11px; padding: 4px 8px; border: 1px solid #475569; background: #0f172a; color: #fff; border-radius: 4px; outline: none; width: 130px; }
+        .author-input { font-size: 11px; padding: 4px 8px; border: 1px solid #475569; background: #0f172a; color: #fff; border-radius: 4px; outline: none; width: 130px; user-select: text; }
         .author-add-btn { background: #3b82f6; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer; }
 
-        /* Floating Badge Button */
-        .badge-trigger { position: fixed; top: 160px; right: 40px; z-index: 10; display: flex; flex-direction: column; gap: 10px; }
+        /* Workspace Outer Region - Uneditable Area */
+        .workspace { 
+            flex-grow: 1; 
+            overflow-y: auto; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 40px 20px; 
+            position: relative; 
+            cursor: default;
+        }
 
-        .status-bar { background: var(--brand-dark); color: white; padding: 6px 20px; font-size: 12px; display: flex; justify-content: space-between; }
+        .pages-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            align-items: center;
+        }
+
+        /* White Paper Sheet - Exclusive Editable Region */
+        .paper { 
+            background: white; 
+            width: 8.5in; 
+            height: 11in; 
+            padding: 1in; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            outline: none; 
+            position: relative; 
+            line-height: 1.5; 
+            font-size: 15px;
+            color: #0f172a;
+            overflow: hidden; 
+            user-select: text; /* Re-enable text editing only on the sheet */
+            cursor: text;
+        }
+
+        .page-number-indicator {
+            position: absolute;
+            bottom: 15px;
+            right: 25px;
+            font-size: 10px;
+            color: #94a3b8;
+            font-weight: 600;
+            user-select: none;
+        }
+
+        /* Action Buttons */
+        .add-page-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+            margin-bottom: 50px;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        .add-page-btn:hover { background: #2563eb; transform: translateY(-2px); }
+
+        /* Floating Badge Trigger */
+        .badge-trigger { position: fixed; top: 160px; right: 40px; z-index: 10; display: flex; flex-direction: column; gap: 10px; }
+        .action-btn { background: var(--brand-accent); color: var(--brand-dark); border: none; padding: 10px 20px; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 11px; transition: 0.2s; }
+        .action-btn:hover { filter: brightness(1.1); transform: translateY(-2px); }
+
+        .status-bar { background: var(--brand-dark); color: white; padding: 6px 20px; font-size: 12px; display: flex; justify-content: space-between; z-index: 90; }
         select { padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px; }
 
         /* Citation View */
-        #citation-view { display: none; width: 100%; max-width: 8.5in; background: white; padding: 1in; box-shadow: var(--card-shadow); font-family: 'Times New Roman', serif; }
+        #citation-view { display: none; width: 100%; max-width: 8.5in; background: white; padding: 1in; box-shadow: 0 10px 30px rgba(0,0,0,0.1); font-family: 'Times New Roman', serif; color: #0f172a; user-select: text; }
     </style>
 </head>
-<body>
+<body onclick="handleWorkspaceClick(event)">
 
 <div class="quick-access">
     <div onclick="location.href='index.html'" style="cursor:pointer" title="Exit Storefront Dashboard">🏠</div>
@@ -79,8 +146,8 @@
         <span style="color: #64748b; font-size: 12px;">|</span>
         <div class="author-list" id="author-container"></div>
         <div class="author-input-row">
-            <input type="text" id="new-author-input" class="author-input" placeholder="+ Author name...">
-            <button class="author-add-btn" onclick="addAuthor()">Add</button>
+            <input type="text" id="new-author-input" class="author-input" placeholder="+ Author name..." onclick="event.stopPropagation()">
+            <button class="author-add-btn" onclick="addAuthor(); event.stopPropagation();">Add</button>
         </div>
     </div>
 </div>
@@ -116,7 +183,7 @@
 
 <div class="ribbon-content active" id="home-ribbon">
     <div class="group">
-        <select onchange="document.execCommand('fontName', false, this.value)" style="width: 130px; margin-bottom: 5px;">
+        <select onchange="document.execCommand('fontName', false, this.value)" style="width: 130px; margin-bottom: 5px;" onclick="event.stopPropagation()">
             <option value="Arial">Arial</option>
             <option value="Calibri">Calibri</option>
             <option value="Calibri Light">Calibri Light</option>
@@ -137,7 +204,7 @@
             <button class="btn-ribbon" onclick="document.execCommand('justifyCenter')">Center</button>
             <button class="btn-ribbon" onclick="document.execCommand('justifyRight')">Right</button>
         </div>
-        <select onchange="setLineHeight(this.value)" style="margin-top:5px;">
+        <select onchange="applyLineHeight(this.value)" style="margin-top:5px;" onclick="event.stopPropagation()">
             <option value="1.0">1.0 spacing</option>
             <option value="1.15">1.15 spacing</option>
             <option value="1.5">1.5 spacing</option>
@@ -148,16 +215,18 @@
 </div>
 
 <div class="badge-trigger">
-    <button class="action-btn" style="padding: 10px 20px; font-size: 11px;" onclick="addBadge()">Get Certification Badge</button>
+    <button class="action-btn" onclick="addBadge(); event.stopPropagation();">Get Certification Badge</button>
 </div>
 
-<div class="workspace" id="workspace-area">
-    <div class="paper-container" id="paper-container">
-        <!-- Dynamic Paper Pages appended here -->
-        <div class="paper word-page" contenteditable="true" oninput="handleInput(this)" onkeydown="handleKeyDown(event)">Start composing text or narrative content loops...</div>
+<div class="workspace" id="workspace-container">
+    <div class="pages-wrapper" id="pages-wrapper">
+        <!-- Initial Page 1 -->
+        <div class="paper" contenteditable="true" oninput="handlePageInput(this)" onkeydown="handleKeyDown(event)">
+            Start composing text or narrative content loops...
+        </div>
     </div>
 
-    <button class="add-page-btn" onclick="addNewPage()">+ Add Page</button>
+    <button class="add-page-btn" id="btn-add-page" onclick="addNewPage(); event.stopPropagation();">+ Add Page</button>
     
     <div id="data-view-container" style="display:none; width: 100%; max-width: 800px; background: white; padding: 40px; border-radius: 15px;">
         <h2>Velocity Forensics</h2>
@@ -184,11 +253,12 @@
 <script>
     let log = [], startTime = null, chartInstance = null;
     let authors = [];
+    let activePage = null;
 
     window.onload = () => {
         const savedText = localStorage.getItem('hv_content');
         if (savedText) {
-            document.getElementById('paper-container').innerHTML = savedText;
+            document.getElementById('pages-wrapper').innerHTML = savedText;
         }
         
         const savedAuthors = localStorage.getItem('hv_authors');
@@ -198,49 +268,90 @@
             authors = ["Primary Author"];
         }
         renderAuthors();
+        updatePageNumbers();
         updateStats();
+
+        // Focus first page by default
+        const pages = document.querySelectorAll('.paper');
+        if (pages.length > 0) {
+            activePage = pages[0];
+        }
     };
 
-    /* Page Operations */
+    /* Restrict Typing to White Page Area */
+    function handleWorkspaceClick(e) {
+        // If user clicks in background gray area, redirect focus back to current page
+        if (!e.target.closest('.paper') && !e.target.closest('.quick-access') && !e.target.closest('.ribbon-content') && !e.target.closest('.tabs') && !e.target.closest('.badge-trigger')) {
+            const pages = document.querySelectorAll('.paper');
+            const targetPage = activePage || pages[pages.length - 1];
+            if (targetPage) {
+                targetPage.focus();
+            }
+        }
+    }
+
+    /* Page Addition & Auto-Overflow Handling */
     function addNewPage() {
-        const container = document.getElementById('paper-container');
-        const newPaper = document.createElement('div');
-        newPaper.className = 'paper word-page';
-        newPaper.contentEditable = 'true';
-        newPaper.setAttribute('oninput', 'handleInput(this)');
-        newPaper.setAttribute('onkeydown', 'handleKeyDown(event)');
-        newPaper.style.outline = 'none';
-        container.appendChild(newPaper);
-        newPaper.focus();
+        const wrapper = document.getElementById('pages-wrapper');
+        const newPage = document.createElement('div');
+        newPage.className = 'paper';
+        newPage.contentEditable = 'true';
+        newPage.setAttribute('oninput', 'handlePageInput(this)');
+        newPage.setAttribute('onkeydown', 'handleKeyDown(event)');
+        newPage.innerText = '';
+        
+        wrapper.appendChild(newPage);
+        updatePageNumbers();
+        newPage.focus();
+        activePage = newPage;
         autoSave();
     }
 
-    function checkPageOverflow(page) {
-        if (page.scrollHeight > page.clientHeight) {
-            const container = document.getElementById('paper-container');
-            const pages = Array.from(container.children);
-            const currentIndex = pages.indexOf(page);
+    function updatePageNumbers() {
+        const pages = document.querySelectorAll('.paper');
+        pages.forEach((page, index) => {
+            let indicator = page.querySelector('.page-number-indicator');
+            if (!indicator) {
+                indicator = document.createElement('div');
+                indicator.className = 'page-number-indicator';
+                indicator.contentEditable = 'false';
+                page.appendChild(indicator);
+            }
+            indicator.innerText = `Page ${index + 1} of ${pages.length}`;
+        });
+    }
+
+    function handlePageInput(pageEl) {
+        activePage = pageEl;
+        updateStats();
+        autoSave();
+        calculateTrustScore();
+
+        // Auto-add new page when current page content overflows vertical boundary
+        if (pageEl.scrollHeight > pageEl.clientHeight) {
+            const pages = Array.from(document.querySelectorAll('.paper'));
+            const isLastPage = pages.indexOf(pageEl) === pages.length - 1;
             
-            if (currentIndex === pages.length - 1) {
+            if (isLastPage) {
                 addNewPage();
             }
         }
     }
 
-    function setLineHeight(val) {
-        document.querySelectorAll('.word-page').forEach(page => {
-            page.style.lineHeight = val;
+    function applyLineHeight(val) {
+        document.querySelectorAll('.paper').forEach(p => {
+            p.style.lineHeight = val;
         });
     }
 
-    /* Author Management */
+    /* Author Management in Header */
     function renderAuthors() {
         const container = document.getElementById('author-container');
         container.innerHTML = '';
         authors.forEach((author, index) => {
             const tag = document.createElement('div');
             tag.className = 'author-tag';
-            tag.innerHTML = `👤 ${author} <span class="author-remove" onclick="removeAuthor(${index})">×</span>`;
+            tag.innerHTML = `👤 ${author} <span class="author-remove" onclick="removeAuthor(${index}); event.stopPropagation();">×</span>`;
             container.appendChild(tag);
         });
     }
@@ -262,13 +373,6 @@
         localStorage.setItem('hv_authors', JSON.stringify(authors));
     }
 
-    function handleInput(page) { 
-        updateStats(); 
-        autoSave(); 
-        calculateTrustScore(); 
-        checkPageOverflow(page);
-    }
-    
     function handleKeyDown(e) { 
         if (!startTime) startTime = Date.now(); 
         log.push({ k: e.key, t: Date.now() - startTime }); 
@@ -283,17 +387,24 @@
         setTimeout(() => { icon.style.color = "white"; status.innerText = "Auto-save Enabled"; }, 2000);
     }
 
-    function getAllText() {
-        return Array.from(document.querySelectorAll('.word-page')).map(p => p.innerText).join(' ');
+    function getAllPaperText() {
+        return Array.from(document.querySelectorAll('.paper'))
+            .map(p => {
+                const clone = p.cloneNode(true);
+                const indicator = clone.querySelector('.page-number-indicator');
+                if (indicator) indicator.remove();
+                return clone.innerText;
+            })
+            .join(' ');
     }
 
     function calculateTrustScore() {
-        const text = getAllText().trim();
+        const text = getAllPaperText().trim();
         let score = text.length > 0 ? Math.min(100, (log.length / text.length) * 100) : 0;
         document.getElementById('trust-score').innerText = Math.floor(score) + "%";
     }
 
-    /* Certification Badge */
+    /* Certification Badge Generation */
     function addBadge() {
         const score = document.getElementById('trust-score').innerText;
         const now = new Date();
@@ -304,7 +415,7 @@
         const authorListStr = authors.length > 0 ? authors.join(', ') : 'Unspecified Author';
 
         const badgeHTML = `
-            <div contenteditable="false" style="margin-top: 50px; border: 2px solid #00b894; padding: 18px; border-radius: 12px; width: 340px; background: #f8fafc; font-family: 'Inter', sans-serif;">
+            <div contenteditable="false" style="margin-top: 40px; border: 2px solid #00b894; padding: 18px; border-radius: 12px; width: 340px; background: #f8fafc; font-family: 'Inter', sans-serif; user-select: none;">
                 <div style="font-size: 11px; color: #475569; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px; margin-bottom: 10px;">
                     <div><strong>Author(s):</strong> ${authorListStr}</div>
                     <div><strong>Certified On:</strong> ${timestamp}</div>
@@ -313,23 +424,24 @@
                 <div style="font-size:12px; color: #0f172a; font-weight: 600; margin-top: 4px;">Composition Trust Metric: ${score}</div>
                 <div style="font-size:9px; color:#888; margin-top: 6px;">ID: VH-${Math.floor(Math.random()*1000000)}</div>
             </div>
-            <p></p>
+            <p><br></p>
         `;
-        
-        const pages = document.querySelectorAll('.word-page');
-        const activePage = pages[pages.length - 1];
-        activePage.innerHTML += badgeHTML;
+
+        const pages = document.querySelectorAll('.paper');
+        const targetPage = activePage || pages[pages.length - 1];
+        targetPage.innerHTML += badgeHTML;
+        updatePageNumbers();
         autoSave();
     }
 
     function toggleCitations() {
         const cv = document.getElementById('citation-view');
-        const container = document.getElementById('paper-container');
-        const addBtn = document.querySelector('.add-page-btn');
+        const wrapper = document.getElementById('pages-wrapper');
+        const btnAdd = document.getElementById('btn-add-page');
         
         const isVisible = (cv.style.display === 'block');
-        container.style.display = isVisible ? 'flex' : 'none';
-        addBtn.style.display = isVisible ? 'block' : 'none';
+        wrapper.style.display = isVisible ? 'flex' : 'none';
+        btnAdd.style.display = isVisible ? 'block' : 'none';
         cv.style.display = isVisible ? 'none' : 'block';
     }
 
@@ -338,18 +450,18 @@
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.getElementById('citation-view').style.display = 'none';
         
-        const container = document.getElementById('paper-container');
-        const addBtn = document.querySelector('.add-page-btn');
+        const wrapper = document.getElementById('pages-wrapper');
+        const btnAdd = document.getElementById('btn-add-page');
 
         if(id === 'data') {
-            container.style.display = 'none';
-            addBtn.style.display = 'none';
+            wrapper.style.display = 'none';
+            btnAdd.style.display = 'none';
             document.getElementById('data-view-container').style.display = 'block';
             document.getElementById('tab-data').classList.add('active');
             updateChart();
         } else {
-            container.style.display = 'flex';
-            addBtn.style.display = 'block';
+            wrapper.style.display = 'flex';
+            btnAdd.style.display = 'block';
             document.getElementById('data-view-container').style.display = 'none';
             document.getElementById(id + '-ribbon').style.display = 'flex';
             document.getElementById('tab-' + id).classList.add('active');
@@ -370,27 +482,27 @@
     }
 
     function updateStats() { 
-        const t = getAllText().trim(); 
-        document.getElementById('word-count').innerText = t===""?0:t.split(/\s+/).length; 
+        const t = getAllPaperText().trim(); 
+        document.getElementById('word-count').innerText = t === "" ? 0 : t.split(/\s+/).length; 
         document.getElementById('key-count').innerText = log.length; 
     }
 
     function autoSave() { 
-        const container = document.getElementById('paper-container');
-        localStorage.setItem('hv_content', container.innerHTML); 
+        const wrapper = document.getElementById('pages-wrapper');
+        localStorage.setItem('hv_content', wrapper.innerHTML); 
     }
-    
+
     function exportPDF() { 
-        const container = document.getElementById('paper-container');
-        html2pdf().from(container).save('VerifyHuman_Manuscript_Report.pdf'); 
+        const wrapper = document.getElementById('pages-wrapper');
+        html2pdf().from(wrapper).save('VerifyHuman_Manuscript_Report.pdf'); 
     }
     
     function renameDoc() { let n = prompt("Name:"); if(n) document.getElementById('doc-name').innerText = n; }
     function newDoc() { if(confirm("New document?")) { localStorage.clear(); location.reload(); } }
     function deleteDoc() { if(confirm("Delete document?")) { localStorage.clear(); location.reload(); } }
     function createCopy() { 
-        const container = document.getElementById('paper-container');
-        const blob = new Blob([container.innerHTML], {type: "text/html"}); 
+        const wrapper = document.getElementById('pages-wrapper');
+        const blob = new Blob([wrapper.innerHTML], {type: "text/html"}); 
         const a = document.createElement('a'); 
         a.href = URL.createObjectURL(blob); 
         a.download = "Manuscript_Copy.html"; 
