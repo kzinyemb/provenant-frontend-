@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Writing Workstation | Provenant™</title>
+    <title>Newsroom Authorization | Provenant™</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap">
     <style>
         :root {
@@ -119,7 +119,7 @@
 
         input:focus { border-color: var(--brand-accent); }
 
-        .verify-btn {
+        .verify-btn, .launch-btn {
             background: var(--brand-accent);
             color: var(--brand-dark);
             border: none;
@@ -128,33 +128,24 @@
             font-weight: 800;
             font-size: 15px;
             cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
             transition: all 0.2s ease;
         }
 
-        .verify-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+        .verify-btn:hover, .launch-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
 
-        /* Workspace Pad (Hidden until authenticated) */
-        .workspace-pad {
+        /* Access Panel (Shown when authenticated) */
+        .access-panel {
             display: none;
             width: 100%;
-            max-width: 900px;
+            max-width: 650px;
             background: #1e293b;
-            border-radius: 16px;
-            padding: 40px;
+            border-radius: 20px;
+            padding: 50px 40px;
             border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .editor-canvas {
-            width: 100%;
-            min-height: 400px;
-            background: #ffffff;
-            color: #0f172a;
-            padding: 30px;
-            border-radius: 8px;
-            outline: none;
-            font-size: 16px;
-            line-height: 1.8;
-            margin-top: 20px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
     </style>
 </head>
@@ -167,7 +158,7 @@
     <!-- Manager Post-Checkout Success Banner -->
     <div class="key-banner" id="manager-success-banner">
         <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 5px;">🎉 Subscription Activated!</h3>
-        <p style="color: var(--text-muted); font-size: 13px;">Here is your Master Newsroom License Token. Share this code with your writing team to give them access to the workstation pad.</p>
+        <p style="color: var(--text-muted); font-size: 13px;">Here is your Master Newsroom License Token. Share this code with your writing team to give them access to the writing pad.</p>
         <div>
             <div class="key-badge">
                 <span id="token-text">NEWSROOM2026</span>
@@ -198,15 +189,11 @@
         </div>
     </div>
 
-    <!-- Protected Writing Pad -->
-    <div class="workspace-pad" id="writing-workspace">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--brand-accent);">Verified Newsroom Workstation</h3>
-            <span style="font-size: 12px; color: var(--text-muted);">Biometric Rhythm Monitor Active</span>
-        </div>
-        <div class="editor-canvas" contenteditable="true">
-            Start drafting your article here...
-        </div>
+    <!-- Access Panel for Validated Users -->
+    <div class="access-panel" id="access-panel">
+        <h2 style="font-size: 2rem; font-weight: 900; margin-bottom: 10px;">Access Granted</h2>
+        <p style="color: var(--text-muted); font-size: 15px; margin-bottom: 30px;">Your session is authenticated. You can proceed directly to your writing workspace.</p>
+        <a href="writingpad.html" class="launch-btn">Launch Writing Pad →</a>
     </div>
 
     <script>
@@ -215,14 +202,14 @@
             const isUnlockedByRedirect = urlParams.get('unlocked') === 'true';
             const isSavedSession = localStorage.getItem('provenant_newsroom_session') === 'active';
 
-            // If coming directly from Stripe redirect or already validated in session
+            // Show manager banner if coming directly from Stripe payment
+            if (isUnlockedByRedirect) {
+                document.getElementById('manager-success-banner').style.display = 'block';
+            }
+
+            // If session already validated, present access panel
             if (isUnlockedByRedirect || isSavedSession) {
-                unlockWorkstation();
-                
-                // Show the manager key banner if returning directly from payment
-                if (isUnlockedByRedirect) {
-                    document.getElementById('manager-success-banner').style.display = 'block';
-                }
+                showAccessPanel();
             }
         };
 
@@ -231,15 +218,15 @@
             
             if (inputKey === "NEWSROOM2026") {
                 localStorage.setItem('provenant_newsroom_session', 'active');
-                unlockWorkstation();
+                window.location.href = "writingpad.html";
             } else {
                 alert("Invalid Token. Please check your newsroom license code.");
             }
         }
 
-        function unlockWorkstation() {
+        function showAccessPanel() {
             document.getElementById('auth-gate').style.display = 'none';
-            document.getElementById('writing-workspace').style.display = 'block';
+            document.getElementById('access-panel').style.display = 'block';
         }
 
         function copyToken() {
