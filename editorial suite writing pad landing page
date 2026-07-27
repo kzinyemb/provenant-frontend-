@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Writing Workstation | Provenant™</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap">
+    <style>
+        :root {
+            --brand-dark: #0f172a;
+            --brand-accent: #00b894;
+            --brand-writer: #3b82f6;
+            --text-muted: #94a3b8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0b1120;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .nav-header {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .auth-card {
+            background: #1e293b;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 50px 40px;
+            width: 100%;
+            max-width: 650px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .auth-card h2 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .auth-card p {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            font-size: 15px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        input {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 16px 20px;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            flex: 1;
+            min-width: 240px;
+        }
+
+        input:focus { border-color: var(--brand-accent); }
+
+        .verify-btn {
+            background: var(--brand-accent);
+            color: var(--brand-dark);
+            border: none;
+            padding: 16px 32px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .verify-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+        /* Workspace Pad (Hidden until authenticated) */
+        .workspace-pad {
+            display: none;
+            width: 100%;
+            max-width: 900px;
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 40px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .editor-canvas {
+            width: 100%;
+            min-height: 400px;
+            background: #ffffff;
+            color: #0f172a;
+            padding: 30px;
+            border-radius: 8px;
+            outline: none;
+            font-size: 16px;
+            line-height: 1.8;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="nav-header">
+        <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600;">← Back to Main Hub</a>
+    </div>
+
+    <!-- Authorization Screen -->
+    <div class="auth-card" id="auth-gate">
+        <h2>Newsroom Authorization</h2>
+        <p>This high-volume tier requires key validation.</p>
+        
+        <div class="form-row">
+            <input type="password" id="license-key-input" placeholder="Enter License Token">
+            <button class="verify-btn" onclick="validateKey()">Verify Token</button>
+        </div>
+    </div>
+
+    <!-- Protected Writing Pad -->
+    <div class="workspace-pad" id="writing-workspace">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--brand-accent);">Verified Newsroom Workstation</h3>
+            <span style="font-size: 12px; color: var(--text-muted);">Biometric Rhythm Monitor Active</span>
+        </div>
+        <div class="editor-canvas" contenteditable="true">
+            Start drafting your article here...
+        </div>
+    </div>
+
+    <script>
+        function validateKey() {
+            const inputKey = document.getElementById('license-key-input').value.trim();
+            
+            if (inputKey === "NEWSROOM2026") {
+                document.getElementById('auth-gate').style.display = 'none';
+                document.getElementById('writing-workspace').style.display = 'block';
+            } else {
+                alert("Invalid Token. Please check your newsroom license code.");
+            }
+        }
+    </script>
+</body>
+</html>
