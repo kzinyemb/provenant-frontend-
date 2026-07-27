@@ -49,8 +49,6 @@
             justify-content: space-between;
         }
 
-        .hidden { display: none !important; }
-
         .secure-btn { 
             width: 100%; 
             background: var(--brand-writer); 
@@ -124,27 +122,19 @@
     </div>
 
     <div class="checkout-container" id="container">
-        <!-- Enterprise Lock -->
-        <div id="enterprise-lock" class="hidden" style="grid-column: span 2; padding: 60px; text-align: center;">
-            <h2>Newsroom Authorization</h2>
-            <p style="color: var(--text-muted); margin-bottom: 20px;">This high-volume tier requires key validation.</p>
-            <input type="password" id="pass-input" placeholder="Enter License Token" style="max-width: 320px; text-align: center;">
-            <button onclick="checkPass()" class="secure-btn" style="max-width: 320px; background: var(--brand-accent); color: var(--brand-dark);">Verify Token</button>
-        </div>
-
         <!-- Main Form -->
         <div class="payment-form" id="payment-form-pane">
-            <h2>Complete Your Setup</h2>
+            <h2>Complete Newsroom Setup</h2>
             <form id="pay-form">
-                <input type="email" placeholder="Email Address" required>
-                <input type="text" placeholder="Full Name" required>
+                <input type="email" placeholder="Manager Email Address" required>
+                <input type="text" placeholder="Manager Full Name" required>
                 
                 <label class="legal-check">
                     <input type="checkbox" required>
                     <span>I agree to the <a href="/terms.html" style="color: var(--brand-writer);" target="_blank">Terms of Service</a> and <a href="/privacy.html" style="color: var(--brand-writer);" target="_blank">Privacy Policy</a>.</span>
                 </label>
 
-                <button type="submit" class="secure-btn">Continue to Payment</button>
+                <button type="submit" class="secure-btn">Proceed to Payment</button>
             </form>
         </div>
 
@@ -177,12 +167,10 @@
 
         window.onload = () => {
             const params = new URLSearchParams(window.location.search);
-            const rawPlan = params.get('plan') || "Writers Tier";
+            const rawPlan = params.get('plan') || "Editorial Enterprise Suite";
             const plan = decodeURIComponent(rawPlan);
-
-            const displayPrice = planPrices[plan] || "$14.99/mo";
+            const displayPrice = planPrices[plan] || "$89.00/mo";
             
-            // Populate summary
             document.getElementById('summary-content').innerHTML = `
                 <div class="summary-item">
                     <div style="font-weight: 700; color: #fff;">${plan}</div>
@@ -197,32 +185,15 @@
                     <span style="color: var(--brand-accent);">$0.00</span>
                 </div>
             `;
-
-            // Security Gate for Enterprise
-            if (plan === 'Editorial Enterprise Suite') {
-                document.getElementById('payment-form-pane').classList.add('hidden');
-                document.getElementById('summary-pane').classList.add('hidden');
-                document.getElementById('enterprise-lock').classList.remove('hidden');
-            }
         };
-
-        function checkPass() {
-            if (document.getElementById('pass-input').value === "NEWSROOM2026") {
-                document.getElementById('enterprise-lock').classList.add('hidden');
-                document.getElementById('payment-form-pane').classList.remove('hidden');
-                document.getElementById('summary-pane').classList.remove('hidden');
-            } else {
-                alert("Invalid Token. Please check your agency invite code.");
-            }
-        }
 
         document.getElementById('pay-form').onsubmit = (e) => {
             e.preventDefault();
             const params = new URLSearchParams(window.location.search);
-            const rawPlan = params.get('plan') || "Writers Tier";
+            const rawPlan = params.get('plan') || "Editorial Enterprise Suite";
             const plan = decodeURIComponent(rawPlan);
 
-            const targetUrl = stripeLinks[plan] || stripeLinks["Writers Tier"];
+            const targetUrl = stripeLinks[plan] || stripeLinks["Editorial Enterprise Suite"];
             window.location.href = targetUrl;
         };
     </script>
