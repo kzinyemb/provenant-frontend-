@@ -244,12 +244,25 @@
 <!-- HOME RIBBON -->
 <div class="ribbon-content active" id="home-ribbon">
     <div class="group">
-        <select onchange="document.execCommand('fontName', false, this.value)" style="width: 130px; margin-bottom: 5px;" onclick="event.stopPropagation()">
-            <option value="Arial">Arial</option>
-            <option value="Calibri">Calibri</option>
-            <option value="Calibri Light">Calibri Light</option>
-            <option value="Times New Roman">Times New Roman</option>
-        </select>
+        <div style="display: flex; gap: 5px; margin-bottom: 5px;">
+            <!-- Font Name Selector -->
+            <select onchange="document.execCommand('fontName', false, this.value)" style="width: 110px;" onclick="event.stopPropagation()">
+                <option value="Arial">Arial</option>
+                <option value="Calibri">Calibri</option>
+                <option value="Calibri Light">Calibri Light</option>
+                <option value="Times New Roman">Times New Roman</option>
+            </select>
+            <!-- Text Size Selector -->
+            <select onchange="applyFontSize(this.value)" style="width: 65px;" onclick="event.stopPropagation()" title="Text Size">
+                <option value="1">10 pt</option>
+                <option value="2">12 pt</option>
+                <option value="3" selected>14 pt</option>
+                <option value="4">18 pt</option>
+                <option value="5">24 pt</option>
+                <option value="6">32 pt</option>
+                <option value="7">48 pt</option>
+            </select>
+        </div>
         <div class="btn-row">
             <button class="btn-ribbon" onclick="document.execCommand('bold')"><b>B</b></button>
             <button class="btn-ribbon" onclick="document.execCommand('italic')"><i>I</i></button>
@@ -439,6 +452,10 @@
         updateStats();
         autoSave();
         calculateTrustScore();
+    }
+
+    function applyFontSize(size) {
+        document.execCommand('fontSize', false, size);
     }
 
     function applyLineHeight(val) {
