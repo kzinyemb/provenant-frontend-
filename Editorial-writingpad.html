@@ -185,6 +185,10 @@
 <div class="quick-access">
     <div onclick="location.href='index.html'" style="cursor:pointer" title="Exit Storefront Dashboard">🏠</div>
     <div onclick="manualSave()" id="save-icon" style="cursor:pointer" title="Save Now">💾</div>
+    <!-- Quick Access Navigation Arrows -->
+    <div onclick="document.execCommand('undo')" style="cursor:pointer" title="Go Back (Undo)">↩️</div>
+    <div onclick="document.execCommand('redo')" style="cursor:pointer" title="Go Forward (Redo)">↪️</div>
+    
     <div style="background: var(--brand-accent); padding: 2px 12px; border-radius: 50px; font-weight: 800; font-size: 11px;">Human Integrity: <span id="trust-score">0%</span></div>
     
     <!-- Editorial Stage Selector -->
@@ -243,6 +247,14 @@
 
 <!-- HOME RIBBON -->
 <div class="ribbon-content active" id="home-ribbon">
+    <!-- Navigation History Ribbon Group -->
+    <div class="group">
+        <div class="btn-row">
+            <button class="btn-ribbon btn-big" onclick="document.execCommand('undo')" title="Go Back"><span>↩️</span>Go Back</button>
+            <button class="btn-ribbon btn-big" onclick="document.execCommand('redo')" title="Go Forward"><span>↪️</span>Go Forward</button>
+        </div>
+        <div class="group-label">History</div>
+    </div>
     <div class="group">
         <div style="display: flex; gap: 5px; margin-bottom: 5px;">
             <!-- Font Name Selector -->
