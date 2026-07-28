@@ -192,8 +192,8 @@
     <!-- Access Panel for Validated Users -->
     <div class="access-panel" id="access-panel">
         <h2 style="font-size: 2rem; font-weight: 900; margin-bottom: 10px;">Access Granted</h2>
-        <p style="color: var(--text-muted); font-size: 15px; margin-bottom: 30px;">Your session is authenticated. You can proceed directly to your writing workspace.</p>
-        <a href="writingpad.html" class="launch-btn">Launch Writing Pad →</a>
+        <p style="color: var(--text-muted); font-size: 15px; margin-bottom: 30px;">Your session is authenticated. You can proceed directly to your editorial workspace.</p>
+        <a href="Editorial-writingpad" class="launch-btn">Launch Editorial Workspace →</a>
     </div>
 
     <script>
@@ -218,7 +218,7 @@
             
             if (inputKey === "NEWSROOM2026") {
                 localStorage.setItem('provenant_newsroom_session', 'active');
-                window.location.href = "writingpad.html";
+                window.location.href = "Editorial-writingpad";
             } else {
                 alert("Invalid Token. Please check your enterprise license code.");
             }
