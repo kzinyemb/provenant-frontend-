@@ -1,84 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- ... existing code ... -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Studio Provenance | Professional Creator Suite</title>
-    <!-- ... existing code ... -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* ... existing code ... */
-        /* New Creative Ribbon Features */
-        .creative-panel { display: none; padding: 15px; border-top: 1px solid var(--border-color); }
-        .creative-tool { display: flex; flex-direction: column; gap: 5px; }
-        .metronome-visualizer { height: 20px; background: #eee; border-radius: 4px; overflow: hidden; }
-        .bpm-track { height: 100%; background: var(--brand-accent); width: 0%; transition: width 0.1s; }
+        :root { --ribbon-bg: #ffffff; --border-color: #edebe9; --brand-dark: #0f172a; --brand-accent: #00b894; }
+        body { margin: 0; font-family: sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        
+        /* Ribbon Structure Fix */
+        .tabs { display: flex; background: #eee; }
+        .tab { padding: 10px 20px; cursor: pointer; border: 1px solid #ccc; }
+        .tab.active { background: white; font-weight: bold; }
+        
+        .ribbon-content { display: none; background: var(--ribbon-bg); border-bottom: 1px solid var(--border-color); padding: 10px; align-items: center; gap: 20px; }
+        .ribbon-content.active { display: flex; }
+        
+        .group { display: flex; flex-direction: column; align-items: center; gap: 5px; border-right: 1px solid var(--border-color); padding: 0 10px; }
+        .group-label { font-size: 10px; color: #888; text-transform: uppercase; }
+        .btn-row { display: flex; gap: 5px; }
+        .btn-ribbon { background: none; border: 1px solid #ddd; padding: 5px; cursor: pointer; border-radius: 4px; display: flex; flex-direction: column; align-items: center; width: 60px; font-size: 10px; }
+        
+        .metronome-visualizer { height: 10px; width: 100px; background: #eee; border-radius: 4px; overflow: hidden; }
+        .bpm-track { height: 100%; background: var(--brand-accent); width: 0%; }
     </style>
 </head>
 <body>
 
-<!-- ... existing code ... -->
 <div class="tabs">
     <div class="tab" onclick="setView('file')">File</div>
-    <div class="tab active" id="tab-home" onclick="setView('home')">Home</div>
-    <div class="tab" id="tab-creative" onclick="setView('creative')">Media & Scene</div>
-    <div class="tab" id="tab-data" onclick="setView('data')" style="background:#00b894; color:white">Forensics</div>
+    <div class="tab" onclick="setView('home')">Home</div>
+    <div class="tab active" id="tab-creative" onclick="setView('creative')">Media & Scene</div>
+    <div class="tab" onclick="setView('data')">Forensics</div>
 </div>
 
-<!-- Ribbon: Media & Scene (New Feature Set) -->
-<div class="ribbon-content" id="creative-ribbon">
+<!-- Ribbon: Media & Scene -->
+<div class="ribbon-content active" id="creative-ribbon">
     <div class="group">
         <div class="btn-row">
-            <button class="btn-ribbon btn-big" onclick="insertTemplate('scene')"><span>🎬</span>Scene</button>
-            <button class="btn-ribbon btn-big" onclick="insertTemplate('character')"><span>👤</span>Char</button>
-            <button class="btn-ribbon btn-big" onclick="insertTemplate('verse')"><span>🎵</span>Verse</button>
+            <button class="btn-ribbon" onclick="insertTemplate('scene')"><span>🎬</span>Scene</button>
+            <button class="btn-ribbon" onclick="insertTemplate('character')"><span>👤</span>Char</button>
+            <button class="btn-ribbon" onclick="insertTemplate('verse')"><span>🎵</span>Verse</button>
         </div>
         <div class="group-label">Scripts & Lyrics</div>
     </div>
     <div class="group">
-        <input type="number" id="bpm-input" placeholder="BPM" style="width: 60px; padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
-        <div class="metronome-visualizer" style="width: 100px; margin-top: 5px;">
-            <div id="bpm-bar" class="bpm-track"></div>
-        </div>
+        <input type="number" id="bpm-input" placeholder="120" style="width: 50px;">
+        <div class="metronome-visualizer"><div id="bpm-bar" class="bpm-track"></div></div>
         <div class="group-label">Tempo/BPM</div>
     </div>
 </div>
 
-<!-- ... existing code ... -->
+<div id="editor" contenteditable="true" style="padding: 20px; border: 1px solid #ccc; flex-grow: 1;"></div>
 
 <script>
-    // New Feature: Template Insertion for Screenwriters/Musicians
+    function setView(view) {
+        document.querySelectorAll('.ribbon-content').forEach(r => r.classList.remove('active'));
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById(view + '-ribbon').classList.add('active');
+    }
+
     function insertTemplate(type) {
         const templates = {
-            scene: "\n\n[SCENE START]\nEXT. LOCATION - DAY\nDESCRIPTION OF ACTION.\n\nCHARACTER: Dialogue goes here.\n[SCENE END]\n",
-            character: "\n\n--- CHARACTER PROFILE ---\nNAME: \nROLE: \nCORE MOTIVATION: \n-------------------------\n",
-            verse: "\n\n[VERSE 1]\nLine 1\nLine 2\nLine 3\nLine 4\n[CHORUS]\n"
+            scene: "\n\n[SCENE START]\nEXT. LOCATION - DAY\nACTION.\n\nCHARACTER: Dialogue.\n[SCENE END]\n",
+            character: "\n\n--- CHARACTER PROFILE ---\nNAME: \nROLE: \nMOTIVATION: \n-------------------------\n",
+            verse: "\n\n[VERSE 1]\nLine\n[CHORUS]\n"
         };
-        insertTextAtCursor(templates[type]);
+        const editor = document.getElementById('editor');
+        editor.innerText += templates[type];
     }
 
-    function insertTextAtCursor(text) {
-        editor.focus();
-        const sel = window.getSelection();
-        if (sel.rangeCount) {
-            const range = sel.getRangeAt(0);
-            range.deleteContents();
-            const node = document.createTextNode(text);
-            range.insertNode(node);
-            range.setStartAfter(node);
-            sel.removeAllRanges();
-            sel.addRange(range);
-        }
-    }
-
-    // New Feature: Simple BPM Visualizer
     setInterval(() => {
         const bpm = document.getElementById('bpm-input').value || 120;
         const bar = document.getElementById('bpm-bar');
         const progress = (Date.now() % (60000 / bpm)) / (60000 / bpm) * 100;
         bar.style.width = progress + "%";
     }, 50);
-
-    // Existing functions...
-    // ... existing code ...
 </script>
 </body>
 </html>
