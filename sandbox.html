@@ -64,8 +64,8 @@
         }
 
         /* Workspace & Paper */
-        .workspace { flex-grow: 1; overflow: auto; display: flex; flex-direction: column; align-items: center; padding: 40px; position: relative; height: 100%; }
-        .paper { background: white; width: 8.5in; min-height: 11in; padding: 1in; box-shadow: 0 4px 15px rgba(0,0,0,0.05); outline: none; position: relative; line-height: 1.15; transition: 0.3s; }
+        .workspace { flex-grow: 1; overflow: auto; display: flex; flex-direction: column; align-items: center; padding: 40px; position: relative; height: 100%; box-sizing: border-box; }
+        .paper { background: white; width: 8.5in; min-height: 11in; padding: 1in; box-shadow: 0 4px 15px rgba(0,0,0,0.05); outline: none; position: relative; line-height: 1.15; transition: 0.3s; box-sizing: border-box; }
         
         /* Floating Badge Button */
         .badge-trigger { position: fixed; top: 160px; right: 40px; z-index: 10; display: flex; flex-direction: column; gap: 10px; transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -74,7 +74,7 @@
         select { padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px; }
 
         /* Citation View */
-        #citation-view { display: none; width: 100%; max-width: 8.5in; background: white; padding: 1in; box-shadow: 0 4px 15px rgba(0,0,0,0.05); font-family: 'Times New Roman', serif; }
+        #citation-view { display: none; width: 100%; max-width: 8.5in; background: white; padding: 1in; box-shadow: 0 4px 15px rgba(0,0,0,0.05); font-family: 'Times New Roman', serif; box-sizing: border-box; }
 
         /* Custom Collapsible Voice Scratchpad Sidebar */
         .scratchpad-sidebar {
@@ -511,7 +511,7 @@
     <div class="workspace">
         <div id="word-view" class="paper" contenteditable="true" oninput="handleInput()">Start composing text or narrative content loops...</div>
         
-        <div id="data-view-container" style="display:none; width: 100%; max-width: 800px; background: white; padding: 40px; border-radius: 15px;">
+        <div id="data-view-container" style="display:none; width: 100%; max-width: 800px; background: white; padding: 40px; border-radius: 15px; box-sizing: border-box;">
             <h2>Velocity Forensics</h2>
             <div style="height: 350px;"><canvas id="wpmChart"></canvas></div>
         </div>
@@ -717,7 +717,7 @@
         const writersString = writersProducersList.length > 0 ? writersProducersList.join(', ') : "Independent Creator";
         
         const badgeHTML = `
-            <div contenteditable="false" style="margin-top: 40px; border: 2px solid #00b894; padding: 16px; border-radius: 12px; width: 360px; background: #ffffff; color: #0f172a; font-family: sans-serif; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+            <div contenteditable="false" style="margin-top: 40px; border: 2px solid #00b894; padding: 16px; border-radius: 12px; width: 360px; background: #ffffff; color: #0f172a; font-family: sans-serif; box-shadow: 0 4px 12px rgba(0,0,0,0.05); box-sizing: border-box;">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 10px;">
                     <span style="color: #00b894; font-weight: 800; font-size: 13px; letter-spacing: 0.5px;">VERIFIED CREATOR ORIGIN</span>
                     <span style="font-size: 10px; background: rgba(0, 184, 148, 0.1); color: #00b894; padding: 2px 6px; border-radius: 4px; font-weight: 700;">TRUST: ${score}</span>
