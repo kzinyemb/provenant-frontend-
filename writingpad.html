@@ -18,7 +18,13 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="style.css">
     <style>
-        :root { --ribbon-bg: #ffffff; --border-color: #edebe9; --bg-workspace: #e2e8f0; --brand-dark: #0f172a; --brand-accent: #00b894; }
+        :root { 
+            --ribbon-bg: #ffffff; 
+            --border-color: #edebe9; 
+            --bg-workspace: #090d16; /* Darker grey/slate workspace background for clear page separation */
+            --brand-dark: #0f172a; 
+            --brand-accent: #00b894; 
+        }
         
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -64,27 +70,27 @@
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            padding: 20px 20px 60px 20px; 
+            padding: 30px 20px 60px 20px; 
             position: relative; 
         }
 
         .pages-wrapper {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 30px;
             align-items: center;
             width: 100%;
         }
 
-        /* White Paper Sheet - Normal Size & Exclusive Editable Region */
+        /* White Paper Sheet - Explicit Editable Region */
         .paper { 
             background: #ffffff !important; 
             width: 8.5in; 
             min-height: 11in; 
             height: auto;
             padding: 1in; 
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); 
-            border-radius: 2px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); 
+            border-radius: 4px;
             outline: none; 
             position: relative; 
             line-height: 1.5; 
@@ -96,10 +102,34 @@
             margin: 0 auto;
         }
 
-        .page-number-indicator {
+        /* Header / Footer / Page Number Indicators */
+        .page-header-region {
             position: absolute;
-            bottom: 15px;
-            right: 25px;
+            top: 25px;
+            left: 1in;
+            right: 1in;
+            font-size: 11px;
+            color: #94a3b8;
+            border-bottom: 1px dashed #cbd5e1;
+            padding-bottom: 4px;
+            outline: none;
+        }
+
+        .page-footer-region {
+            position: absolute;
+            bottom: 25px;
+            left: 1in;
+            right: 1in;
+            font-size: 11px;
+            color: #94a3b8;
+            border-top: 1px dashed #cbd5e1;
+            padding-top: 4px;
+            display: flex;
+            justify-content: space-between;
+            outline: none;
+        }
+
+        .page-number-indicator {
             font-size: 10px;
             color: #94a3b8;
             font-weight: 600;
@@ -137,7 +167,7 @@
         #citation-view { display: none; width: 8.5in; background: #ffffff; padding: 1in; box-shadow: 0 4px 20px rgba(0,0,0,0.15); font-family: 'Times New Roman', serif; color: #0f172a; user-select: text; box-sizing: border-box; }
     </style>
 </head>
-<body onclick="handleWorkspaceClick(event)">
+<body>
 
 <div class="quick-access">
     <div onclick="location.href='index.html'" style="cursor:pointer" title="Exit Storefront Dashboard">🏠</div>
@@ -228,6 +258,7 @@
         </div>
         <div class="group-label">Font & Style</div>
     </div>
+
     <div class="group">
         <div class="btn-row">
             <button class="btn-ribbon" onclick="document.execCommand('justifyLeft')">Left</button>
@@ -241,6 +272,15 @@
             <option value="2.0">2.0 spacing</option>
         </select>
         <div class="group-label">Paragraph</div>
+    </div>
+
+    <!-- Page Setup & Header/Footer Ribbon Group -->
+    <div class="group">
+        <div class="btn-row">
+            <button class="btn-ribbon btn-big" onclick="toggleHeaderFooter()"><span>📑</span>Header & Footer</button>
+            <button class="btn-ribbon btn-big" onclick="togglePageNumbers()"><span>🔢</span>Page Numbers</button>
+        </div>
+        <div class="group-label">Insert / Layout</div>
     </div>
 </div>
 
@@ -283,6 +323,7 @@
     let log = [], startTime = null, chartInstance = null;
     let authors = [];
     let activePage = null;
+    let showPageNumbers = true;
 
     window.onload = () => {
         const savedText = localStorage.getItem('hv_content');
@@ -305,7 +346,7 @@
 
     function bindPaperEvents() {
         const pages = document.querySelectorAll('.paper');
-        pages.forEach(page => {
+        pages.forEach((page, index) => {
             page.setAttribute('contenteditable', 'true');
             
             page.oninput = function() {
@@ -331,16 +372,6 @@
         }
     }
 
-    function handleWorkspaceClick(e) {
-        if (!e.target.closest('.paper') && !e.target.closest('.quick-access') && !e.target.closest('.ribbon-content') && !e.target.closest('.tabs') && !e.target.closest('.badge-trigger')) {
-            const pages = document.querySelectorAll('.paper');
-            const targetPage = activePage || pages[pages.length - 1];
-            if (targetPage) {
-                targetPage.focus();
-            }
-        }
-    }
-
     function addNewPage() {
         const wrapper = document.getElementById('pages-wrapper');
         const newPage = document.createElement('div');
@@ -359,15 +390,45 @@
     function updatePageNumbers() {
         const pages = document.querySelectorAll('.paper');
         pages.forEach((page, index) => {
-            let indicator = page.querySelector('.page-number-indicator');
-            if (!indicator) {
-                indicator = document.createElement('div');
-                indicator.className = 'page-number-indicator';
-                indicator.setAttribute('contenteditable', 'false');
-                page.appendChild(indicator);
+            let footer = page.querySelector('.page-footer-region');
+            if (!footer) {
+                footer = document.createElement('div');
+                footer.className = 'page-footer-region';
+                footer.setAttribute('contenteditable', 'false');
+                footer.innerHTML = `<span>Header/Footer Note</span><span class="page-number-indicator">Page ${index + 1} of ${pages.length}</span>`;
+                page.appendChild(footer);
+            } else {
+                let indicator = footer.querySelector('.page-number-indicator');
+                if (indicator) {
+                    indicator.innerText = `Page ${index + 1} of ${pages.length}`;
+                }
             }
-            indicator.innerText = `Page ${index + 1} of ${pages.length}`;
         });
+    }
+
+    function togglePageNumbers() {
+        showPageNumbers = !showPageNumbers;
+        document.querySelectorAll('.page-number-indicator').forEach(el => {
+            el.style.display = showPageNumbers ? 'inline' : 'none';
+        });
+    }
+
+    function toggleHeaderFooter() {
+        const headers = document.querySelectorAll('.page-header-region');
+        const footers = document.querySelectorAll('.page-footer-region');
+        
+        if (headers.length > 0) {
+            headers.forEach(h => h.remove());
+        } else {
+            const pages = document.querySelectorAll('.paper');
+            pages.forEach(p => {
+                const header = document.createElement('div');
+                header.className = 'page-header-region';
+                header.setAttribute('contenteditable', 'true');
+                header.innerText = 'Document Header - Double click to edit...';
+                p.prepend(header);
+            });
+        }
     }
 
     function applyFontSize(size) {
