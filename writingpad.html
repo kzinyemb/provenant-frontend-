@@ -21,7 +21,7 @@
         :root { 
             --ribbon-bg: #ffffff; 
             --border-color: #edebe9; 
-            --bg-workspace: #090d16; /* Darker grey/slate workspace background for clear page separation */
+            --bg-workspace: #090d16; 
             --brand-dark: #0f172a; 
             --brand-accent: #00b894; 
         }
@@ -87,7 +87,7 @@
             background: #ffffff !important; 
             width: 8.5in; 
             min-height: 11in; 
-            height: 11in; /* Fixed standard page height to enforce pagination boundary */
+            height: 11in; 
             padding: 1in; 
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); 
             border-radius: 4px;
@@ -100,7 +100,7 @@
             cursor: text;
             box-sizing: border-box;
             margin: 0 auto;
-            overflow: hidden; /* Prevents text overflow past single sheet boundary */
+            overflow: hidden; 
         }
 
         /* Header / Footer / Page Number Indicators */
@@ -166,6 +166,34 @@
 
         /* Citation View */
         #citation-view { display: none; width: 8.5in; background: #ffffff; padding: 1in; box-shadow: 0 4px 20px rgba(0,0,0,0.15); font-family: 'Times New Roman', serif; color: #0f172a; user-select: text; box-sizing: border-box; }
+        
+        /* Quick Insert Toolbar for Limited Typing Support */
+        .quick-insert-bar {
+            background: #1e293b;
+            padding: 8px 20px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid #334155;
+            z-index: 95;
+            flex-wrap: wrap;
+        }
+        .snippet-btn {
+            background: #334155;
+            color: #f8fafc;
+            border: 1px solid #475569;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .snippet-btn:hover {
+            background: #3b82f6;
+            border-color: #3b82f6;
+        }
     </style>
 </head>
 <body>
@@ -195,6 +223,20 @@
     <div class="tab" onclick="setView('file')">File</div>
     <div class="tab active" id="tab-home" onclick="setView('home')">Home</div>
     <div class="tab" id="tab-data" onclick="setView('data')" style="background:#00b894; color:white">Forensics</div>
+</div>
+
+<!-- Quick Insert Bar for One-Click Snippets / Words (Aids users unable to type full sentences) -->
+<div class="quick-insert-bar" id="quick-insert-bar">
+    <span style="color: #94a3b8; font-size: 11px; font-weight: bold; margin-right: 5px;">Quick Insert:</span>
+    <button class="snippet-btn" onclick="insertSnippet('Introduction ')">Introduction</button>
+    <button class="snippet-btn" onclick="insertSnippet('Abstract: ')">Abstract</button>
+    <button class="snippet-btn" onclick="insertSnippet('Furthermore, ')">Furthermore</button>
+    <button class="snippet-btn" onclick="insertSnippet('In conclusion, ')">In conclusion</button>
+    <button class="snippet-btn" onclick="insertSnippet('Analysis indicates that ')">Analysis indicates</button>
+    <button class="snippet-btn" onclick="insertSnippet('Therefore, ')">Therefore</button>
+    <button class="snippet-btn" onclick="insertSnippet('Methodology: ')">Methodology</button>
+    <button class="snippet-btn" onclick="insertSnippet('. ')">Period (. )</button>
+    <button class="snippet-btn" onclick="insertSnippet(', ')">Comma (, )</button>
 </div>
 
 <div class="ribbon-content" id="file-ribbon">
@@ -379,6 +421,26 @@
         }
     }
 
+    /* Helper function for quick snippet insertion for users unable to type full sentences */
+    function insertSnippet(text) {
+        if (!activePage) {
+            const pages = document.querySelectorAll('.paper');
+            activePage = pages[0] || addNewPage();
+        }
+        activePage.focus();
+        document.execCommand('insertText', false, text);
+        
+        if (!startTime) startTime = Date.now();
+        for (let i = 0; i < text.length; i++) {
+            log.push({ k: text[i], t: Date.now() - startTime });
+        }
+
+        updateStats();
+        autoSave();
+        calculateTrustScore();
+        checkOverflowAndPaginate(activePage);
+    }
+
     /* Jump Focus to Next Page / Create New Page on Bottom Overflow */
     function checkOverflowAndPaginate(page) {
         if (page.scrollHeight > page.clientHeight) {
@@ -418,6 +480,7 @@
         newPage.focus();
         activePage = newPage;
         autoSave();
+        return newPage;
     }
 
     function updatePageNumbers() {
@@ -560,10 +623,12 @@
         const cv = document.getElementById('citation-view');
         const wrapper = document.getElementById('pages-wrapper');
         const btnAdd = document.getElementById('btn-add-page');
+        const quickInsert = document.getElementById('quick-insert-bar');
         
         const isVisible = (cv.style.display === 'block');
         wrapper.style.display = isVisible ? 'flex' : 'none';
         btnAdd.style.display = isVisible ? 'block' : 'none';
+        quickInsert.style.display = isVisible ? 'flex' : 'none';
         cv.style.display = isVisible ? 'none' : 'block';
     }
 
@@ -574,16 +639,19 @@
         
         const wrapper = document.getElementById('pages-wrapper');
         const btnAdd = document.getElementById('btn-add-page');
+        const quickInsert = document.getElementById('quick-insert-bar');
 
         if(id === 'data') {
             wrapper.style.display = 'none';
             btnAdd.style.display = 'none';
+            quickInsert.style.display = 'none';
             document.getElementById('data-view-container').style.display = 'block';
             document.getElementById('tab-data').classList.add('active');
             updateChart();
         } else {
             wrapper.style.display = 'flex';
             btnAdd.style.display = 'block';
+            quickInsert.style.display = 'flex';
             document.getElementById('data-view-container').style.display = 'none';
             document.getElementById(id + '-ribbon').style.display = 'flex';
             document.getElementById('tab-' + id).classList.add('active');
