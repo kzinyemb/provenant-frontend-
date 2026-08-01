@@ -82,12 +82,12 @@
             width: 100%;
         }
 
-        /* White Paper Sheet - Explicit Editable Region */
+        /* White Paper Sheet - Fixed Page Size Bounds */
         .paper { 
             background: #ffffff !important; 
             width: 8.5in; 
-            min-height: 11in; 
-            height: auto; /* Changed from fixed 11in to auto to allow natural typing bounds without clipping cursor/sentences */
+            height: 11in; /* Enforces strict letter page height to prevent infinite extension */
+            max-height: 11in;
             padding: 1in; 
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); 
             border-radius: 4px;
@@ -100,7 +100,7 @@
             cursor: text;
             box-sizing: border-box;
             margin: 0 auto;
-            overflow: visible; /* Changed from hidden to visible so full sentence input and cursor rendering are unrestricted */
+            overflow: hidden; /* Clips content overflowing the strict page layout boundaries */
         }
 
         /* Header / Footer / Page Number Indicators */
@@ -382,7 +382,7 @@
     /* Jump Focus to Next Page / Create New Page on Bottom Overflow */
     function checkOverflowAndPaginate(page) {
         // Utilizing a threshold check against standard page bounds (approx 1056px for 11in at 96DPI minus padding)
-        if (page.scrollHeight > (page.clientHeight + 100)) {
+        if (page.scrollHeight > (page.clientHeight + 10)) {
             const allPages = Array.from(document.querySelectorAll('.paper'));
             const pageIndex = allPages.indexOf(page);
 
