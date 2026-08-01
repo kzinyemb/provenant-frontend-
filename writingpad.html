@@ -1,703 +1,1270 @@
-<!DOCTYPE html>
+!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
     <!-- Google tag (gtag.js) -->
+
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6B0NP15RYC"></script>
+
     <script>
+
       window.dataLayer = window.dataLayer || [];
+
       function gtag(){dataLayer.push(arguments);}
+
       gtag('js', new Date());
 
+
+
       gtag('config', 'G-6B0NP15RYC');
+
     </script>
 
+
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Writers Forensic Workspace | VerifyHuman™</title>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <link rel="stylesheet" href="style.css">
+
     <style>
+
         :root { 
+
             --ribbon-bg: #ffffff; 
+
             --border-color: #edebe9; 
-            --bg-workspace: #090d16; 
+
+            --bg-workspace: #090d16; /* Darker grey/slate workspace background for clear page separation */
+
             --brand-dark: #0f172a; 
+
             --brand-accent: #00b894; 
+
         }
+
         
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
+
+
         body { 
+
             display: flex; 
+
             flex-direction: column; 
+
             height: 100vh; 
+
             overflow: hidden; 
+
             background-color: var(--bg-workspace); 
+
             font-family: 'Inter', sans-serif; 
+
         }
+
         
+
         /* Navigation & Tabs */
+
         .quick-access { background: var(--brand-dark); color: white; padding: 8px 20px; display: flex; gap: 15px; align-items: center; z-index: 100; flex-wrap: wrap; user-select: none; }
+
         .tabs { background: var(--brand-dark); display: flex; padding-left: 10px; z-index: 50; user-select: none; }
+
         .tab { padding: 10px 20px; color: rgba(255,255,255,0.7); cursor: pointer; font-size: 13px; font-weight: 600; border-radius: 8px 8px 0 0; user-select: none; }
+
         .tab.active { background: var(--ribbon-bg); color: var(--brand-dark); }
 
+
+
         /* Ribbon Menu */
+
         .ribbon-content { background: var(--ribbon-bg); height: 115px; border-bottom: 1px solid var(--border-color); display: none; padding: 0 20px; align-items: center; gap: 10px; user-select: none; flex-shrink: 0; }
+
         .ribbon-content.active { display: flex; }
+
         .group { display: flex; flex-direction: column; align-items: center; border-right: 1px solid var(--border-color); padding: 0 15px; height: 85%; justify-content: center; }
+
         .group-label { font-size: 10px; color: #888; margin-top: 5px; text-transform: uppercase; }
+
         .btn-row { display: flex; gap: 4px; align-items: center; }
+
         .btn-ribbon { background: none; border: 1px solid transparent; padding: 6px; cursor: pointer; border-radius: 4px; font-size: 12px; color: var(--brand-dark); transition: 0.2s; }
+
         .btn-ribbon:hover { background: #f0f0f0; border-color: #ccc; }
+
         .btn-big { flex-direction: column; display: flex; min-width: 55px; text-align: center; }
+
         .btn-big span { font-size: 20px; }
 
+
+
         /* Quick Access Authors Styling */
+
         .header-authors-wrapper { display: flex; align-items: center; gap: 8px; margin-left: auto; background: rgba(255,255,255,0.08); padding: 4px 10px; border-radius: 8px; }
+
         .author-list { display: flex; align-items: center; gap: 6px; }
+
         .author-tag { background: #334155; color: #f8fafc; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+
         .author-remove { cursor: pointer; color: #f87171; font-weight: bold; margin-left: 2px; }
+
         .author-input-row { display: flex; gap: 4px; }
+
         .author-input { font-size: 11px; padding: 4px 8px; border: 1px solid #475569; background: #0f172a; color: #fff; border-radius: 4px; outline: none; width: 130px; user-select: text; }
+
         .author-add-btn { background: #3b82f6; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer; }
 
+
+
         /* Workspace Outer Region - Dark Background */
+
         .workspace { 
+
             flex-grow: 1; 
+
             overflow-y: auto; 
+
             display: flex; 
+
             flex-direction: column; 
+
             align-items: center; 
+
             padding: 30px 20px 60px 20px; 
+
             position: relative; 
+
         }
+
+
 
         .pages-wrapper {
+
             display: flex;
+
             flex-direction: column;
+
             gap: 30px;
+
             align-items: center;
+
             width: 100%;
+
         }
+
+
 
         /* White Paper Sheet - Explicit Editable Region */
+
         .paper { 
+
             background: #ffffff !important; 
+
             width: 8.5in; 
+
             min-height: 11in; 
-            height: 11in; 
+
+            height: 11in; /* Fixed standard page height to enforce pagination boundary */
+
             padding: 1in; 
+
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); 
+
             border-radius: 4px;
+
             outline: none; 
+
             position: relative; 
+
             line-height: 1.5; 
+
             font-size: 14px;
+
             color: #0f172a;
+
             user-select: text;
+
             cursor: text;
+
             box-sizing: border-box;
+
             margin: 0 auto;
-            overflow: hidden; 
+
+            overflow: hidden; /* Prevents text overflow past single sheet boundary */
+
         }
+
+
 
         /* Header / Footer / Page Number Indicators */
+
         .page-header-region {
+
             position: absolute;
+
             top: 25px;
+
             left: 1in;
+
             right: 1in;
+
             font-size: 11px;
+
             color: #94a3b8;
+
             border-bottom: 1px dashed #cbd5e1;
+
             padding-bottom: 4px;
+
             outline: none;
+
         }
+
+
 
         .page-footer-region {
+
             position: absolute;
+
             bottom: 25px;
+
             left: 1in;
+
             right: 1in;
+
             font-size: 11px;
+
             color: #94a3b8;
+
             border-top: 1px dashed #cbd5e1;
+
             padding-top: 4px;
+
             display: flex;
+
             justify-content: space-between;
+
             outline: none;
+
         }
+
+
 
         .page-number-indicator {
+
             font-size: 10px;
+
             color: #94a3b8;
+
             font-weight: 600;
+
             user-select: none;
+
             pointer-events: none;
+
         }
+
+
 
         /* Action Buttons */
+
         .add-page-btn {
+
             background: #3b82f6;
+
             color: white;
+
             border: none;
+
             padding: 12px 28px;
+
             border-radius: 8px;
+
             font-weight: 700;
+
             font-size: 13px;
+
             cursor: pointer;
+
             transition: all 0.2s ease;
+
             margin-top: 20px;
+
             margin-bottom: 20px;
+
             box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+
             user-select: none;
+
         }
+
         .add-page-btn:hover { background: #2563eb; transform: translateY(-2px); }
 
+
+
         /* Floating Badge Trigger */
+
         .badge-trigger { position: fixed; top: 160px; right: 40px; z-index: 10; display: flex; flex-direction: column; gap: 10px; user-select: none; }
+
         .action-btn { background: var(--brand-accent); color: var(--brand-dark); border: none; padding: 10px 20px; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 11px; transition: 0.2s; }
+
         .action-btn:hover { filter: brightness(1.1); transform: translateY(-2px); }
 
+
+
         .status-bar { background: var(--brand-dark); color: white; padding: 6px 20px; font-size: 12px; display: flex; justify-content: space-between; z-index: 90; user-select: none; flex-shrink: 0; }
+
         select { padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px; }
 
+
+
         /* Citation View */
+
         #citation-view { display: none; width: 8.5in; background: #ffffff; padding: 1in; box-shadow: 0 4px 20px rgba(0,0,0,0.15); font-family: 'Times New Roman', serif; color: #0f172a; user-select: text; box-sizing: border-box; }
-        
-        /* Quick Insert Toolbar for Limited Typing Support */
-        .quick-insert-bar {
-            background: #1e293b;
-            padding: 8px 20px;
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            justify-content: center;
-            border-bottom: 1px solid #334155;
-            z-index: 95;
-            flex-wrap: wrap;
-        }
-        .snippet-btn {
-            background: #334155;
-            color: #f8fafc;
-            border: 1px solid #475569;
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .snippet-btn:hover {
-            background: #3b82f6;
-            border-color: #3b82f6;
-        }
+
     </style>
+
 </head>
+
 <body>
 
+
+
 <div class="quick-access">
+
     <div onclick="location.href='index.html'" style="cursor:pointer" title="Exit Storefront Dashboard">🏠</div>
+
     <div onclick="manualSave()" id="save-icon" style="cursor:pointer" title="Save Now">💾</div>
+
     <!-- Quick Access Undo/Redo Buttons -->
+
     <div onclick="document.execCommand('undo')" style="cursor:pointer" title="Go Back (Undo)">↩️</div>
+
     <div onclick="document.execCommand('redo')" style="cursor:pointer" title="Go Forward (Redo)">↪️</div>
+
     
+
     <div style="background: var(--brand-accent); padding: 2px 12px; border-radius: 50px; font-weight: 800; font-size: 11px;">Human Integrity: <span id="trust-score">0%</span></div>
+
     
+
     <!-- Title & Authors Header Group -->
+
     <div class="header-authors-wrapper">
+
         <span id="doc-name" style="font-weight:bold; font-size:12px; cursor:pointer; color: #38bdf8;" onclick="renameDoc()">Untitled Manuscript</span>
+
         <span style="color: #64748b; font-size: 12px;">|</span>
+
         <div class="author-list" id="author-container"></div>
+
         <div class="author-input-row">
+
             <input type="text" id="new-author-input" class="author-input" placeholder="+ Author name..." onclick="event.stopPropagation()">
+
             <button class="author-add-btn" onclick="addAuthor(); event.stopPropagation();">Add</button>
+
         </div>
+
     </div>
+
 </div>
+
+
 
 <div class="tabs">
+
     <div class="tab" onclick="setView('file')">File</div>
+
     <div class="tab active" id="tab-home" onclick="setView('home')">Home</div>
+
     <div class="tab" id="tab-data" onclick="setView('data')" style="background:#00b894; color:white">Forensics</div>
+
 </div>
 
-<!-- Quick Insert Bar for One-Click Snippets / Words (Aids users unable to type full sentences) -->
-<div class="quick-insert-bar" id="quick-insert-bar">
-    <span style="color: #94a3b8; font-size: 11px; font-weight: bold; margin-right: 5px;">Quick Insert:</span>
-    <button class="snippet-btn" onclick="insertSnippet('Introduction ')">Introduction</button>
-    <button class="snippet-btn" onclick="insertSnippet('Abstract: ')">Abstract</button>
-    <button class="snippet-btn" onclick="insertSnippet('Furthermore, ')">Furthermore</button>
-    <button class="snippet-btn" onclick="insertSnippet('In conclusion, ')">In conclusion</button>
-    <button class="snippet-btn" onclick="insertSnippet('Analysis indicates that ')">Analysis indicates</button>
-    <button class="snippet-btn" onclick="insertSnippet('Therefore, ')">Therefore</button>
-    <button class="snippet-btn" onclick="insertSnippet('Methodology: ')">Methodology</button>
-    <button class="snippet-btn" onclick="insertSnippet('. ')">Period (. )</button>
-    <button class="snippet-btn" onclick="insertSnippet(', ')">Comma (, )</button>
-</div>
+
 
 <div class="ribbon-content" id="file-ribbon">
+
     <div class="group">
+
         <div class="btn-row">
+
             <button class="btn-ribbon btn-big" onclick="newDoc()"><span>📄</span>New</button>
+
             <button class="btn-ribbon btn-big" onclick="exportPDF()"><span>📕</span>PDF</button>
+
             <button class="btn-ribbon btn-big" onclick="window.print()"><span>🖨️</span>Print</button>
+
         </div>
+
         <div class="group-label">Document</div>
+
     </div>
+
     <div class="group">
+
         <div class="btn-row">
+
             <button class="btn-ribbon btn-big" onclick="createCopy()"><span>👯</span>Copy</button>
+
             <button class="btn-ribbon btn-big" onclick="renameDoc()"><span>✏️</span>Rename</button>
+
             <button class="btn-ribbon btn-big" onclick="deleteDoc()" style="color:#d83b01"><span>🗑️</span>Delete</button>
+
         </div>
+
         <div class="group-label">Manage</div>
+
     </div>
+
     <div class="group">
+
         <button class="btn-ribbon btn-big" onclick="toggleCitations()"><span>📚</span>Citations</button>
+
         <div class="group-label">Guides</div>
+
     </div>
+
 </div>
+
+
 
 <div class="ribbon-content active" id="home-ribbon">
+
     <!-- History Ribbon Group -->
+
     <div class="group">
+
         <div class="btn-row">
+
             <button class="btn-ribbon btn-big" onclick="document.execCommand('undo')" title="Go Back"><span>↩️</span>Go Back</button>
+
             <button class="btn-ribbon btn-big" onclick="document.execCommand('redo')" title="Go Forward"><span>↪️</span>Go Forward</button>
+
         </div>
+
         <div class="group-label">History</div>
+
     </div>
 
+
+
     <div class="group">
+
         <div style="display: flex; gap: 5px; margin-bottom: 5px;">
+
             <!-- Font Selector -->
+
             <select onchange="document.execCommand('fontName', false, this.value)" style="width: 110px;" onclick="event.stopPropagation()">
+
                 <option value="Arial">Arial</option>
+
                 <option value="Calibri">Calibri</option>
+
                 <option value="Calibri Light">Calibri Light</option>
+
                 <option value="Times New Roman">Times New Roman</option>
+
             </select>
+
             <!-- Text Size Selector -->
+
             <select onchange="applyFontSize(this.value)" style="width: 65px;" onclick="event.stopPropagation()" title="Text Size">
+
                 <option value="1">10 pt</option>
+
                 <option value="2">12 pt</option>
+
                 <option value="3" selected>14 pt</option>
+
                 <option value="4">18 pt</option>
+
                 <option value="5">24 pt</option>
+
                 <option value="6">32 pt</option>
+
                 <option value="7">48 pt</option>
+
             </select>
+
         </div>
+
         <div class="btn-row">
+
             <button class="btn-ribbon" onclick="document.execCommand('bold')"><b>B</b></button>
+
             <button class="btn-ribbon" onclick="document.execCommand('italic')"><i>I</i></button>
+
             <button class="btn-ribbon" onclick="document.execCommand('underline')"><u>U</u></button>
+
             <button class="btn-ribbon" onclick="document.execCommand('superscript')">x²</button>
+
             <button class="btn-ribbon" onclick="document.execCommand('subscript')">x₂</button>
+
         </div>
+
         <div class="group-label">Font & Style</div>
+
     </div>
 
+
+
     <div class="group">
+
         <div class="btn-row">
+
             <button class="btn-ribbon" onclick="document.execCommand('justifyLeft')">Left</button>
+
             <button class="btn-ribbon" onclick="document.execCommand('justifyCenter')">Center</button>
+
             <button class="btn-ribbon" onclick="document.execCommand('justifyRight')">Right</button>
+
         </div>
+
         <select onchange="applyLineHeight(this.value)" style="margin-top:5px;" onclick="event.stopPropagation()">
+
             <option value="1.0">1.0 spacing</option>
+
             <option value="1.15">1.15 spacing</option>
+
             <option value="1.5">1.5 spacing</option>
+
             <option value="2.0">2.0 spacing</option>
+
         </select>
+
         <div class="group-label">Paragraph</div>
+
     </div>
+
+
 
     <!-- Page Setup & Header/Footer Ribbon Group -->
+
     <div class="group">
+
         <div class="btn-row">
+
             <button class="btn-ribbon btn-big" onclick="toggleHeaderFooter()"><span>📑</span>Header & Footer</button>
+
             <button class="btn-ribbon btn-big" onclick="togglePageNumbers()"><span>🔢</span>Page Numbers</button>
+
         </div>
+
         <div class="group-label">Insert / Layout</div>
+
     </div>
+
 </div>
+
+
 
 <div class="badge-trigger">
+
     <button class="action-btn" onclick="addBadge(); event.stopPropagation();">Get Certification Badge</button>
+
 </div>
+
+
 
 <div class="workspace" id="workspace-container">
+
     <div class="pages-wrapper" id="pages-wrapper">
+
         <!-- Page 1 Canvas -->
+
         <div class="paper" contenteditable="true">Start composing text or narrative content loops...</div>
+
     </div>
+
+
 
     <button class="add-page-btn" id="btn-add-page" onclick="addNewPage(); event.stopPropagation();">+ Add Page</button>
+
     
+
     <div id="data-view-container" style="display:none; width: 100%; max-width: 800px; background: white; padding: 40px; border-radius: 15px;">
+
         <h2>Velocity Forensics</h2>
+
         <div style="height: 350px;"><canvas id="wpmChart"></canvas></div>
+
     </div>
+
+
 
     <div id="citation-view">
+
         <button onclick="toggleCitations()" style="float:right; cursor:pointer;">✖ Close</button>
+
         <h2 style="text-align:center">VerifyHuman™ Citation Guides</h2>
+
         <hr>
+
         <br>
+
         <h3>MLA Example</h3>
+
         <p style="padding-left: 40px; text-indent: -40px;">Doe, Jane. "The Impact of Human-Centric Composition." <i>VerifyHuman Forensic Workspace</i>, Report VH-9921, 2026. Certified Human Integrity: 98%.</p>
+
         <br>
+
         <h3>APA Example</h3>
+
         <p style="padding-left: 40px; text-indent: -40px;">Doe, J. (2026). <i>The impact of human-centric composition</i> (Forensic Report No. VH-9921). VerifyHuman Authenticity Services. https://verifyhuman.com/reports/VH-9921</p>
+
     </div>
+
 </div>
+
+
 
 <div class="status-bar">
+
     <div>Words: <span id="word-count">0</span> | Keystrokes: <span id="key-count">0</span></div>
+
     <div id="save-status">Auto-save Enabled</div>
+
 </div>
 
+
+
 <script>
+
     let log = [], startTime = null, chartInstance = null;
+
     let authors = [];
+
     let activePage = null;
+
     let showPageNumbers = true;
 
+
+
     window.onload = () => {
+
         const savedText = localStorage.getItem('hv_content');
+
         if (savedText && savedText.trim() !== "") {
+
             document.getElementById('pages-wrapper').innerHTML = savedText;
+
         }
+
         
+
         const savedAuthors = localStorage.getItem('hv_authors');
+
         if (savedAuthors) {
+
             authors = JSON.parse(savedAuthors);
+
         } else {
+
             authors = ["Primary Author"];
+
         }
+
         
+
         bindPaperEvents();
+
         renderAuthors();
+
         updatePageNumbers();
+
         updateStats();
+
     };
 
+
+
     function bindPaperEvents() {
+
         const pages = document.querySelectorAll('.paper');
+
         pages.forEach((page, index) => {
+
             page.setAttribute('contenteditable', 'true');
+
             
+
             page.oninput = function() {
+
                 activePage = this;
+
                 updateStats();
+
                 autoSave();
+
                 calculateTrustScore();
+
                 checkOverflowAndPaginate(this);
+
             };
+
             
+
             page.onkeydown = function(e) {
+
                 if (!startTime) startTime = Date.now(); 
+
                 log.push({ k: e.key, t: Date.now() - startTime });
 
+
+
                 // Check for vertical page boundary overflow on Enter press
+
                 if (e.key === 'Enter') {
+
                     setTimeout(() => checkOverflowAndPaginate(this), 10);
+
                 }
+
             };
+
+
 
             page.onclick = function(e) {
+
                 activePage = this;
+
                 e.stopPropagation();
+
             };
+
         });
+
+
 
         if (pages.length > 0 && !activePage) {
+
             activePage = pages[0];
-        }
-    }
 
-    /* Helper function for quick snippet insertion for users unable to type full sentences */
-    function insertSnippet(text) {
-        if (!activePage) {
-            const pages = document.querySelectorAll('.paper');
-            activePage = pages[0] || addNewPage();
-        }
-        activePage.focus();
-        document.execCommand('insertText', false, text);
-        
-        if (!startTime) startTime = Date.now();
-        for (let i = 0; i < text.length; i++) {
-            log.push({ k: text[i], t: Date.now() - startTime });
         }
 
-        updateStats();
-        autoSave();
-        calculateTrustScore();
-        checkOverflowAndPaginate(activePage);
     }
+
+
 
     /* Jump Focus to Next Page / Create New Page on Bottom Overflow */
+
     function checkOverflowAndPaginate(page) {
+
         if (page.scrollHeight > page.clientHeight) {
+
             const allPages = Array.from(document.querySelectorAll('.paper'));
+
             const pageIndex = allPages.indexOf(page);
 
+
+
             if (pageIndex !== -1 && pageIndex < allPages.length - 1) {
+
                 const nextPage = allPages[pageIndex + 1];
+
                 nextPage.focus();
+
                 setCursorAtStart(nextPage);
+
                 activePage = nextPage;
+
             } else {
+
                 addNewPage();
+
             }
+
         }
+
     }
+
+
 
     function setCursorAtStart(el) {
+
         const range = document.createRange();
+
         const sel = window.getSelection();
+
         range.setStart(el, 0);
+
         range.collapse(true);
+
         sel.removeAllRanges();
+
         sel.addRange(range);
+
     }
+
+
 
     function addNewPage() {
+
         const wrapper = document.getElementById('pages-wrapper');
+
         const newPage = document.createElement('div');
+
         newPage.className = 'paper';
+
         newPage.setAttribute('contenteditable', 'true');
+
         newPage.innerText = '';
+
         
+
         wrapper.appendChild(newPage);
+
         bindPaperEvents();
+
         updatePageNumbers();
+
         newPage.focus();
+
         activePage = newPage;
+
         autoSave();
-        return newPage;
+
     }
+
+
 
     function updatePageNumbers() {
+
         const pages = document.querySelectorAll('.paper');
+
         pages.forEach((page, index) => {
+
             let footer = page.querySelector('.page-footer-region');
+
             if (!footer) {
+
                 footer = document.createElement('div');
+
                 footer.className = 'page-footer-region';
+
                 footer.setAttribute('contenteditable', 'false');
+
                 footer.innerHTML = `<span>Header/Footer Note</span><span class="page-number-indicator">Page ${index + 1} of ${pages.length}</span>`;
+
                 page.appendChild(footer);
+
             } else {
+
                 let indicator = footer.querySelector('.page-number-indicator');
+
                 if (indicator) {
+
                     indicator.innerText = `Page ${index + 1} of ${pages.length}`;
+
                 }
+
             }
+
         });
+
     }
+
+
 
     function togglePageNumbers() {
+
         showPageNumbers = !showPageNumbers;
+
         document.querySelectorAll('.page-number-indicator').forEach(el => {
+
             el.style.display = showPageNumbers ? 'inline' : 'none';
+
         });
+
     }
+
+
 
     function toggleHeaderFooter() {
+
         const headers = document.querySelectorAll('.page-header-region');
+
         
+
         if (headers.length > 0) {
+
             headers.forEach(h => h.remove());
+
         } else {
+
             const pages = document.querySelectorAll('.paper');
+
             pages.forEach(p => {
+
                 const header = document.createElement('div');
+
                 header.className = 'page-header-region';
+
                 header.setAttribute('contenteditable', 'true');
+
                 header.innerText = 'Document Header - Double click to edit...';
+
                 p.prepend(header);
+
             });
+
         }
+
     }
+
+
 
     function applyFontSize(size) {
+
         document.execCommand('fontSize', false, size);
+
     }
+
+
 
     function applyLineHeight(val) {
+
         document.querySelectorAll('.paper').forEach(p => {
+
             p.style.lineHeight = val;
+
         });
+
     }
+
+
 
     function renderAuthors() {
+
         const container = document.getElementById('author-container');
+
         container.innerHTML = '';
+
         authors.forEach((author, index) => {
+
             const tag = document.createElement('div');
+
             tag.className = 'author-tag';
+
             tag.innerHTML = `👤 ${author} <span class="author-remove" onclick="removeAuthor(${index}); event.stopPropagation();">×</span>`;
+
             container.appendChild(tag);
+
         });
+
     }
+
+
 
     function addAuthor() {
+
         const input = document.getElementById('new-author-input');
+
         const name = input.value.trim();
+
         if (name) {
+
             authors.push(name);
+
             input.value = '';
+
             renderAuthors();
+
             localStorage.setItem('hv_authors', JSON.stringify(authors));
+
         }
+
     }
+
+
 
     function removeAuthor(index) {
+
         authors.splice(index, 1);
+
         renderAuthors();
+
         localStorage.setItem('hv_authors', JSON.stringify(authors));
+
     }
+
+
 
     function manualSave() {
+
         autoSave();
+
         const icon = document.getElementById('save-icon');
+
         const status = document.getElementById('save-status');
+
         icon.style.color = "#00b894";
+
         status.innerText = "All changes saved!";
+
         setTimeout(() => { icon.style.color = "white"; status.innerText = "Auto-save Enabled"; }, 2000);
+
     }
+
+
 
     function getAllPaperText() {
+
         return Array.from(document.querySelectorAll('.paper'))
+
             .map(p => {
+
                 const clone = p.cloneNode(true);
+
                 const indicator = clone.querySelector('.page-number-indicator');
+
                 if (indicator) indicator.remove();
+
                 return clone.innerText;
+
             })
+
             .join(' ');
+
     }
+
+
 
     function calculateTrustScore() {
+
         const text = getAllPaperText().trim();
+
         let score = text.length > 0 ? Math.min(100, (log.length / text.length) * 100) : 0;
+
         document.getElementById('trust-score').innerText = Math.floor(score) + "%";
+
     }
+
+
 
     function addBadge() {
+
         const score = document.getElementById('trust-score').innerText;
+
         const now = new Date();
+
         const timestamp = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + 
+
                           ' at ' + 
+
                           now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
         
+
         const authorListStr = authors.length > 0 ? authors.join(', ') : 'Unspecified Author';
 
+
+
         const badgeHTML = `
+
             <div contenteditable="false" style="margin-top: 40px; border: 2px solid #00b894; padding: 18px; border-radius: 12px; width: 340px; background: #f8fafc; font-family: 'Inter', sans-serif; user-select: none;">
+
                 <div style="font-size: 11px; color: #475569; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px; margin-bottom: 10px;">
+
                     <div><strong>Author(s):</strong> ${authorListStr}</div>
+
                     <div><strong>Certified On:</strong> ${timestamp}</div>
+
                 </div>
+
                 <div style="color:#00b894; font-weight:800; font-size: 14px;">VERIFIED HUMAN Origin</div>
+
                 <div style="font-size:12px; color: #0f172a; font-weight: 600; margin-top: 4px;">Composition Trust Metric: ${score}</div>
+
                 <div style="font-size:9px; color:#888; margin-top: 6px;">ID: VH-${Math.floor(Math.random()*1000000)}</div>
+
             </div>
+
             <p><br></p>
+
         `;
 
+
+
         const pages = document.querySelectorAll('.paper');
+
         const targetPage = activePage || pages[pages.length - 1];
+
         targetPage.innerHTML += badgeHTML;
+
         updatePageNumbers();
+
         autoSave();
+
     }
+
+
 
     function toggleCitations() {
+
         const cv = document.getElementById('citation-view');
+
         const wrapper = document.getElementById('pages-wrapper');
+
         const btnAdd = document.getElementById('btn-add-page');
-        const quickInsert = document.getElementById('quick-insert-bar');
+
         
+
         const isVisible = (cv.style.display === 'block');
+
         wrapper.style.display = isVisible ? 'flex' : 'none';
+
         btnAdd.style.display = isVisible ? 'block' : 'none';
-        quickInsert.style.display = isVisible ? 'flex' : 'none';
+
         cv.style.display = isVisible ? 'none' : 'block';
+
     }
+
+
 
     function setView(id) {
+
         document.querySelectorAll('.ribbon-content').forEach(r => r.style.display = 'none');
+
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+
         document.getElementById('citation-view').style.display = 'none';
+
         
+
         const wrapper = document.getElementById('pages-wrapper');
+
         const btnAdd = document.getElementById('btn-add-page');
-        const quickInsert = document.getElementById('quick-insert-bar');
+
+
 
         if(id === 'data') {
+
             wrapper.style.display = 'none';
+
             btnAdd.style.display = 'none';
-            quickInsert.style.display = 'none';
+
             document.getElementById('data-view-container').style.display = 'block';
+
             document.getElementById('tab-data').classList.add('active');
+
             updateChart();
+
         } else {
+
             wrapper.style.display = 'flex';
+
             btnAdd.style.display = 'block';
-            quickInsert.style.display = 'flex';
+
             document.getElementById('data-view-container').style.display = 'none';
+
             document.getElementById(id + '-ribbon').style.display = 'flex';
+
             document.getElementById('tab-' + id).classList.add('active');
+
         }
+
     }
+
+
 
     function updateChart() {
+
         const ctx = document.getElementById('wpmChart').getContext('2d');
+
         if(chartInstance) chartInstance.destroy();
+
         chartInstance = new Chart(ctx, {
+
             type: 'line',
+
             data: {
+
                 labels: log.slice(-20).map(e => Math.floor(e.t/1000) + 's'),
+
                 datasets: [{ label: 'Biometric Cadence Variance', data: log.slice(-20).map(e => e.t % 500), borderColor: '#3b82f6' }]
+
             },
+
             options: { maintainAspectRatio: false }
+
         });
+
     }
+
+
 
     function updateStats() { 
+
         const t = getAllPaperText().trim(); 
+
         document.getElementById('word-count').innerText = t === "" ? 0 : t.split(/\s+/).filter(Boolean).length; 
+
         document.getElementById('key-count').innerText = log.length; 
+
     }
+
+
 
     function autoSave() { 
+
         const wrapper = document.getElementById('pages-wrapper');
+
         localStorage.setItem('hv_content', wrapper.innerHTML); 
+
     }
 
+
+
     function exportPDF() { 
+
         const wrapper = document.getElementById('pages-wrapper');
+
         html2pdf().from(wrapper).save('VerifyHuman_Manuscript_Report.pdf'); 
+
     }
+
     
+
     function renameDoc() { let n = prompt("Name:"); if(n) document.getElementById('doc-name').innerText = n; }
+
     function newDoc() { if(confirm("New document?")) { localStorage.clear(); location.reload(); } }
+
     function deleteDoc() { if(confirm("Delete document?")) { localStorage.clear(); location.reload(); } }
+
     function createCopy() { 
+
         const wrapper = document.getElementById('pages-wrapper');
+
         const blob = new Blob([wrapper.innerHTML], {type: "text/html"}); 
+
         const a = document.createElement('a'); 
+
         a.href = URL.createObjectURL(blob); 
+
         a.download = "Manuscript_Copy.html"; 
+
         a.click(); 
+
     }
+
 </script>
+
 </body>
-</html>
+
+</html> 
+
