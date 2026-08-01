@@ -82,12 +82,12 @@
             width: 100%;
         }
 
-        /* White Paper Sheet - Fixed Page Size Bounds */
+        /* White Paper Sheet - Flexible Bounds to Avoid Lock-ups */
         .paper { 
             background: #ffffff !important; 
             width: 8.5in; 
             min-height: 11in; 
-            height: 11in;
+            height: auto; 
             padding: 1in; 
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); 
             border-radius: 4px;
@@ -100,7 +100,6 @@
             cursor: text;
             box-sizing: border-box;
             margin: 0 auto;
-            overflow: hidden; 
             word-break: break-word;
         }
 
@@ -390,7 +389,8 @@
     }
 
     function checkOverflowAndPaginate(page) {
-        if (page.scrollHeight > (page.clientHeight - 80)) {
+        // Approximate height limit calculation for standard 11in page with 1in padding (approx 1050px)
+        if (page.scrollHeight > 1000) {
             const allPages = Array.from(document.querySelectorAll('.paper'));
             const pageIndex = allPages.indexOf(page);
 
