@@ -21,7 +21,7 @@
         :root { 
             --ribbon-bg: #ffffff; 
             --border-color: #edebe9; 
-            --bg-workspace: #090d16; /* Darker grey/slate workspace background for clear page separation */
+            --bg-workspace: #090d16; 
             --brand-dark: #0f172a; 
             --brand-accent: #00b894; 
         }
@@ -86,7 +86,7 @@
         .paper { 
             background: #ffffff !important; 
             width: 8.5in; 
-            min-height: 11in; /* Changed from strict height to min-height */
+            min-height: 11in; 
             padding: 1in; 
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); 
             border-radius: 4px;
@@ -99,7 +99,7 @@
             cursor: text;
             box-sizing: border-box;
             margin: 0 auto;
-            overflow: visible; /* Changed from hidden to visible */
+            overflow: visible; 
         }
 
         /* Header / Footer / Page Number Indicators */
@@ -167,18 +167,16 @@
         #citation-view { display: none; width: 8.5in; background: #ffffff; padding: 1in; box-shadow: 0 4px 20px rgba(0,0,0,0.15); font-family: 'Times New Roman', serif; color: #0f172a; user-select: text; box-sizing: border-box; }
     </style>
 </head>
-<body>
+<body onclick="handleWorkspaceClick(event)">
 
 <div class="quick-access">
     <div onclick="location.href='index.html'" style="cursor:pointer" title="Exit Storefront Dashboard">🏠</div>
     <div onclick="manualSave()" id="save-icon" style="cursor:pointer" title="Save Now">💾</div>
-    <!-- Quick Access Undo/Redo Buttons -->
     <div onclick="document.execCommand('undo')" style="cursor:pointer" title="Go Back (Undo)">↩️</div>
     <div onclick="document.execCommand('redo')" style="cursor:pointer" title="Go Forward (Redo)">↪️</div>
     
     <div style="background: var(--brand-accent); padding: 2px 12px; border-radius: 50px; font-weight: 800; font-size: 11px;">Human Integrity: <span id="trust-score">0%</span></div>
     
-    <!-- Title & Authors Header Group -->
     <div class="header-authors-wrapper">
         <span id="doc-name" style="font-weight:bold; font-size:12px; cursor:pointer; color: #38bdf8;" onclick="renameDoc()">Untitled Manuscript</span>
         <span style="color: #64748b; font-size: 12px;">|</span>
@@ -220,7 +218,6 @@
 </div>
 
 <div class="ribbon-content active" id="home-ribbon">
-    <!-- History Ribbon Group -->
     <div class="group">
         <div class="btn-row">
             <button class="btn-ribbon btn-big" onclick="document.execCommand('undo')" title="Go Back"><span>↩️</span>Go Back</button>
@@ -231,14 +228,12 @@
 
     <div class="group">
         <div style="display: flex; gap: 5px; margin-bottom: 5px;">
-            <!-- Font Selector -->
             <select onchange="document.execCommand('fontName', false, this.value)" style="width: 110px;" onclick="event.stopPropagation()">
                 <option value="Arial">Arial</option>
                 <option value="Calibri">Calibri</option>
                 <option value="Calibri Light">Calibri Light</option>
                 <option value="Times New Roman">Times New Roman</option>
             </select>
-            <!-- Text Size Selector -->
             <select onchange="applyFontSize(this.value)" style="width: 65px;" onclick="event.stopPropagation()" title="Text Size">
                 <option value="1">10 pt</option>
                 <option value="2">12 pt</option>
@@ -274,7 +269,6 @@
         <div class="group-label">Paragraph</div>
     </div>
 
-    <!-- Page Setup & Header/Footer Ribbon Group -->
     <div class="group">
         <div class="btn-row">
             <button class="btn-ribbon btn-big" onclick="toggleHeaderFooter()"><span>📑</span>Header & Footer</button>
@@ -290,7 +284,6 @@
 
 <div class="workspace" id="workspace-container">
     <div class="pages-wrapper" id="pages-wrapper">
-        <!-- Page 1 Canvas -->
         <div class="paper" contenteditable="true">Start composing text or narrative content loops...</div>
     </div>
 
@@ -342,11 +335,30 @@
         renderAuthors();
         updatePageNumbers();
         updateStats();
+
+        // Focus the first page automatically on load
+        const firstPage = document.querySelector('.paper');
+        if(firstPage) {
+            firstPage.focus();
+            activePage = firstPage;
+        }
     };
+
+    function handleWorkspaceClick(e) {
+        // If clicking on the dark workspace background padding, focus the active or last page automatically
+        if (e.target.classList.contains('workspace') || e.target.classList.contains('pages-wrapper')) {
+            const pages = document.querySelectorAll('.paper');
+            if (pages.length > 0) {
+                const target = activePage || pages[pages.length - 1];
+                target.focus();
+                setCursorAtEnd(target);
+            }
+        }
+    }
 
     function bindPaperEvents() {
         const pages = document.querySelectorAll('.paper');
-        pages.forEach((page, index) => {
+        pages.forEach((page) => {
             page.setAttribute('contenteditable', 'true');
             
             page.oninput = function() {
@@ -361,7 +373,6 @@
                 if (!startTime) startTime = Date.now(); 
                 log.push({ k: e.key, t: Date.now() - startTime });
 
-                // Check for vertical page boundary overflow on Enter press
                 if (e.key === 'Enter') {
                     setTimeout(() => checkOverflowAndPaginate(this), 10);
                 }
@@ -378,9 +389,7 @@
         }
     }
 
-    /* Jump Focus to Next Page / Create New Page on Bottom Overflow */
     function checkOverflowAndPaginate(page) {
-        // Standard height for letter page at 96 DPI is 1056px (11in). Check against scrollHeight.
         if (page.scrollHeight > 1056) {
             const allPages = Array.from(document.querySelectorAll('.paper'));
             const pageIndex = allPages.indexOf(page);
@@ -401,6 +410,15 @@
         const sel = window.getSelection();
         range.setStart(el, 0);
         range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
+
+    function setCursorAtEnd(el) {
+        const range = document.createRange();
+        const sel = window.getSelection();
+        range.selectNodeContents(el);
+        range.collapse(false);
         sel.removeAllRanges();
         sel.addRange(range);
     }
