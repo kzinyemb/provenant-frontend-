@@ -170,7 +170,7 @@
         #citation-view { display: none; width: 8.5in; background: #ffffff; padding: 1in; box-shadow: 0 4px 20px rgba(0,0,0,0.15); font-family: 'Times New Roman', serif; color: #0f172a; user-select: text; box-sizing: border-box; }
     </style>
 </head>
-<body>
+<body onclick="handleWorkspaceClick(event)">
 
 <div class="quick-access">
     <div onclick="location.href='index.html'" style="cursor:pointer" title="Exit Storefront Dashboard">🏠</div>
@@ -345,6 +345,17 @@
         }
     };
 
+    function handleWorkspaceClick(e) {
+        if (e.target.classList.contains('workspace') || e.target.classList.contains('pages-wrapper')) {
+            const pages = document.querySelectorAll('.paper');
+            if (pages.length > 0) {
+                const target = activePage || pages[pages.length - 1];
+                target.focus();
+                setCursorAtEnd(target);
+            }
+        }
+    }
+
     function bindPaperEvents() {
         const pages = document.querySelectorAll('.paper');
         pages.forEach((page) => {
@@ -386,11 +397,30 @@
             if (pageIndex !== -1 && pageIndex < allPages.length - 1) {
                 const nextPage = allPages[pageIndex + 1];
                 nextPage.focus();
+                setCursorAtStart(nextPage);
                 activePage = nextPage;
             } else {
                 addNewPage();
             }
         }
+    }
+
+    function setCursorAtStart(el) {
+        const range = document.createRange();
+        const sel = window.getSelection();
+        range.setStart(el, 0);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
+
+    function setCursorAtEnd(el) {
+        const range = document.createRange();
+        const sel = window.getSelection();
+        range.selectNodeContents(el);
+        range.collapse(false);
+        sel.removeAllRanges();
+        sel.addRange(range);
     }
 
     function addNewPage() {
