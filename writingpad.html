@@ -389,7 +389,6 @@
     }
 
     function checkOverflowAndPaginate(page) {
-        // Approximate height limit calculation for standard 11in page with 1in padding (approx 1050px)
         if (page.scrollHeight > 1000) {
             const allPages = Array.from(document.querySelectorAll('.paper'));
             const pageIndex = allPages.indexOf(page);
