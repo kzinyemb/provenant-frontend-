@@ -60,11 +60,20 @@
             cursor: pointer; 
             font-size: 15px;
             transition: all 0.2s ease;
+            margin-top: 10px;
         }
         .secure-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
 
         h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 20px; }
         h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; color: #fff; }
+
+        label.field-label {
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 6px;
+        }
 
         input { 
             width: 100%; 
@@ -124,17 +133,23 @@
     <div class="checkout-container" id="container">
         <!-- Main Form -->
         <div class="payment-form" id="payment-form-pane">
-            <h2 id="form-heading">Complete Setup</h2>
+            <h2 id="form-heading">Create Account & Complete Setup</h2>
             <form id="pay-form">
-                <input type="email" id="email-field" placeholder="Email Address" required>
+                <label class="field-label" id="name-label">Full Name</label>
                 <input type="text" id="name-field" placeholder="Full Name" required>
+
+                <label class="field-label" id="email-label">Email Address</label>
+                <input type="email" id="email-field" placeholder="name@company.com" required>
+
+                <label class="field-label">Set Workstation Password</label>
+                <input type="password" id="password-field" placeholder="••••••••" required>
                 
                 <label class="legal-check">
                     <input type="checkbox" required>
                     <span>I agree to the <a href="/terms.html" style="color: var(--brand-writer);" target="_blank">Terms of Service</a> and <a href="/privacy.html" style="color: var(--brand-writer);" target="_blank">Privacy Policy</a>.</span>
                 </label>
 
-                <button type="submit" class="secure-btn">Proceed to Payment</button>
+                <button type="submit" class="secure-btn">Proceed to Secure Payment →</button>
             </form>
         </div>
 
@@ -167,21 +182,21 @@
 
         window.onload = () => {
             const params = new URLSearchParams(window.location.search);
-            const rawPlan = params.get('plan') || "Editorial Enterprise Suite";
+            const rawPlan = params.get('plan') || "Writers Tier";
             const plan = decodeURIComponent(rawPlan);
-            const displayPrice = planPrices[plan] || "$89.00/mo";
+            const displayPrice = planPrices[plan] || "$14.99/mo";
             
             // Align Heading Title dynamically with selected product plan
-            document.getElementById('form-heading').innerText = `Complete ${plan} Setup`;
+            document.getElementById('form-heading').innerText = `Create Account & Complete ${plan} Setup`;
 
             // Adjust form input placeholders depending on individual vs group suite plans
             const emailField = document.getElementById('email-field');
             const nameField = document.getElementById('name-field');
             if (plan.includes('Enterprise') || plan.includes('Academic')) {
-                emailField.placeholder = "Manager Email Address";
+                emailField.placeholder = "manager@company.com";
                 nameField.placeholder = "Manager Full Name";
             } else {
-                emailField.placeholder = "User Email Address";
+                emailField.placeholder = "name@company.com";
                 nameField.placeholder = "Full Name";
             }
 
@@ -205,13 +220,21 @@
         document.getElementById('pay-form').onsubmit = (e) => {
             e.preventDefault();
             const params = new URLSearchParams(window.location.search);
-            const rawPlan = params.get('plan') || "Editorial Enterprise Suite";
+            const rawPlan = params.get('plan') || "Writers Tier";
             const plan = decodeURIComponent(rawPlan);
 
-            const emailInput = document.getElementById('email-field').value;
-            let targetUrl = stripeLinks[plan] || stripeLinks["Editorial Enterprise Suite"];
+            const emailInput = document.getElementById('email-field').value.trim();
+            const passwordInput = document.getElementById('password-field').value.trim();
+            const nameInput = document.getElementById('name-field').value.trim();
+
+            // Save user account details to localStorage for session persistence
+            localStorage.setItem('provenant_user_email', emailInput);
+            localStorage.setItem('provenant_user_password', passwordInput);
+            localStorage.setItem('provenant_user_name', nameInput);
+
+            let targetUrl = stripeLinks[plan] || stripeLinks["Writers Tier"];
             
-            // Append prefilled manager/user email to Stripe URL
+            // Append prefilled email to Stripe URL
             const separator = targetUrl.includes('?') ? '&' : '?';
             targetUrl += `${separator}prefilled_email=${encodeURIComponent(emailInput)}`;
 
