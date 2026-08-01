@@ -341,23 +341,9 @@
 
         const firstPage = document.querySelector('.paper');
         if(firstPage) {
-            firstPage.focus();
             activePage = firstPage;
-            setCursorAtEnd(firstPage);
         }
     };
-
-    // Safe workspace click handler that focuses the active or last sheet instead of interfering with text typing
-    document.getElementById('workspace-container').addEventListener('click', function(e) {
-        if (e.target.id === 'workspace-container' || e.target.id === 'pages-wrapper') {
-            const pages = document.querySelectorAll('.paper');
-            if (pages.length > 0) {
-                const target = activePage || pages[pages.length - 1];
-                target.focus();
-                setCursorAtEnd(target);
-            }
-        }
-    });
 
     function bindPaperEvents() {
         const pages = document.querySelectorAll('.paper');
@@ -393,7 +379,6 @@
     }
 
     function checkOverflowAndPaginate(page) {
-        // Trigger auto-pagination early before text runs underneath the footer padding area (~850px content limit)
         if (page.scrollHeight > (page.clientHeight - 80)) {
             const allPages = Array.from(document.querySelectorAll('.paper'));
             const pageIndex = allPages.indexOf(page);
@@ -401,30 +386,11 @@
             if (pageIndex !== -1 && pageIndex < allPages.length - 1) {
                 const nextPage = allPages[pageIndex + 1];
                 nextPage.focus();
-                setCursorAtStart(nextPage);
                 activePage = nextPage;
             } else {
                 addNewPage();
             }
         }
-    }
-
-    function setCursorAtStart(el) {
-        const range = document.createRange();
-        const sel = window.getSelection();
-        range.setStart(el, 0);
-        range.collapse(true);
-        sel.removeAllRanges();
-        sel.addRange(range);
-    }
-
-    function setCursorAtEnd(el) {
-        const range = document.createRange();
-        const sel = window.getSelection();
-        range.selectNodeContents(el);
-        range.collapse(false);
-        sel.removeAllRanges();
-        sel.addRange(range);
     }
 
     function addNewPage() {
