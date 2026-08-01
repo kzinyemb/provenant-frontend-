@@ -87,7 +87,7 @@
             background: #ffffff !important; 
             width: 8.5in; 
             min-height: 11in; 
-            height: auto;
+            height: 11in; /* Fixed standard page height to enforce pagination boundary */
             padding: 1in; 
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); 
             border-radius: 4px;
@@ -100,6 +100,7 @@
             cursor: text;
             box-sizing: border-box;
             margin: 0 auto;
+            overflow: hidden; /* Prevents text overflow past single sheet boundary */
         }
 
         /* Header / Footer / Page Number Indicators */
@@ -354,11 +355,17 @@
                 updateStats();
                 autoSave();
                 calculateTrustScore();
+                checkOverflowAndPaginate(this);
             };
             
             page.onkeydown = function(e) {
                 if (!startTime) startTime = Date.now(); 
                 log.push({ k: e.key, t: Date.now() - startTime });
+
+                // Check for vertical page boundary overflow on Enter press
+                if (e.key === 'Enter') {
+                    setTimeout(() => checkOverflowAndPaginate(this), 10);
+                }
             };
 
             page.onclick = function(e) {
@@ -370,6 +377,32 @@
         if (pages.length > 0 && !activePage) {
             activePage = pages[0];
         }
+    }
+
+    /* Jump Focus to Next Page / Create New Page on Bottom Overflow */
+    function checkOverflowAndPaginate(page) {
+        if (page.scrollHeight > page.clientHeight) {
+            const allPages = Array.from(document.querySelectorAll('.paper'));
+            const pageIndex = allPages.indexOf(page);
+
+            if (pageIndex !== -1 && pageIndex < allPages.length - 1) {
+                const nextPage = allPages[pageIndex + 1];
+                nextPage.focus();
+                setCursorAtStart(nextPage);
+                activePage = nextPage;
+            } else {
+                addNewPage();
+            }
+        }
+    }
+
+    function setCursorAtStart(el) {
+        const range = document.createRange();
+        const sel = window.getSelection();
+        range.setStart(el, 0);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
     }
 
     function addNewPage() {
@@ -415,7 +448,6 @@
 
     function toggleHeaderFooter() {
         const headers = document.querySelectorAll('.page-header-region');
-        const footers = document.querySelectorAll('.page-footer-region');
         
         if (headers.length > 0) {
             headers.forEach(h => h.remove());
