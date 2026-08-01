@@ -86,7 +86,8 @@
         .paper { 
             background: #ffffff !important; 
             width: 8.5in; 
-            min-height: 11in; 
+            height: 11in; 
+            max-height: 11in;
             padding: 1in; 
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); 
             border-radius: 4px;
@@ -99,7 +100,7 @@
             cursor: text;
             box-sizing: border-box;
             margin: 0 auto;
-            overflow: visible; 
+            overflow: hidden; 
         }
 
         /* Header / Footer / Page Number Indicators */
@@ -336,7 +337,6 @@
         updatePageNumbers();
         updateStats();
 
-        // Focus the first page automatically on load
         const firstPage = document.querySelector('.paper');
         if(firstPage) {
             firstPage.focus();
@@ -345,7 +345,6 @@
     };
 
     function handleWorkspaceClick(e) {
-        // If clicking on the dark workspace background padding, focus the active or last page automatically
         if (e.target.classList.contains('workspace') || e.target.classList.contains('pages-wrapper')) {
             const pages = document.querySelectorAll('.paper');
             if (pages.length > 0) {
@@ -390,7 +389,8 @@
     }
 
     function checkOverflowAndPaginate(page) {
-        if (page.scrollHeight > 1056) {
+        // Compare scrollHeight against clientHeight or a fixed threshold (e.g. 900px inside an 11in page)
+        if (page.scrollHeight > page.clientHeight) {
             const allPages = Array.from(document.querySelectorAll('.paper'));
             const pageIndex = allPages.indexOf(page);
 
