@@ -170,7 +170,7 @@
         #citation-view { display: none; width: 8.5in; background: #ffffff; padding: 1in; box-shadow: 0 4px 20px rgba(0,0,0,0.15); font-family: 'Times New Roman', serif; color: #0f172a; user-select: text; box-sizing: border-box; }
     </style>
 </head>
-<body onclick="handleWorkspaceClick(event)">
+<body>
 
 <div class="quick-access">
     <div onclick="location.href='index.html'" style="cursor:pointer" title="Exit Storefront Dashboard">🏠</div>
@@ -343,11 +343,13 @@
         if(firstPage) {
             firstPage.focus();
             activePage = firstPage;
+            setCursorAtEnd(firstPage);
         }
     };
 
-    function handleWorkspaceClick(e) {
-        if (e.target.classList.contains('workspace') || e.target.classList.contains('pages-wrapper')) {
+    // Safe workspace click handler that focuses the active or last sheet instead of interfering with text typing
+    document.getElementById('workspace-container').addEventListener('click', function(e) {
+        if (e.target.id === 'workspace-container' || e.target.id === 'pages-wrapper') {
             const pages = document.querySelectorAll('.paper');
             if (pages.length > 0) {
                 const target = activePage || pages[pages.length - 1];
@@ -355,7 +357,7 @@
                 setCursorAtEnd(target);
             }
         }
-    }
+    });
 
     function bindPaperEvents() {
         const pages = document.querySelectorAll('.paper');
