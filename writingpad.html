@@ -376,7 +376,7 @@
                 calculateTrustScore();
                 
                 // Fallback check: if pasted content drastically overflows
-                if (this.scrollHeight > this.clientHeight + 10 && e.inputType && !e.inputType.includes('delete')) {
+                if (this.scrollHeight > this.clientHeight + 2 && e.inputType && !e.inputType.includes('delete')) {
                      jumpToNextPage(this);
                 }
             });
@@ -388,8 +388,8 @@
                 // Allowed keys that don't increase content length
                 const allowedKeys = ['Backspace', 'Delete', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Shift', 'Control', 'Alt', 'Meta'];
                 
-                // If page height has hit the bottom boundary limit
-                if (this.scrollHeight >= this.clientHeight) {
+                // ONLY trigger if the page height is strictly greater than the client limit (with a 2px buffer)
+                if (this.scrollHeight > this.clientHeight + 2) {
                     if (allowedKeys.includes(e.key)) return; 
 
                     if (e.key === 'Enter') {
