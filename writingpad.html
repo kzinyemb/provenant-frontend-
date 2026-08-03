@@ -177,7 +177,8 @@
         #citation-view { display: none; width: 8.5in; background: #ffffff; padding: 1in; box-shadow: 0 4px 20px rgba(0,0,0,0.15); font-family: 'Times New Roman', serif; color: #0f172a; user-select: text; box-sizing: border-box; }
     </style>
 </head>
-<body onclick="handleWorkspaceClick(event)">
+<!-- Removed conflicting body onclick handler -->
+<body>
 
 <div class="quick-access">
     <div onclick="location.href='index.html'" style="cursor:pointer" title="Exit Storefront Dashboard">🏠</div>
@@ -352,8 +353,9 @@
         }
     };
 
-    function handleWorkspaceClick(e) {
-        if (e.target.classList.contains('workspace') || e.target.classList.contains('pages-wrapper')) {
+    // Safe workspace click handler
+    document.getElementById('workspace-container').addEventListener('click', function(e) {
+        if (e.target.id === 'workspace-container' || e.target.id === 'pages-wrapper') {
             const pages = document.querySelectorAll('.paper');
             if (pages.length > 0) {
                 const target = activePage || pages[pages.length - 1];
@@ -361,7 +363,7 @@
                 setCursorAtEnd(target);
             }
         }
-    }
+    });
 
     function bindPaperEvents() {
         const pages = document.querySelectorAll('.paper');
@@ -378,8 +380,8 @@
                 autoSave();
                 calculateTrustScore();
                 
-                // Guard: if content overflows the fixed physical page height boundary
-                if (this.scrollHeight > this.clientHeight + 2 && e.inputType && !e.inputType.includes('delete')) {
+                // Generous +25 margin handles invisible bounding boxes to prevent early pagination
+                if (this.scrollHeight > this.clientHeight + 25 && e.inputType && !e.inputType.includes('delete')) {
                      jumpToNextPage(this);
                 }
             });
@@ -390,8 +392,8 @@
 
                 const allowedKeys = ['Backspace', 'Delete', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Shift', 'Control', 'Alt', 'Meta'];
                 
-                // Strictly lock entry when height boundary is hit
-                if (this.scrollHeight > this.clientHeight + 2) {
+                // Allow user to use Enter freely unless the page boundary is truly exceeded
+                if (this.scrollHeight > this.clientHeight + 25) {
                     if (allowedKeys.includes(e.key)) return; 
 
                     if (e.key === 'Enter') {
@@ -402,12 +404,11 @@
                         jumpToNextPage(this, e.key);
                     }
                 } 
-                // Removed the false positive "else if" that was continuously firing early jumps
             });
 
             page.addEventListener('click', function(e) {
                 activePage = this;
-                this.focus();
+                // DO NOT call this.focus() here. The browser naturally places the cursor where clicked.
                 e.stopPropagation();
             });
         });
@@ -430,7 +431,6 @@
             targetPage.setAttribute('contenteditable', 'true');
             targetPage.innerHTML = '<p><br></p>';
             
-            // Inherit current workspace typography settings onto newly created pages
             const currentFont = document.getElementById('font-family-select').value;
             const currentSize = document.getElementById('font-size-select').value;
             const currentSpacing = document.getElementById('line-height-select').value;
@@ -538,27 +538,26 @@
         }
     }
 
-    // Direct styling overrides targeting container sheets to prevent browser command font mismatches
     function applyFontName(val) {
         document.querySelectorAll('.paper').forEach(p => {
             p.style.fontFamily = val;
         });
         document.execCommand('fontName', false, val);
-        if (activePage) activePage.focus(); // Retain focus after dropdown select
+        if (activePage) activePage.focus();
     }
 
     function applyFontSize(val) {
         document.querySelectorAll('.paper').forEach(p => {
             p.style.fontSize = val;
         });
-        if (activePage) activePage.focus(); // Retain focus after dropdown select
+        if (activePage) activePage.focus();
     }
 
     function applyLineHeight(val) {
         document.querySelectorAll('.paper').forEach(p => {
             p.style.lineHeight = val;
         });
-        if (activePage) activePage.focus(); // Retain focus after dropdown select
+        if (activePage) activePage.focus();
     }
 
     function renderAuthors() {
