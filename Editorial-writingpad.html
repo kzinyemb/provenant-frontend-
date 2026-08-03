@@ -13,9 +13,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Writers Forensic Workspace | VerifyHuman™</title>
+    
+    <!-- Frameworks & External Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+
     <style>
         :root { 
             --ribbon-bg: #ffffff; 
@@ -43,7 +47,7 @@
         .tab.active { background: var(--ribbon-bg); color: var(--brand-dark); }
 
         /* Ribbon Menu */
-        .ribbon-content { background: var(--ribbon-bg); height: 115px; border-bottom: 1px solid var(--border-color); display: none; padding: 0 20px; align-items: center; gap: 10px; user-select: none; }
+        .ribbon-content { background: var(--ribbon-bg); height: 115px; border-bottom: 1px solid var(--border-color); display: none; padding: 0 20px; align-items: center; gap: 10px; user-select: none; flex-shrink: 0; }
         .ribbon-content.active { display: flex; }
         .group { display: flex; flex-direction: column; align-items: center; border-right: 1px solid var(--border-color); padding: 0 15px; height: 85%; justify-content: center; }
         .group-label { font-size: 10px; color: #888; margin-top: 5px; text-transform: uppercase; }
@@ -80,59 +84,27 @@
             position: relative; 
         }
 
-        .pages-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-            align-items: center;
-        }
-
-        /* White Paper Sheet - Normal Size & Exclusive Editable Region */
-        .paper { 
+        /* Continuous Paper Sheet (Quill Engine Setup) */
+        #editor-container { 
             background: #ffffff !important; 
             width: 8.5in; 
             min-height: 11in; 
-            height: auto;
-            padding: 1in; 
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); 
             border-radius: 2px;
-            outline: none; 
-            position: relative; 
+            border: none;
+            margin: 0 auto;
+            transition: background-color 0.3s ease;
+        }
+
+        .ql-editor {
+            padding: 1in; 
             line-height: 1.5; 
             font-size: 14px;
+            font-family: 'Arial', sans-serif;
             color: #0f172a;
-            user-select: text;
-            cursor: text;
-            box-sizing: border-box;
+            min-height: 11in;
+            overflow-y: visible; /* Prevent internal scrolling */
         }
-
-        .page-number-indicator {
-            position: absolute;
-            bottom: 15px;
-            right: 25px;
-            font-size: 10px;
-            color: #94a3b8;
-            font-weight: 600;
-            user-select: none;
-        }
-
-        /* Action Buttons */
-        .add-page-btn {
-            background: #3b82f6;
-            color: white;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            margin-top: 10px;
-            margin-bottom: 50px;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-            user-select: none;
-        }
-        .add-page-btn:hover { background: #2563eb; transform: translateY(-2px); }
 
         /* Floating Badge Trigger */
         .badge-trigger { position: fixed; top: 160px; right: 40px; z-index: 10; display: flex; flex-direction: column; gap: 10px; user-select: none; }
@@ -162,8 +134,9 @@
         .source-card p { color: #64748b; font-size: 11px; margin-bottom: 5px; }
         .source-delete { position: absolute; top: 5px; right: 8px; color: #ef4444; cursor: pointer; font-weight: bold; }
 
-        /* Citation View */
-        #citation-view { display: none; width: 8.5in; background: #ffffff; padding: 1in; box-shadow: 0 4px 20px rgba(0,0,0,0.15); font-family: 'Times New Roman', serif; color: #0f172a; user-select: text; box-sizing: border-box; }
+        /* Custom Forensics and Citation Views */
+        #data-view-container { display: none; width: 100%; max-width: 800px; background: white; padding: 40px; border-radius: 15px; margin: 0 auto; }
+        #citation-view { display: none; width: 8.5in; background: #ffffff; padding: 1in; box-shadow: 0 4px 20px rgba(0,0,0,0.15); font-family: 'Times New Roman', serif; color: #0f172a; user-select: text; box-sizing: border-box; margin: 0 auto; }
 
         /* Editorial Flag Elements */
         .editorial-flag {
@@ -178,16 +151,19 @@
         .flag-source { background: #fef08a; color: #854d0e; border: 1px solid #fde047; }
         .flag-legal { background: #fecaca; color: #991b1b; border: 1px solid #fca5a5; }
         .flag-verified { background: #bbf7d0; color: #166534; border: 1px solid #86efac; }
+        
+        /* Verification Badge Template */
+        .vh-badge { margin-top: 40px; border: 2px solid #00b894; padding: 18px; border-radius: 12px; width: 340px; background: #f8fafc; font-family: 'Inter', sans-serif; user-select: none; }
     </style>
 </head>
-<body onclick="handleWorkspaceClick(event)">
+<body>
 
 <div class="quick-access">
     <div onclick="location.href='index.html'" style="cursor:pointer" title="Exit Storefront Dashboard">🏠</div>
     <div onclick="manualSave()" id="save-icon" style="cursor:pointer" title="Save Now">💾</div>
-    <!-- Quick Access Navigation Arrows -->
-    <div onclick="document.execCommand('undo')" style="cursor:pointer" title="Go Back (Undo)">↩️</div>
-    <div onclick="document.execCommand('redo')" style="cursor:pointer" title="Go Forward (Redo)">↪️</div>
+    <!-- Quick Access Navigation Arrows mapped to Quill -->
+    <div onclick="quill.history.undo()" style="cursor:pointer" title="Go Back (Undo)">↩️</div>
+    <div onclick="quill.history.redo()" style="cursor:pointer" title="Go Forward (Redo)">↪️</div>
     
     <div style="background: var(--brand-accent); padding: 2px 12px; border-radius: 50px; font-weight: 800; font-size: 11px;">Human Integrity: <span id="trust-score">0%</span></div>
     
@@ -247,52 +223,48 @@
 
 <!-- HOME RIBBON -->
 <div class="ribbon-content active" id="home-ribbon">
-    <!-- Navigation History Ribbon Group -->
     <div class="group">
         <div class="btn-row">
-            <button class="btn-ribbon btn-big" onclick="document.execCommand('undo')" title="Go Back"><span>↩️</span>Go Back</button>
-            <button class="btn-ribbon btn-big" onclick="document.execCommand('redo')" title="Go Forward"><span>↪️</span>Go Forward</button>
+            <button class="btn-ribbon btn-big" onclick="quill.history.undo()" title="Go Back"><span>↩️</span>Go Back</button>
+            <button class="btn-ribbon btn-big" onclick="quill.history.redo()" title="Go Forward"><span>↪️</span>Go Forward</button>
         </div>
         <div class="group-label">History</div>
     </div>
     <div class="group">
         <div style="display: flex; gap: 5px; margin-bottom: 5px;">
-            <!-- Font Name Selector -->
-            <select onchange="document.execCommand('fontName', false, this.value)" style="width: 110px;" onclick="event.stopPropagation()">
-                <option value="Arial">Arial</option>
+            <select id="font-family-select" onchange="applyFormat('font', this.value)" style="width: 110px;" onclick="event.stopPropagation()">
+                <option value="Arial" selected>Arial</option>
                 <option value="Calibri">Calibri</option>
-                <option value="Calibri Light">Calibri Light</option>
                 <option value="Times New Roman">Times New Roman</option>
             </select>
-            <!-- Text Size Selector -->
-            <select onchange="applyFontSize(this.value)" style="width: 65px;" onclick="event.stopPropagation()" title="Text Size">
-                <option value="1">10 pt</option>
-                <option value="2">12 pt</option>
-                <option value="3" selected>14 pt</option>
-                <option value="4">18 pt</option>
-                <option value="5">24 pt</option>
-                <option value="6">32 pt</option>
-                <option value="7">48 pt</option>
+            <select id="font-size-select" onchange="applyFormat('size', this.value)" style="width: 65px;" onclick="event.stopPropagation()" title="Text Size">
+                <option value="10px">10 pt</option>
+                <option value="12px">12 pt</option>
+                <option value="14px" selected>14 pt</option>
+                <option value="18px">18 pt</option>
+                <option value="24px">24 pt</option>
+                <option value="32px">32 pt</option>
+                <option value="48px">48 pt</option>
             </select>
         </div>
         <div class="btn-row">
-            <button class="btn-ribbon" onclick="document.execCommand('bold')"><b>B</b></button>
-            <button class="btn-ribbon" onclick="document.execCommand('italic')"><i>I</i></button>
-            <button class="btn-ribbon" onclick="document.execCommand('underline')"><u>U</u></button>
-            <button class="btn-ribbon" onclick="document.execCommand('superscript')">x²</button>
-            <button class="btn-ribbon" onclick="document.execCommand('subscript')">x₂</button>
+            <button class="btn-ribbon" onclick="toggleFormat('bold')"><b>B</b></button>
+            <button class="btn-ribbon" onclick="toggleFormat('italic')"><i>I</i></button>
+            <button class="btn-ribbon" onclick="toggleFormat('underline')"><u>U</u></button>
+            <button class="btn-ribbon" onclick="toggleScript('super')">x²</button>
+            <button class="btn-ribbon" onclick="toggleScript('sub')">x₂</button>
         </div>
         <div class="group-label">Font & Style</div>
     </div>
     <div class="group">
         <div class="btn-row">
-            <button class="btn-ribbon" onclick="document.execCommand('justifyLeft')">Left</button>
-            <button class="btn-ribbon" onclick="document.execCommand('justifyCenter')">Center</button>
-            <button class="btn-ribbon" onclick="document.execCommand('justifyRight')">Right</button>
+            <button class="btn-ribbon" onclick="applyFormat('align', false)">Left</button>
+            <button class="btn-ribbon" onclick="applyFormat('align', 'center')">Center</button>
+            <button class="btn-ribbon" onclick="applyFormat('align', 'right')">Right</button>
         </div>
         <select onchange="applyLineHeight(this.value)" style="margin-top:5px;" onclick="event.stopPropagation()">
             <option value="1.0">1.0 spacing</option>
-            <option value="1.15">1.15 spacing</option>
+            <option value="1.15" selected>1.15 spacing</option>
             <option value="1.5">1.5 spacing</option>
             <option value="2.0">2.0 spacing</option>
         </select>
@@ -327,17 +299,12 @@
 <div class="workspace-layout">
     <!-- Main Manuscript Workspace -->
     <div class="workspace" id="workspace-container">
-        <div class="pages-wrapper" id="pages-wrapper">
-            <!-- Page 1 Canvas -->
-            <div class="paper" contenteditable="true" oninput="handlePageInput(this)" onkeydown="handleKeyDown(event)">
-                Start composing text or narrative content loops...
-            </div>
-        </div>
-
-        <button class="add-page-btn" id="btn-add-page" onclick="addNewPage(); event.stopPropagation();">+ Add Page</button>
+        
+        <!-- Quill Editor Replaces Legacy Multi-Div Approach -->
+        <div id="editor-container"></div>
         
         <!-- Forensics Analytics & Timeline View -->
-        <div id="data-view-container" style="display:none; width: 100%; max-width: 800px; background: white; padding: 40px; border-radius: 15px;">
+        <div id="data-view-container">
             <h2>Velocity Forensics & Cadence</h2>
             <p style="font-size: 12px; color: #64748b; margin-bottom: 20px;">Tracks natural human keystroke timing variance and editorial progression.</p>
             <div style="height: 300px;"><canvas id="wpmChart"></canvas></div>
@@ -352,6 +319,7 @@
             </div>
         </div>
 
+        <!-- Citations View -->
         <div id="citation-view">
             <button onclick="toggleCitations()" style="float:right; cursor:pointer;">✖ Close</button>
             <h2 style="text-align:center">VerifyHuman™ Citation Guides</h2>
@@ -381,23 +349,41 @@
 <script>
     let log = [], startTime = null, chartInstance = null;
     let authors = [];
-    let activePage = null;
     let sources = [];
     let isNotesMode = false;
 
+    // --- 1. Quill Inline Formatting Setup ---
+    const SizeStyle = Quill.import('attributors/style/size');
+    SizeStyle.whitelist = ['10px', '12px', '14px', '18px', '24px', '32px', '48px'];
+    Quill.register(SizeStyle, true);
+
+    const FontStyle = Quill.import('attributors/style/font');
+    FontStyle.whitelist = ['Arial', 'Calibri', 'Times New Roman'];
+    Quill.register(FontStyle, true);
+
+    // --- 2. Initialize Quill Engine ---
+    const quill = new Quill('#editor-container', {
+        theme: 'snow',
+        modules: {
+            toolbar: false, 
+            history: { delay: 1000, maxStack: 500 }
+        }
+    });
+
+    // --- 3. App Load & Restore ---
     window.onload = () => {
-        const savedText = localStorage.getItem('hv_content');
-        if (savedText) {
-            document.getElementById('pages-wrapper').innerHTML = savedText;
+        const savedData = localStorage.getItem('hv_quill_data');
+        if (savedData) {
+            try {
+                quill.setContents(JSON.parse(savedData));
+            } catch(e) { console.error("Error loading saved doc"); }
+        } else {
+            quill.setText('Start composing text or narrative content loops...\n');
         }
         
         const savedAuthors = localStorage.getItem('hv_authors');
-        if (savedAuthors) {
-            authors = JSON.parse(savedAuthors);
-        } else {
-            authors = ["Primary Author"];
-        }
-
+        authors = savedAuthors ? JSON.parse(savedAuthors) : ["Primary Author"];
+        
         const savedSources = localStorage.getItem('hv_sources');
         if (savedSources) {
             sources = JSON.parse(savedSources);
@@ -410,70 +396,98 @@
         }
 
         renderAuthors();
-        updatePageNumbers();
         updateStats();
-
-        const pages = document.querySelectorAll('.paper');
-        if (pages.length > 0) {
-            activePage = pages[0];
-        }
     };
 
-    function handleWorkspaceClick(e) {
-        if (!e.target.closest('.paper') && !e.target.closest('.quick-access') && !e.target.closest('.ribbon-content') && !e.target.closest('.tabs') && !e.target.closest('.badge-trigger') && !e.target.closest('.research-sidebar')) {
-            const pages = document.querySelectorAll('.paper');
-            const targetPage = activePage || pages[pages.length - 1];
-            if (targetPage) {
-                targetPage.focus();
-            }
-        }
+    // --- 4. Ribbon Command Mappers to Quill API ---
+    function toggleFormat(formatStr) {
+        const currentFormat = quill.getFormat();
+        quill.format(formatStr, !currentFormat[formatStr]);
+        quill.focus();
     }
 
-    function addNewPage() {
-        const wrapper = document.getElementById('pages-wrapper');
-        const newPage = document.createElement('div');
-        newPage.className = 'paper';
-        newPage.contentEditable = 'true';
-        newPage.setAttribute('oninput', 'handlePageInput(this)');
-        newPage.setAttribute('onkeydown', 'handleKeyDown(event)');
-        newPage.innerText = '';
-        
-        wrapper.appendChild(newPage);
-        updatePageNumbers();
-        newPage.focus();
-        activePage = newPage;
-        autoSave();
+    function toggleScript(val) {
+        const currentFormat = quill.getFormat();
+        quill.format('script', currentFormat.script === val ? false : val);
+        quill.focus();
     }
 
-    function updatePageNumbers() {
-        const pages = document.querySelectorAll('.paper');
-        pages.forEach((page, index) => {
-            let indicator = page.querySelector('.page-number-indicator');
-            if (!indicator) {
-                indicator = document.createElement('div');
-                indicator.className = 'page-number-indicator';
-                indicator.contentEditable = 'false';
-                page.appendChild(indicator);
-            }
-            indicator.innerText = `Page ${index + 1} of ${pages.length}`;
-        });
-    }
-
-    function handlePageInput(pageEl) {
-        activePage = pageEl;
-        updateStats();
-        autoSave();
-        calculateTrustScore();
-    }
-
-    function applyFontSize(size) {
-        document.execCommand('fontSize', false, size);
+    function applyFormat(formatStr, val) {
+        quill.format(formatStr, val);
+        quill.focus();
     }
 
     function applyLineHeight(val) {
-        document.querySelectorAll('.paper').forEach(p => {
-            p.style.lineHeight = val;
-        });
+        document.querySelector('.ql-editor').style.lineHeight = val;
+    }
+
+    // --- 5. Keystroke Forensics & Auto-Save ---
+    quill.root.addEventListener('keydown', function(e) {
+        if (!startTime) startTime = Date.now(); 
+        log.push({ k: e.key, t: Date.now() - startTime });
+    });
+
+    quill.on('text-change', function(delta, oldDelta, source) {
+        if (source === 'user') {
+            updateStats();
+            calculateTrustScore();
+            autoSave();
+        }
+    });
+
+    function updateStats() { 
+        const text = quill.getText().trim(); 
+        const words = text === "" ? 0 : text.split(/\s+/).filter(Boolean).length;
+        document.getElementById('word-count').innerText = words; 
+        document.getElementById('key-count').innerText = log.length; 
+        document.getElementById('read-time').innerText = Math.ceil(words / 200);
+    }
+
+    function calculateTrustScore() {
+        const textLength = quill.getText().trim().length;
+        let score = textLength > 0 ? Math.min(100, (log.length / textLength) * 100) : 0;
+        document.getElementById('trust-score').innerText = Math.floor(score) + "%";
+    }
+
+    function autoSave() { 
+        localStorage.setItem('hv_quill_data', JSON.stringify(quill.getContents())); 
+    }
+
+    function manualSave() {
+        autoSave();
+        const icon = document.getElementById('save-icon');
+        const status = document.getElementById('save-status');
+        icon.style.color = "#00b894";
+        status.innerText = "All changes saved!";
+        setTimeout(() => { icon.style.color = "white"; status.innerText = "Auto-save Enabled"; }, 2000);
+    }
+
+    // --- 6. Interface & Badge Scripts ---
+    function addBadge() {
+        const score = document.getElementById('trust-score').innerText;
+        const now = new Date();
+        const timestamp = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + 
+                          ' at ' + now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        const authorListStr = authors.length > 0 ? authors.join(', ') : 'Unspecified Author';
+        const currentStatus = document.getElementById('doc-status-select').value;
+
+        const badgeHTML = `
+            <div class="vh-badge" contenteditable="false">
+                <div style="font-size: 11px; color: #475569; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px; margin-bottom: 10px;">
+                    <div><strong>Author(s):</strong> ${authorListStr}</div>
+                    <div><strong>Editorial Status:</strong> ${currentStatus}</div>
+                    <div><strong>Certified On:</strong> ${timestamp}</div>
+                </div>
+                <div style="color:#00b894; font-weight:800; font-size: 14px;">VERIFIED HUMAN Origin</div>
+                <div style="font-size:12px; color: #0f172a; font-weight: 600; margin-top: 4px;">Composition Trust Metric: ${score}</div>
+                <div style="font-size:9px; color:#888; margin-top: 6px;">ID: VH-${Math.floor(Math.random()*1000000)}</div>
+            </div><br>
+        `;
+
+        const range = quill.getSelection(true);
+        quill.clipboard.dangerouslyPasteHTML(range.index, badgeHTML);
+        quill.setSelection(range.index + 1);
+        autoSave();
     }
 
     function renderAuthors() {
@@ -504,102 +518,36 @@
         localStorage.setItem('hv_authors', JSON.stringify(authors));
     }
 
-    function handleKeyDown(e) { 
-        if (!startTime) startTime = Date.now(); 
-        log.push({ k: e.key, t: Date.now() - startTime }); 
-    }
-
-    function manualSave() {
-        autoSave();
-        const icon = document.getElementById('save-icon');
-        const status = document.getElementById('save-status');
-        icon.style.color = "#00b894";
-        status.innerText = "All changes saved!";
-        setTimeout(() => { icon.style.color = "white"; status.innerText = "Auto-save Enabled"; }, 2000);
-    }
-
-    function getAllPaperText() {
-        return Array.from(document.querySelectorAll('.paper'))
-            .map(p => {
-                const clone = p.cloneNode(true);
-                const indicator = clone.querySelector('.page-number-indicator');
-                if (indicator) indicator.remove();
-                return clone.innerText;
-            })
-            .join(' ');
-    }
-
-    function calculateTrustScore() {
-        const text = getAllPaperText().trim();
-        let score = text.length > 0 ? Math.min(100, (log.length / text.length) * 100) : 0;
-        document.getElementById('trust-score').innerText = Math.floor(score) + "%";
-    }
-
-    function addBadge() {
-        const score = document.getElementById('trust-score').innerText;
-        const now = new Date();
-        const timestamp = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + 
-                          ' at ' + 
-                          now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-        
-        const authorListStr = authors.length > 0 ? authors.join(', ') : 'Unspecified Author';
-        const currentStatus = document.getElementById('doc-status-select').value;
-
-        const badgeHTML = `
-            <div contenteditable="false" style="margin-top: 40px; border: 2px solid #00b894; padding: 18px; border-radius: 12px; width: 340px; background: #f8fafc; font-family: 'Inter', sans-serif; user-select: none;">
-                <div style="font-size: 11px; color: #475569; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px; margin-bottom: 10px;">
-                    <div><strong>Author(s):</strong> ${authorListStr}</div>
-                    <div><strong>Editorial Status:</strong> ${currentStatus}</div>
-                    <div><strong>Certified On:</strong> ${timestamp}</div>
-                </div>
-                <div style="color:#00b894; font-weight:800; font-size: 14px;">VERIFIED HUMAN Origin</div>
-                <div style="font-size:12px; color: #0f172a; font-weight: 600; margin-top: 4px;">Composition Trust Metric: ${score}</div>
-                <div style="font-size:9px; color:#888; margin-top: 6px;">ID: VH-${Math.floor(Math.random()*1000000)}</div>
-            </div>
-            <p><br></p>
-        `;
-
-        const pages = document.querySelectorAll('.paper');
-        const targetPage = activePage || pages[pages.length - 1];
-        targetPage.innerHTML += badgeHTML;
-        updatePageNumbers();
-        autoSave();
-    }
-
-    function toggleCitations() {
-        const cv = document.getElementById('citation-view');
-        const wrapper = document.getElementById('pages-wrapper');
-        const btnAdd = document.getElementById('btn-add-page');
-        
-        const isVisible = (cv.style.display === 'block');
-        wrapper.style.display = isVisible ? 'flex' : 'none';
-        btnAdd.style.display = isVisible ? 'block' : 'none';
-        cv.style.display = isVisible ? 'none' : 'block';
-    }
-
     function setView(id) {
         document.querySelectorAll('.ribbon-content').forEach(r => r.style.display = 'none');
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.getElementById('citation-view').style.display = 'none';
         
-        const wrapper = document.getElementById('pages-wrapper');
-        const btnAdd = document.getElementById('btn-add-page');
+        const editorWrapper = document.getElementById('editor-container');
+        const dataView = document.getElementById('data-view-container');
 
         if(id === 'data') {
-            wrapper.style.display = 'none';
-            btnAdd.style.display = 'none';
-            document.getElementById('data-view-container').style.display = 'block';
+            editorWrapper.style.display = 'none';
+            dataView.style.display = 'block';
             document.getElementById('tab-data').classList.add('active');
             updateChart();
         } else {
-            wrapper.style.display = 'flex';
-            btnAdd.style.display = 'block';
-            document.getElementById('data-view-container').style.display = 'none';
+            editorWrapper.style.display = 'block';
+            dataView.style.display = 'none';
             const targetRibbon = document.getElementById(id + '-ribbon');
             if (targetRibbon) targetRibbon.style.display = 'flex';
             const targetTab = document.getElementById('tab-' + id);
             if (targetTab) targetTab.classList.add('active');
         }
+    }
+
+    function toggleCitations() {
+        const cv = document.getElementById('citation-view');
+        const editorWrapper = document.getElementById('editor-container');
+        const isVisible = (cv.style.display === 'block');
+        
+        editorWrapper.style.display = isVisible ? 'block' : 'none';
+        cv.style.display = isVisible ? 'none' : 'block';
     }
 
     function updateChart() {
@@ -615,30 +563,16 @@
         });
     }
 
-    function updateStats() { 
-        const t = getAllPaperText().trim(); 
-        const words = t === "" ? 0 : t.split(/\s+/).length;
-        document.getElementById('word-count').innerText = words; 
-        document.getElementById('key-count').innerText = log.length; 
-        document.getElementById('read-time').innerText = Math.ceil(words / 200);
-    }
-
-    function autoSave() { 
-        const wrapper = document.getElementById('pages-wrapper');
-        localStorage.setItem('hv_content', wrapper.innerHTML); 
-    }
-
     function exportPDF() { 
-        const wrapper = document.getElementById('pages-wrapper');
-        html2pdf().from(wrapper).save('VerifyHuman_Manuscript_Report.pdf'); 
+        const editorContent = document.querySelector('.ql-editor');
+        html2pdf().from(editorContent).save('VerifyHuman_Manuscript_Report.pdf'); 
     }
     
     function renameDoc() { let n = prompt("Name:"); if(n) document.getElementById('doc-name').innerText = n; }
     function newDoc() { if(confirm("New document?")) { localStorage.clear(); location.reload(); } }
     function deleteDoc() { if(confirm("Delete document?")) { localStorage.clear(); location.reload(); } }
     function createCopy() { 
-        const wrapper = document.getElementById('pages-wrapper');
-        const blob = new Blob([wrapper.innerHTML], {type: "text/html"}); 
+        const blob = new Blob([document.querySelector('.ql-editor').innerHTML], {type: "text/html"}); 
         const a = document.createElement('a'); 
         a.href = URL.createObjectURL(blob); 
         a.download = "Manuscript_Copy.html"; 
@@ -688,17 +622,17 @@
     }
 
     function insertFlag(type) {
-        const pages = document.querySelectorAll('.paper');
-        const targetPage = activePage || pages[0];
-        if (!targetPage) return;
-
         let flagHTML = '';
         if (type === 'source') flagHTML = `<span class="editorial-flag flag-source" contenteditable="false">📌 [Source Needed]</span>&nbsp;`;
         if (type === 'legal') flagHTML = `<span class="editorial-flag flag-legal" contenteditable="false">⚖️ [Legal Review]</span>&nbsp;`;
         if (type === 'verified') flagHTML = `<span class="editorial-flag flag-verified" contenteditable="false">✅ [Fact-Checked]</span>&nbsp;`;
 
-        document.execCommand('insertHTML', false, flagHTML);
-        autoSave();
+        const range = quill.getSelection(true);
+        if(range) {
+            quill.clipboard.dangerouslyPasteHTML(range.index, flagHTML);
+            quill.setSelection(range.index + 1);
+            autoSave();
+        }
     }
 
     function toggleNotesMode() {
@@ -707,9 +641,7 @@
         btn.style.color = isNotesMode ? '#00b894' : 'var(--brand-dark)';
         btn.innerHTML = `<span>💬</span>Editor Notes: ${isNotesMode ? 'ON' : 'OFF'}`;
         
-        document.querySelectorAll('.paper').forEach(p => {
-            p.style.backgroundColor = isNotesMode ? '#f0fdf4' : '#ffffff';
-        });
+        document.getElementById('editor-container').style.backgroundColor = isNotesMode ? '#f0fdf4' : '#ffffff';
     }
 
     function updateReplayView(val) {
