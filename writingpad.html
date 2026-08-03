@@ -7,16 +7,20 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-6B0NP15RYC');
     </script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Writers Forensic Workspace | VerifyHuman™</title>
+    
+    <!-- Framework & External Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <!-- Quill.js CSS & JS -->
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+
     <style>
         :root { 
             --ribbon-bg: #ffffff; 
@@ -74,96 +78,27 @@
             position: relative; 
         }
 
-        .pages-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-            align-items: center;
-            width: 100%;
-        }
-
-        /* White Paper Sheet - Fixed Document Bounds with consistent typography styling defaults */
-        .paper { 
+        /* Continuous Paper Sheet (Quill Container Override) */
+        #editor-container { 
             background: #ffffff !important; 
             width: 8.5in; 
-            height: 11in; 
-            min-height: 11in;
-            max-height: 11in;
-            padding: 1in; 
+            min-height: 11in; /* Will expand naturally downward */
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); 
             border-radius: 4px;
-            outline: none; 
-            position: relative; 
+            border: none;
+            margin: 0 auto;
+        }
+
+        /* Style the actual editing area inside Quill */
+        .ql-editor {
+            padding: 1in; 
             line-height: 1.5; 
             font-size: 14px;
             font-family: 'Arial', sans-serif;
             color: #0f172a;
-            user-select: text;
-            cursor: text;
-            box-sizing: border-box;
-            margin: 0 auto;
-            word-break: break-word;
-            overflow: hidden; 
+            min-height: 11in;
+            overflow-y: visible; /* Prevent internal scroll, let container scroll */
         }
-        
-        /* Prevent browser margins from creating fake overflow bounds */
-        .paper p { margin: 0 0 0.5em 0; }
-        .paper div { margin: 0; }
-
-        /* Header / Footer / Page Number Indicators */
-        .page-header-region {
-            position: absolute;
-            top: 25px;
-            left: 1in;
-            right: 1in;
-            font-size: 11px;
-            color: #94a3b8;
-            border-bottom: 1px dashed #cbd5e1;
-            padding-bottom: 4px;
-            outline: none;
-        }
-
-        .page-footer-region {
-            position: absolute;
-            bottom: 25px;
-            left: 1in;
-            right: 1in;
-            font-size: 11px;
-            color: #94a3b8;
-            border-top: 1px dashed #cbd5e1;
-            padding-top: 4px;
-            display: flex;
-            justify-content: space-between;
-            outline: none;
-            background: #ffffff;
-            user-select: none;
-        }
-
-        .page-number-indicator {
-            font-size: 10px;
-            color: #94a3b8;
-            font-weight: 600;
-            user-select: none;
-            pointer-events: none;
-        }
-
-        /* Action Buttons */
-        .add-page-btn {
-            background: #3b82f6;
-            color: white;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            margin-top: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-            user-select: none;
-        }
-        .add-page-btn:hover { background: #2563eb; transform: translateY(-2px); }
 
         /* Floating Badge Trigger */
         .badge-trigger { position: fixed; top: 160px; right: 40px; z-index: 10; display: flex; flex-direction: column; gap: 10px; user-select: none; }
@@ -173,8 +108,12 @@
         .status-bar { background: var(--brand-dark); color: white; padding: 6px 20px; font-size: 12px; display: flex; justify-content: space-between; z-index: 90; user-select: none; flex-shrink: 0; }
         select { padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px; }
 
-        /* Citation View */
-        #citation-view { display: none; width: 8.5in; background: #ffffff; padding: 1in; box-shadow: 0 4px 20px rgba(0,0,0,0.15); font-family: 'Times New Roman', serif; color: #0f172a; user-select: text; box-sizing: border-box; }
+        /* Custom Forensics and Citation Views */
+        #data-view-container { display: none; width: 100%; max-width: 800px; background: white; padding: 40px; border-radius: 15px; margin: 0 auto; }
+        #citation-view { display: none; width: 8.5in; background: #ffffff; padding: 1in; box-shadow: 0 4px 20px rgba(0,0,0,0.15); font-family: 'Times New Roman', serif; color: #0f172a; box-sizing: border-box; margin: 0 auto; }
+        
+        /* Verification Badge Styles inside Editor */
+        .vh-badge { margin-top: 40px; border: 2px solid #00b894; padding: 18px; border-radius: 12px; width: 340px; background: #f8fafc; font-family: 'Inter', sans-serif; }
     </style>
 </head>
 <body>
@@ -182,8 +121,8 @@
 <div class="quick-access">
     <div onclick="location.href='index.html'" style="cursor:pointer" title="Exit Storefront Dashboard">🏠</div>
     <div onclick="manualSave()" id="save-icon" style="cursor:pointer" title="Save Now">💾</div>
-    <div onclick="document.execCommand('undo')" style="cursor:pointer" title="Go Back (Undo)">↩️</div>
-    <div onclick="document.execCommand('redo')" style="cursor:pointer" title="Go Forward (Redo)">↪️</div>
+    <div onclick="quill.history.undo()" style="cursor:pointer" title="Go Back (Undo)">↩️</div>
+    <div onclick="quill.history.redo()" style="cursor:pointer" title="Go Forward (Redo)">↪️</div>
     
     <div style="background: var(--brand-accent); padding: 2px 12px; border-radius: 50px; font-weight: 800; font-size: 11px;">Human Integrity: <span id="trust-score">0%</span></div>
     
@@ -204,6 +143,7 @@
     <div class="tab" id="tab-data" onclick="setView('data')" style="background:#00b894; color:white">Forensics</div>
 </div>
 
+<!-- FILE RIBBON -->
 <div class="ribbon-content" id="file-ribbon">
     <div class="group">
         <div class="btn-row">
@@ -227,48 +167,47 @@
     </div>
 </div>
 
+<!-- HOME RIBBON -->
 <div class="ribbon-content active" id="home-ribbon">
     <div class="group">
         <div class="btn-row">
-            <button class="btn-ribbon btn-big" onclick="document.execCommand('undo')" title="Go Back"><span>↩️</span>Go Back</button>
-            <button class="btn-ribbon btn-big" onclick="document.execCommand('redo')" title="Go Forward"><span>↪️</span>Go Forward</button>
+            <button class="btn-ribbon btn-big" onclick="quill.history.undo()" title="Go Back"><span>↩️</span>Undo</button>
+            <button class="btn-ribbon btn-big" onclick="quill.history.redo()" title="Go Forward"><span>↪️</span>Redo</button>
         </div>
         <div class="group-label">History</div>
     </div>
 
     <div class="group">
         <div style="display: flex; gap: 5px; margin-bottom: 5px;">
-            <select id="font-family-select" onchange="applyFontName(this.value)" style="width: 110px;" onclick="event.stopPropagation()">
-                <option value="Arial">Arial</option>
+            <select id="font-family-select" onchange="applyFormat('font', this.value)" style="width: 110px;" onclick="event.stopPropagation()">
+                <option value="Arial" selected>Arial</option>
                 <option value="Calibri">Calibri</option>
-                <option value="Calibri Light">Calibri Light</option>
                 <option value="Times New Roman">Times New Roman</option>
             </select>
-            <select id="font-size-select" onchange="applyFontSize(this.value)" style="width: 65px;" onclick="event.stopPropagation()" title="Text Size">
+            <select id="font-size-select" onchange="applyFormat('size', this.value)" style="width: 65px;" onclick="event.stopPropagation()" title="Text Size">
                 <option value="10px">10 pt</option>
                 <option value="12px">12 pt</option>
                 <option value="14px" selected>14 pt</option>
                 <option value="18px">18 pt</option>
                 <option value="24px">24 pt</option>
                 <option value="32px">32 pt</option>
-                <option value="48px">48 pt</option>
             </select>
         </div>
         <div class="btn-row">
-            <button class="btn-ribbon" onclick="document.execCommand('bold')"><b>B</b></button>
-            <button class="btn-ribbon" onclick="document.execCommand('italic')"><i>I</i></button>
-            <button class="btn-ribbon" onclick="document.execCommand('underline')"><u>U</u></button>
-            <button class="btn-ribbon" onclick="document.execCommand('superscript')">x²</button>
-            <button class="btn-ribbon" onclick="document.execCommand('subscript')">x₂</button>
+            <button class="btn-ribbon" onclick="toggleFormat('bold')"><b>B</b></button>
+            <button class="btn-ribbon" onclick="toggleFormat('italic')"><i>I</i></button>
+            <button class="btn-ribbon" onclick="toggleFormat('underline')"><u>U</u></button>
+            <button class="btn-ribbon" onclick="toggleScript('super')">x²</button>
+            <button class="btn-ribbon" onclick="toggleScript('sub')">x₂</button>
         </div>
         <div class="group-label">Font & Style</div>
     </div>
 
     <div class="group">
         <div class="btn-row">
-            <button class="btn-ribbon" onclick="document.execCommand('justifyLeft')">Left</button>
-            <button class="btn-ribbon" onclick="document.execCommand('justifyCenter')">Center</button>
-            <button class="btn-ribbon" onclick="document.execCommand('justifyRight')">Right</button>
+            <button class="btn-ribbon" onclick="applyFormat('align', false)">Left</button>
+            <button class="btn-ribbon" onclick="applyFormat('align', 'center')">Center</button>
+            <button class="btn-ribbon" onclick="applyFormat('align', 'right')">Right</button>
         </div>
         <select id="line-height-select" onchange="applyLineHeight(this.value)" style="margin-top:5px;" onclick="event.stopPropagation()">
             <option value="1.0">1.0 spacing</option>
@@ -278,32 +217,25 @@
         </select>
         <div class="group-label">Paragraph</div>
     </div>
-
-    <div class="group">
-        <div class="btn-row">
-            <button class="btn-ribbon btn-big" onclick="toggleHeaderFooter()"><span>📑</span>Header & Footer</button>
-            <button class="btn-ribbon btn-big" onclick="togglePageNumbers()"><span>🔢</span>Page Numbers</button>
-        </div>
-        <div class="group-label">Insert / Layout</div>
-    </div>
 </div>
 
 <div class="badge-trigger">
     <button class="action-btn" onclick="addBadge(); event.stopPropagation();">Get Certification Badge</button>
 </div>
 
+<!-- WORKSPACE CONTAINER -->
 <div class="workspace" id="workspace-container">
-    <div class="pages-wrapper" id="pages-wrapper">
-        <div class="paper" contenteditable="true"><p>Start composing text or narrative content loops...</p></div>
-    </div>
-
-    <button class="add-page-btn" id="btn-add-page" onclick="addNewPage(); event.stopPropagation();">+ Add Page</button>
     
-    <div id="data-view-container" style="display:none; width: 100%; max-width: 800px; background: white; padding: 40px; border-radius: 15px;">
+    <!-- Quill Document Engine Replaces Standard Divs -->
+    <div id="editor-container"></div>
+    
+    <!-- Forensics View -->
+    <div id="data-view-container">
         <h2>Velocity Forensics</h2>
         <div style="height: 350px;"><canvas id="wpmChart"></canvas></div>
     </div>
 
+    <!-- Citation View -->
     <div id="citation-view">
         <button onclick="toggleCitations()" style="float:right; cursor:pointer;">✖ Close</button>
         <h2 style="text-align:center">VerifyHuman™ Citation Guides</h2>
@@ -325,201 +257,134 @@
 <script>
     let log = [], startTime = null, chartInstance = null;
     let authors = [];
-    let activePage = null;
-    let showPageNumbers = true;
+    
+    // --- 1. Quill Inline Formatting Setup ---
+    // Register custom inline styles to match your previous ribbon menus
+    const SizeStyle = Quill.import('attributors/style/size');
+    SizeStyle.whitelist = ['10px', '12px', '14px', '18px', '24px', '32px'];
+    Quill.register(SizeStyle, true);
 
+    const FontStyle = Quill.import('attributors/style/font');
+    FontStyle.whitelist = ['Arial', 'Calibri', 'Times New Roman'];
+    Quill.register(FontStyle, true);
+
+    // --- 2. Initialize Quill Engine ---
+    const quill = new Quill('#editor-container', {
+        theme: 'snow',
+        modules: {
+            toolbar: false, // Disabling built-in toolbar since we use your custom Ribbon
+            history: { delay: 1000, maxStack: 500 }
+        }
+    });
+
+    // --- 3. App Load & Restore ---
     window.onload = () => {
-        const savedText = localStorage.getItem('hv_content');
-        if (savedText && savedText.trim() !== "") {
-            document.getElementById('pages-wrapper').innerHTML = savedText;
+        // Load Quill Object Data instead of raw HTML
+        const savedData = localStorage.getItem('hv_quill_data');
+        if (savedData) {
+            try {
+                quill.setContents(JSON.parse(savedData));
+            } catch(e) { console.error("Error loading saved doc"); }
+        } else {
+            quill.setText('Start composing text or narrative content loops...\n');
         }
         
         const savedAuthors = localStorage.getItem('hv_authors');
-        if (savedAuthors) {
-            authors = JSON.parse(savedAuthors);
-        } else {
-            authors = ["Primary Author"];
-        }
+        authors = savedAuthors ? JSON.parse(savedAuthors) : ["Primary Author"];
         
-        bindPaperEvents();
         renderAuthors();
-        updatePageNumbers();
         updateStats();
-
-        const firstPage = document.querySelector('.paper');
-        if (firstPage) {
-            activePage = firstPage;
-        }
     };
 
-    function bindPaperEvents() {
-        const pages = document.querySelectorAll('.paper');
-        
-        pages.forEach((page) => {
-            if (page.dataset.eventsBound === "true") return;
-            page.dataset.eventsBound = "true";
-            
-            page.setAttribute('contenteditable', 'true');
-            
-            page.addEventListener('input', function(e) {
-                activePage = this;
-                updateStats();
-                autoSave();
-                calculateTrustScore();
-                
-                // Only automatically jump to next page if text pushes past physical boundary 
-                if (this.scrollHeight > this.clientHeight + 25 && e.inputType && !e.inputType.includes('delete')) {
-                     jumpToNextPage(this);
-                }
-            });
-            
-            page.addEventListener('keydown', function(e) {
-                if (!startTime) startTime = Date.now(); 
-                log.push({ k: e.key, t: Date.now() - startTime });
-            });
-
-            page.addEventListener('click', function(e) {
-                activePage = this;
-                e.stopPropagation();
-            });
-        });
-
-        if (pages.length > 0 && !activePage) {
-            activePage = pages[0];
-        }
+    // --- 4. Wire Ribbon Commands to Quill API ---
+    function toggleFormat(formatStr) {
+        const currentFormat = quill.getFormat();
+        quill.format(formatStr, !currentFormat[formatStr]);
+        quill.focus();
     }
 
-    function jumpToNextPage(currentPage, charToInsert = null) {
-        const allPages = Array.from(document.querySelectorAll('.paper'));
-        const pageIndex = allPages.indexOf(currentPage);
-        let targetPage;
-
-        if (pageIndex !== -1 && pageIndex < allPages.length - 1) {
-            targetPage = allPages[pageIndex + 1];
-        } else {
-            targetPage = document.createElement('div');
-            targetPage.className = 'paper';
-            targetPage.setAttribute('contenteditable', 'true');
-            targetPage.innerHTML = '<p><br></p>';
-            
-            const currentFont = document.getElementById('font-family-select').value;
-            const currentSize = document.getElementById('font-size-select').value;
-            const currentSpacing = document.getElementById('line-height-select').value;
-            targetPage.style.fontFamily = currentFont;
-            targetPage.style.fontSize = currentSize;
-            targetPage.style.lineHeight = currentSpacing;
-
-            document.getElementById('pages-wrapper').appendChild(targetPage);
-            
-            bindPaperEvents();
-            updatePageNumbers();
-        }
-
-        targetPage.focus();
-        setCursorAtStart(targetPage);
-        activePage = targetPage;
-        
-        if (charToInsert && charToInsert.length === 1) {
-            document.execCommand('insertText', false, charToInsert);
-        }
-        
-        autoSave();
+    function toggleScript(val) {
+        const currentFormat = quill.getFormat();
+        quill.format('script', currentFormat.script === val ? false : val);
+        quill.focus();
     }
 
-    function setCursorAtStart(el) {
-        const range = document.createRange();
-        const sel = window.getSelection();
-        range.setStart(el, 0);
-        range.collapse(true);
-        sel.removeAllRanges();
-        sel.addRange(range);
-    }
-
-    function addNewPage() {
-        const wrapper = document.getElementById('pages-wrapper');
-        const newPage = document.createElement('div');
-        newPage.className = 'paper';
-        newPage.setAttribute('contenteditable', 'true');
-        newPage.innerHTML = '<p><br></p>';
-        
-        const currentFont = document.getElementById('font-family-select').value;
-        const currentSize = document.getElementById('font-size-select').value;
-        const currentSpacing = document.getElementById('line-height-select').value;
-        newPage.style.fontFamily = currentFont;
-        newPage.style.fontSize = currentSize;
-        newPage.style.lineHeight = currentSpacing;
-
-        wrapper.appendChild(newPage);
-        bindPaperEvents();
-        updatePageNumbers();
-        newPage.focus();
-        activePage = newPage;
-        autoSave();
-    }
-
-    function updatePageNumbers() {
-        const pages = document.querySelectorAll('.paper');
-        pages.forEach((page, index) => {
-            let footer = page.querySelector('.page-footer-region');
-            if (!footer) {
-                footer = document.createElement('div');
-                footer.className = 'page-footer-region';
-                footer.setAttribute('contenteditable', 'false');
-                footer.innerHTML = `<span>Header/Footer Note</span><span class="page-number-indicator">Page ${index + 1} of ${pages.length}</span>`;
-                page.appendChild(footer);
-            } else {
-                let indicator = footer.querySelector('.page-number-indicator');
-                if (indicator) {
-                    indicator.innerText = `Page ${index + 1} of ${pages.length}`;
-                }
-            }
-        });
-    }
-
-    function togglePageNumbers() {
-        showPageNumbers = !showPageNumbers;
-        document.querySelectorAll('.page-number-indicator').forEach(el => {
-            el.style.display = showPageNumbers ? 'inline' : 'none';
-        });
-    }
-
-    function toggleHeaderFooter() {
-        const headers = document.querySelectorAll('.page-header-region');
-        
-        if (headers.length > 0) {
-            headers.forEach(h => h.remove());
-        } else {
-            const pages = document.querySelectorAll('.paper');
-            pages.forEach(p => {
-                const header = document.createElement('div');
-                header.className = 'page-header-region';
-                header.setAttribute('contenteditable', 'true');
-                header.innerText = 'Document Header - Double click to edit...';
-                p.prepend(header);
-            });
-        }
-    }
-
-    function applyFontName(val) {
-        document.querySelectorAll('.paper').forEach(p => {
-            p.style.fontFamily = val;
-        });
-        document.execCommand('fontName', false, val);
-        if (activePage) activePage.focus();
-    }
-
-    function applyFontSize(val) {
-        document.querySelectorAll('.paper').forEach(p => {
-            p.style.fontSize = val;
-        });
-        if (activePage) activePage.focus();
+    function applyFormat(formatStr, val) {
+        quill.format(formatStr, val);
+        quill.focus();
     }
 
     function applyLineHeight(val) {
-        document.querySelectorAll('.paper').forEach(p => {
-            p.style.lineHeight = val;
-        });
-        if (activePage) activePage.focus();
+        document.querySelector('.ql-editor').style.lineHeight = val;
+    }
+
+    // --- 5. Real-Time Forensics & Saving API ---
+    // Log physical keystrokes for biometric chart
+    quill.root.addEventListener('keydown', function(e) {
+        if (!startTime) startTime = Date.now(); 
+        log.push({ k: e.key, t: Date.now() - startTime });
+    });
+
+    // Handle DOM and data updates safely via Quill's Delta engine
+    quill.on('text-change', function(delta, oldDelta, source) {
+        if (source === 'user') {
+            updateStats();
+            calculateTrustScore();
+            autoSave();
+        }
+    });
+
+    function updateStats() { 
+        const text = quill.getText().trim(); 
+        const words = text === "" ? 0 : text.split(/\s+/).filter(Boolean).length;
+        document.getElementById('word-count').innerText = words; 
+        document.getElementById('key-count').innerText = log.length; 
+    }
+
+    function calculateTrustScore() {
+        const textLength = quill.getText().trim().length;
+        let score = textLength > 0 ? Math.min(100, (log.length / textLength) * 100) : 0;
+        document.getElementById('trust-score').innerText = Math.floor(score) + "%";
+    }
+
+    function autoSave() { 
+        localStorage.setItem('hv_quill_data', JSON.stringify(quill.getContents())); 
+    }
+
+    function manualSave() {
+        autoSave();
+        const icon = document.getElementById('save-icon');
+        const status = document.getElementById('save-status');
+        icon.style.color = "#00b894";
+        status.innerText = "All changes saved!";
+        setTimeout(() => { icon.style.color = "white"; status.innerText = "Auto-save Enabled"; }, 2000);
+    }
+
+    // --- 6. Interface Scripts ---
+    function addBadge() {
+        const score = document.getElementById('trust-score').innerText;
+        const now = new Date();
+        const timestamp = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + 
+                          ' at ' + now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        const authorListStr = authors.length > 0 ? authors.join(', ') : 'Unspecified Author';
+
+        const badgeHTML = `
+            <div class="vh-badge" contenteditable="false">
+                <div style="font-size: 11px; color: #475569; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px; margin-bottom: 10px;">
+                    <div><strong>Author(s):</strong> ${authorListStr}</div>
+                    <div><strong>Certified On:</strong> ${timestamp}</div>
+                </div>
+                <div style="color:#00b894; font-weight:800; font-size: 14px;">VERIFIED HUMAN Origin</div>
+                <div style="font-size:12px; color: #0f172a; font-weight: 600; margin-top: 4px;">Composition Trust Metric: ${score}</div>
+                <div style="font-size:9px; color:#888; margin-top: 6px;">ID: VH-${Math.floor(Math.random()*1000000)}</div>
+            </div><br>
+        `;
+
+        // Safely paste the badge block into the current cursor position
+        const range = quill.getSelection(true);
+        quill.clipboard.dangerouslyPasteHTML(range.index, badgeHTML);
+        quill.setSelection(range.index + 1);
+        autoSave();
     }
 
     function renderAuthors() {
@@ -550,93 +415,34 @@
         localStorage.setItem('hv_authors', JSON.stringify(authors));
     }
 
-    function manualSave() {
-        autoSave();
-        const icon = document.getElementById('save-icon');
-        const status = document.getElementById('save-status');
-        icon.style.color = "#00b894";
-        status.innerText = "All changes saved!";
-        setTimeout(() => { icon.style.color = "white"; status.innerText = "Auto-save Enabled"; }, 2000);
-    }
-
-    function getAllPaperText() {
-        return Array.from(document.querySelectorAll('.paper'))
-            .map(p => {
-                const clone = p.cloneNode(true);
-                const indicator = clone.querySelector('.page-number-indicator');
-                if (indicator) indicator.remove();
-                return clone.innerText;
-            })
-            .join(' ');
-    }
-
-    function calculateTrustScore() {
-        const text = getAllPaperText().trim();
-        let score = text.length > 0 ? Math.min(100, (log.length / text.length) * 100) : 0;
-        document.getElementById('trust-score').innerText = Math.floor(score) + "%";
-    }
-
-    function addBadge() {
-        const score = document.getElementById('trust-score').innerText;
-        const now = new Date();
-        const timestamp = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + 
-                          ' at ' + 
-                          now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-        
-        const authorListStr = authors.length > 0 ? authors.join(', ') : 'Unspecified Author';
-
-        const badgeHTML = `
-            <div contenteditable="false" style="margin-top: 40px; border: 2px solid #00b894; padding: 18px; border-radius: 12px; width: 340px; background: #f8fafc; font-family: 'Inter', sans-serif; user-select: none;">
-                <div style="font-size: 11px; color: #475569; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px; margin-bottom: 10px;">
-                    <div><strong>Author(s):</strong> ${authorListStr}</div>
-                    <div><strong>Certified On:</strong> ${timestamp}</div>
-                </div>
-                <div style="color:#00b894; font-weight:800; font-size: 14px;">VERIFIED HUMAN Origin</div>
-                <div style="font-size:12px; color: #0f172a; font-weight: 600; margin-top: 4px;">Composition Trust Metric: ${score}</div>
-                <div style="font-size:9px; color:#888; margin-top: 6px;">ID: VH-${Math.floor(Math.random()*1000000)}</div>
-            </div>
-            <p><br></p>
-        `;
-
-        const pages = document.querySelectorAll('.paper');
-        const targetPage = activePage || pages[pages.length - 1];
-        targetPage.innerHTML += badgeHTML;
-        updatePageNumbers();
-        autoSave();
-    }
-
-    function toggleCitations() {
-        const cv = document.getElementById('citation-view');
-        const wrapper = document.getElementById('pages-wrapper');
-        const btnAdd = document.getElementById('btn-add-page');
-        
-        const isVisible = (cv.style.display === 'block');
-        wrapper.style.display = isVisible ? 'flex' : 'none';
-        btnAdd.style.display = isVisible ? 'block' : 'none';
-        cv.style.display = isVisible ? 'none' : 'block';
-    }
-
     function setView(id) {
         document.querySelectorAll('.ribbon-content').forEach(r => r.style.display = 'none');
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.getElementById('citation-view').style.display = 'none';
         
-        const wrapper = document.getElementById('pages-wrapper');
-        const btnAdd = document.getElementById('btn-add-page');
+        const editorWrapper = document.getElementById('editor-container');
+        const dataView = document.getElementById('data-view-container');
 
         if(id === 'data') {
-            wrapper.style.display = 'none';
-            btnAdd.style.display = 'none';
-            document.getElementById('data-view-container').style.display = 'block';
+            editorWrapper.style.display = 'none';
+            dataView.style.display = 'block';
             document.getElementById('tab-data').classList.add('active');
             updateChart();
         } else {
-            wrapper.style.display = 'flex';
-            btnAdd.style.display = 'block';
-            document.getElementById('data-view-container').style.display = 'none';
+            editorWrapper.style.display = 'block';
+            dataView.style.display = 'none';
             document.getElementById(id + '-ribbon').style.display = 'flex';
             document.getElementById('tab-' + id).classList.add('active');
         }
+    }
+
+    function toggleCitations() {
+        const cv = document.getElementById('citation-view');
+        const editorWrapper = document.getElementById('editor-container');
+        const isVisible = (cv.style.display === 'block');
+        
+        editorWrapper.style.display = isVisible ? 'block' : 'none';
+        cv.style.display = isVisible ? 'none' : 'block';
     }
 
     function updateChart() {
@@ -652,28 +458,16 @@
         });
     }
 
-    function updateStats() { 
-        const t = getAllPaperText().trim(); 
-        document.getElementById('word-count').innerText = t === "" ? 0 : t.split(/\s+/).filter(Boolean).length; 
-        document.getElementById('key-count').innerText = log.length; 
-    }
-
-    function autoSave() { 
-        const wrapper = document.getElementById('pages-wrapper');
-        localStorage.setItem('hv_content', wrapper.innerHTML); 
-    }
-
     function exportPDF() { 
-        const wrapper = document.getElementById('pages-wrapper');
-        html2pdf().from(wrapper).save('VerifyHuman_Manuscript_Report.pdf'); 
+        const editorContent = document.querySelector('.ql-editor');
+        html2pdf().from(editorContent).save('VerifyHuman_Manuscript_Report.pdf'); 
     }
     
     function renameDoc() { let n = prompt("Name:"); if(n) document.getElementById('doc-name').innerText = n; }
     function newDoc() { if(confirm("New document?")) { localStorage.clear(); location.reload(); } }
     function deleteDoc() { if(confirm("Delete document?")) { localStorage.clear(); location.reload(); } }
     function createCopy() { 
-        const wrapper = document.getElementById('pages-wrapper');
-        const blob = new Blob([wrapper.innerHTML], {type: "text/html"}); 
+        const blob = new Blob([document.querySelector('.ql-editor').innerHTML], {type: "text/html"}); 
         const a = document.createElement('a'); 
         a.href = URL.createObjectURL(blob); 
         a.download = "Manuscript_Copy.html"; 
