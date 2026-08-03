@@ -67,29 +67,28 @@
         .author-input { font-size: 11px; padding: 4px 8px; border: 1px solid #475569; background: #0f172a; color: #fff; border-radius: 4px; outline: none; width: 130px; user-select: text; }
         .author-add-btn { background: #3b82f6; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer; }
 
-        /* Workspace Outer Region - Dark Background */
+        /* Workspace Outer Region */
         .workspace { 
             flex-grow: 1; 
             overflow-y: auto; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            padding: 30px 20px 60px 20px; 
+            padding: 30px 20px 80px 20px; 
             position: relative; 
         }
 
-        /* Continuous Paper Sheet (Quill Container Override) */
+        /* Standard 8.5 x 11 Layout Controls */
         #editor-container { 
             background: #ffffff !important; 
             width: 8.5in; 
-            min-height: 11in; /* Will expand naturally downward */
+            min-height: 11in; 
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); 
             border-radius: 4px;
             border: none;
             margin: 0 auto;
         }
 
-        /* Style the actual editing area inside Quill */
         .ql-editor {
             padding: 1in; 
             line-height: 1.5; 
@@ -97,8 +96,49 @@
             font-family: 'Arial', sans-serif;
             color: #0f172a;
             min-height: 11in;
-            overflow-y: visible; /* Prevent internal scroll, let container scroll */
+            overflow-y: visible; 
         }
+
+        /* Visual Page Break Component */
+        .vh-page-break {
+            page-break-after: always;
+            page-break-inside: avoid;
+            break-after: page;
+            text-align: center;
+            margin: 40px -1in;
+            user-select: none;
+            position: relative;
+        }
+        
+        .vh-page-break-line {
+            border: none;
+            border-top: 2px dashed #94a3b8;
+            background: var(--bg-workspace);
+            padding: 10px;
+            color: #64748b;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: default;
+        }
+
+        /* Bottom Action Button */
+        .add-page-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 30px;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            user-select: none;
+        }
+        .add-page-btn:hover { background: #2563eb; transform: translateY(-2px); }
 
         /* Floating Badge Trigger */
         .badge-trigger { position: fixed; top: 160px; right: 40px; z-index: 10; display: flex; flex-direction: column; gap: 10px; user-select: none; }
@@ -108,12 +148,29 @@
         .status-bar { background: var(--brand-dark); color: white; padding: 6px 20px; font-size: 12px; display: flex; justify-content: space-between; z-index: 90; user-select: none; flex-shrink: 0; }
         select { padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px; }
 
-        /* Custom Forensics and Citation Views */
+        /* Header / Footer Modal Setup */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 400px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .modal-content h3 { margin-bottom: 15px; color: var(--brand-dark); }
+        .modal-content input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; margin-bottom: 15px; font-family: inherit; }
+        .modal-buttons { display: flex; justify-content: flex-end; gap: 10px; }
+        .modal-btn { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .modal-save { background: var(--brand-accent); color: var(--brand-dark); }
+        .modal-cancel { background: #e2e8f0; color: #475569; }
+
+        /* Custom Views */
         #data-view-container { display: none; width: 100%; max-width: 800px; background: white; padding: 40px; border-radius: 15px; margin: 0 auto; }
         #citation-view { display: none; width: 8.5in; background: #ffffff; padding: 1in; box-shadow: 0 4px 20px rgba(0,0,0,0.15); font-family: 'Times New Roman', serif; color: #0f172a; box-sizing: border-box; margin: 0 auto; }
         
-        /* Verification Badge Styles inside Editor */
         .vh-badge { margin-top: 40px; border: 2px solid #00b894; padding: 18px; border-radius: 12px; width: 340px; background: #f8fafc; font-family: 'Inter', sans-serif; }
+
+        /* Print Media Queries for PDF Formatting */
+        @media print {
+            .vh-page-break-line { display: none !important; }
+            .ql-editor { padding: 0 !important; }
+            .workspace { padding: 0 !important; background: transparent !important; }
+            #editor-container { box-shadow: none !important; }
+        }
     </style>
 </head>
 <body>
@@ -140,6 +197,7 @@
 <div class="tabs">
     <div class="tab" onclick="setView('file')">File</div>
     <div class="tab active" id="tab-home" onclick="setView('home')">Home</div>
+    <div class="tab" onclick="setView('layout')">Layout</div>
     <div class="tab" id="tab-data" onclick="setView('data')" style="background:#00b894; color:white">Forensics</div>
 </div>
 
@@ -219,6 +277,23 @@
     </div>
 </div>
 
+<!-- LAYOUT RIBBON -->
+<div class="ribbon-content" id="layout-ribbon">
+    <div class="group">
+        <div class="btn-row">
+            <button class="btn-ribbon btn-big" onclick="insertPageBreak()"><span>📑</span>Page Break</button>
+        </div>
+        <div class="group-label">Pagination</div>
+    </div>
+    <div class="group">
+        <div class="btn-row">
+            <button class="btn-ribbon btn-big" onclick="openHeaderFooterModal()"><span>📝</span>Header & Footer</button>
+            <button class="btn-ribbon btn-big" onclick="togglePageNumbers()"><span>🔢</span>Page Nums: <span id="num-status">ON</span></button>
+        </div>
+        <div class="group-label">Document Data</div>
+    </div>
+</div>
+
 <div class="badge-trigger">
     <button class="action-btn" onclick="addBadge(); event.stopPropagation();">Get Certification Badge</button>
 </div>
@@ -226,8 +301,11 @@
 <!-- WORKSPACE CONTAINER -->
 <div class="workspace" id="workspace-container">
     
-    <!-- Quill Document Engine Replaces Standard Divs -->
+    <!-- Editor Engine -->
     <div id="editor-container"></div>
+    
+    <!-- Add Page Button explicitly under the document body -->
+    <button class="add-page-btn" id="btn-add-page" onclick="insertPageBreak(); event.stopPropagation();">+ Add Page Break</button>
     
     <!-- Forensics View -->
     <div id="data-view-container">
@@ -239,8 +317,7 @@
     <div id="citation-view">
         <button onclick="toggleCitations()" style="float:right; cursor:pointer;">✖ Close</button>
         <h2 style="text-align:center">VerifyHuman™ Citation Guides</h2>
-        <hr>
-        <br>
+        <hr><br>
         <h3>MLA Example</h3>
         <p style="padding-left: 40px; text-indent: -40px;">Doe, Jane. "The Impact of Human-Centric Composition." <i>VerifyHuman Forensic Workspace</i>, Report VH-9921, 2026. Certified Human Integrity: 98%.</p>
         <br>
@@ -254,12 +331,26 @@
     <div id="save-status">Auto-save Enabled</div>
 </div>
 
+<!-- Header / Footer Configuration Modal -->
+<div class="modal-overlay" id="hf-modal">
+    <div class="modal-content">
+        <h3>Document Header & Footer</h3>
+        <p style="font-size: 12px; color: #64748b; margin-bottom: 10px;">These will appear on every printed/exported PDF page.</p>
+        <input type="text" id="header-input" placeholder="Document Header Text...">
+        <input type="text" id="footer-input" placeholder="Document Footer Text...">
+        <div class="modal-buttons">
+            <button class="modal-btn modal-cancel" onclick="document.getElementById('hf-modal').style.display='none'">Cancel</button>
+            <button class="modal-btn modal-save" onclick="saveHeaderFooter()">Save Details</button>
+        </div>
+    </div>
+</div>
+
 <script>
     let log = [], startTime = null, chartInstance = null;
     let authors = [];
+    let docConfig = { header: "", footer: "", showPageNumbers: true };
     
-    // --- 1. Quill Inline Formatting Setup ---
-    // Register custom inline styles to match your previous ribbon menus
+    // --- 1. Quill Initialization & Custom Blots ---
     const SizeStyle = Quill.import('attributors/style/size');
     SizeStyle.whitelist = ['10px', '12px', '14px', '18px', '24px', '32px'];
     Quill.register(SizeStyle, true);
@@ -268,23 +359,35 @@
     FontStyle.whitelist = ['Arial', 'Calibri', 'Times New Roman'];
     Quill.register(FontStyle, true);
 
-    // --- 2. Initialize Quill Engine ---
+    // Create a Custom Page Break Blot
+    const BlockEmbed = Quill.import('blots/block/embed');
+    class PageBreak extends BlockEmbed {
+        static create(value) {
+            const node = super.create(value);
+            node.setAttribute('class', 'vh-page-break');
+            node.innerHTML = '<div class="vh-page-break-line" contenteditable="false">--- Page Break ---</div>';
+            return node;
+        }
+    }
+    PageBreak.blotName = 'pageBreak';
+    PageBreak.tagName = 'div';
+    Quill.register(PageBreak);
+
+    // Initialize Engine
     const quill = new Quill('#editor-container', {
         theme: 'snow',
         modules: {
-            toolbar: false, // Disabling built-in toolbar since we use your custom Ribbon
+            toolbar: false, 
             history: { delay: 1000, maxStack: 500 }
         }
     });
 
-    // --- 3. App Load & Restore ---
+    // --- 2. App Load & Restore ---
     window.onload = () => {
-        // Load Quill Object Data instead of raw HTML
         const savedData = localStorage.getItem('hv_quill_data');
         if (savedData) {
-            try {
-                quill.setContents(JSON.parse(savedData));
-            } catch(e) { console.error("Error loading saved doc"); }
+            try { quill.setContents(JSON.parse(savedData)); } 
+            catch(e) { console.error("Error loading saved doc"); }
         } else {
             quill.setText('Start composing text or narrative content loops...\n');
         }
@@ -292,9 +395,86 @@
         const savedAuthors = localStorage.getItem('hv_authors');
         authors = savedAuthors ? JSON.parse(savedAuthors) : ["Primary Author"];
         
+        const savedConfig = localStorage.getItem('hv_doc_config');
+        if (savedConfig) {
+            docConfig = JSON.parse(savedConfig);
+            document.getElementById('num-status').innerText = docConfig.showPageNumbers ? "ON" : "OFF";
+        }
+        
         renderAuthors();
         updateStats();
     };
+
+    // --- 3. Custom Google Docs Layout Features ---
+    function insertPageBreak() {
+        const range = quill.getSelection(true);
+        quill.insertText(range.index, '\n', Quill.sources.USER);
+        quill.insertEmbed(range.index + 1, 'pageBreak', true, Quill.sources.USER);
+        quill.insertText(range.index + 2, '\n', Quill.sources.USER);
+        quill.setSelection(range.index + 3, Quill.sources.SILENT);
+        
+        // Scroll the viewport to the newly created page area
+        document.querySelector('.workspace').scrollTop += 150;
+    }
+
+    function openHeaderFooterModal() {
+        document.getElementById('header-input').value = docConfig.header;
+        document.getElementById('footer-input').value = docConfig.footer;
+        document.getElementById('hf-modal').style.display = 'flex';
+    }
+
+    function saveHeaderFooter() {
+        docConfig.header = document.getElementById('header-input').value.trim();
+        docConfig.footer = document.getElementById('footer-input').value.trim();
+        localStorage.setItem('hv_doc_config', JSON.stringify(docConfig));
+        document.getElementById('hf-modal').style.display = 'none';
+        manualSave();
+    }
+
+    function togglePageNumbers() {
+        docConfig.showPageNumbers = !docConfig.showPageNumbers;
+        document.getElementById('num-status').innerText = docConfig.showPageNumbers ? "ON" : "OFF";
+        localStorage.setItem('hv_doc_config', JSON.stringify(docConfig));
+        manualSave();
+    }
+
+    // Custom PDF Exporter utilizing html2pdf with page number logic
+    function exportPDF() { 
+        const editorContent = document.querySelector('.ql-editor');
+        
+        const pdfOptions = {
+            margin:       [docConfig.header ? 0.8 : 0.5, 0.5, docConfig.footer ? 0.8 : 0.5, 0.5], // Dynamic margins based on headers
+            filename:     'VerifyHuman_Manuscript.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' },
+            pagebreak:    { mode: 'css', after: '.vh-page-break' }
+        };
+
+        // Attach header/footer data to PDF generation loop
+        html2pdf().from(editorContent).set(pdfOptions).toPdf().get('pdf').then(function (pdf) {
+            const totalPages = pdf.internal.getNumberOfPages();
+            
+            for (let i = 1; i <= totalPages; i++) {
+                pdf.setPage(i);
+                pdf.setFontSize(10);
+                pdf.setTextColor(150);
+                
+                // Header Injection
+                if (docConfig.header) {
+                    pdf.text(docConfig.header, 0.5, 0.4);
+                }
+                
+                // Footer & Page Number Injection
+                if (docConfig.footer) {
+                    pdf.text(docConfig.footer, 0.5, 10.6);
+                }
+                if (docConfig.showPageNumbers) {
+                    pdf.text(`Page ${i} of ${totalPages}`, 7.0, 10.6);
+                }
+            }
+        }).save();
+    }
 
     // --- 4. Wire Ribbon Commands to Quill API ---
     function toggleFormat(formatStr) {
@@ -302,30 +482,25 @@
         quill.format(formatStr, !currentFormat[formatStr]);
         quill.focus();
     }
-
     function toggleScript(val) {
         const currentFormat = quill.getFormat();
         quill.format('script', currentFormat.script === val ? false : val);
         quill.focus();
     }
-
     function applyFormat(formatStr, val) {
         quill.format(formatStr, val);
         quill.focus();
     }
-
     function applyLineHeight(val) {
         document.querySelector('.ql-editor').style.lineHeight = val;
     }
 
     // --- 5. Real-Time Forensics & Saving API ---
-    // Log physical keystrokes for biometric chart
     quill.root.addEventListener('keydown', function(e) {
         if (!startTime) startTime = Date.now(); 
         log.push({ k: e.key, t: Date.now() - startTime });
     });
 
-    // Handle DOM and data updates safely via Quill's Delta engine
     quill.on('text-change', function(delta, oldDelta, source) {
         if (source === 'user') {
             updateStats();
@@ -360,7 +535,7 @@
         setTimeout(() => { icon.style.color = "white"; status.innerText = "Auto-save Enabled"; }, 2000);
     }
 
-    // --- 6. Interface Scripts ---
+    // --- 6. Base Interface Scripts ---
     function addBadge() {
         const score = document.getElementById('trust-score').innerText;
         const now = new Date();
@@ -380,7 +555,6 @@
             </div><br>
         `;
 
-        // Safely paste the badge block into the current cursor position
         const range = quill.getSelection(true);
         quill.clipboard.dangerouslyPasteHTML(range.index, badgeHTML);
         quill.setSelection(range.index + 1);
@@ -422,14 +596,17 @@
         
         const editorWrapper = document.getElementById('editor-container');
         const dataView = document.getElementById('data-view-container');
+        const addPageBtn = document.getElementById('btn-add-page');
 
         if(id === 'data') {
             editorWrapper.style.display = 'none';
+            addPageBtn.style.display = 'none';
             dataView.style.display = 'block';
             document.getElementById('tab-data').classList.add('active');
             updateChart();
         } else {
             editorWrapper.style.display = 'block';
+            addPageBtn.style.display = 'block';
             dataView.style.display = 'none';
             document.getElementById(id + '-ribbon').style.display = 'flex';
             document.getElementById('tab-' + id).classList.add('active');
@@ -439,9 +616,11 @@
     function toggleCitations() {
         const cv = document.getElementById('citation-view');
         const editorWrapper = document.getElementById('editor-container');
+        const addPageBtn = document.getElementById('btn-add-page');
         const isVisible = (cv.style.display === 'block');
         
         editorWrapper.style.display = isVisible ? 'block' : 'none';
+        addPageBtn.style.display = isVisible ? 'block' : 'none';
         cv.style.display = isVisible ? 'none' : 'block';
     }
 
@@ -458,11 +637,6 @@
         });
     }
 
-    function exportPDF() { 
-        const editorContent = document.querySelector('.ql-editor');
-        html2pdf().from(editorContent).save('VerifyHuman_Manuscript_Report.pdf'); 
-    }
-    
     function renameDoc() { let n = prompt("Name:"); if(n) document.getElementById('doc-name').innerText = n; }
     function newDoc() { if(confirm("New document?")) { localStorage.clear(); location.reload(); } }
     function deleteDoc() { if(confirm("Delete document?")) { localStorage.clear(); location.reload(); } }
