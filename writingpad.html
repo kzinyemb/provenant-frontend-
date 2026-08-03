@@ -82,12 +82,13 @@
             width: 100%;
         }
 
-        /* White Paper Sheet - Flexible Bounds to Avoid Lock-ups */
+        /* White Paper Sheet - Fixed Document Bounds */
         .paper { 
             background: #ffffff !important; 
             width: 8.5in; 
-            min-height: 11in; 
-            height: auto; 
+            height: 11in; 
+            min-height: 11in;
+            max-height: 11in;
             padding: 1in; 
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); 
             border-radius: 4px;
@@ -101,6 +102,7 @@
             box-sizing: border-box;
             margin: 0 auto;
             word-break: break-word;
+            overflow: hidden; 
         }
 
         /* Header / Footer / Page Number Indicators */
@@ -286,7 +288,7 @@
 
 <div class="workspace" id="workspace-container">
     <div class="pages-wrapper" id="pages-wrapper">
-        <div class="paper" contenteditable="true">Start composing text or narrative content loops...</div>
+        <div class="paper" contenteditable="true"><p><br></p></div>
     </div>
 
     <button class="add-page-btn" id="btn-add-page" onclick="addNewPage(); event.stopPropagation();">+ Add Page</button>
@@ -324,6 +326,8 @@
         const savedText = localStorage.getItem('hv_content');
         if (savedText && savedText.trim() !== "") {
             document.getElementById('pages-wrapper').innerHTML = savedText;
+        } else {
+            document.getElementById('pages-wrapper').innerHTML = `<div class="paper" contenteditable="true">Start composing text or narrative content loops...<p><br></p></div>`;
         }
         
         const savedAuthors = localStorage.getItem('hv_authors');
@@ -339,7 +343,7 @@
         updateStats();
 
         const firstPage = document.querySelector('.paper');
-        if(firstPage) {
+        if (firstPage) {
             activePage = firstPage;
         }
     };
@@ -357,32 +361,58 @@
 
     function bindPaperEvents() {
         const pages = document.querySelectorAll('.paper');
+        
         pages.forEach((page) => {
+            // Prevent duplicate bindings on identical pages
+            if (page.dataset.eventsBound === "true") return;
+            page.dataset.eventsBound = "true";
+            
             page.setAttribute('contenteditable', 'true');
             
-            page.oninput = function() {
+            page.addEventListener('input', function(e) {
                 activePage = this;
                 updateStats();
                 autoSave();
                 calculateTrustScore();
-                // We removed checkOverflowAndPaginate(this) from here so you don't get 
-                // locked out when trying to edit text in the middle of a full page.
-            };
+                
+                // Fallback check: if pasted content drastically overflows
+                if (this.scrollHeight > this.clientHeight + 10 && e.inputType && !e.inputType.includes('delete')) {
+                     jumpToNextPage(this);
+                }
+            });
             
-            page.onkeydown = function(e) {
+            page.addEventListener('keydown', function(e) {
                 if (!startTime) startTime = Date.now(); 
                 log.push({ k: e.key, t: Date.now() - startTime });
 
-                // We now trigger the overflow check on the 'Enter' key press
-                if (e.key === 'Enter') {
-                    setTimeout(() => checkOverflowAndPaginate(this), 10);
-                }
-            };
+                // Allowed keys that don't increase content length
+                const allowedKeys = ['Backspace', 'Delete', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Shift', 'Control', 'Alt', 'Meta'];
+                
+                // If page height has hit the bottom boundary limit
+                if (this.scrollHeight >= this.clientHeight) {
+                    if (allowedKeys.includes(e.key)) return; 
 
-            page.onclick = function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        jumpToNextPage(this);
+                    } else if (e.key.length === 1) { // Normal character typing
+                        e.preventDefault();
+                        jumpToNextPage(this, e.key);
+                    }
+                } 
+                // Pre-emptive page jump if Enter is pressed at the bottom margin edge
+                else if (e.key === 'Enter' && this.scrollHeight > this.clientHeight - 40) {
+                    e.preventDefault();
+                    jumpToNextPage(this);
+                }
+            });
+
+            // Make sure clicking actually grants cursor focus reliably
+            page.addEventListener('click', function(e) {
                 activePage = this;
+                this.focus();
                 e.stopPropagation();
-            };
+            });
         });
 
         if (pages.length > 0 && !activePage) {
@@ -390,22 +420,34 @@
         }
     }
 
-    function checkOverflowAndPaginate(page) {
-        // An 11-inch page height calculates to ~1056 pixels in the browser.
-        // We raised the limit to 1100 to stop the endless loop of instantly shifting focus.
-        if (page.scrollHeight > 1100) {
-            const allPages = Array.from(document.querySelectorAll('.paper'));
-            const pageIndex = allPages.indexOf(page);
+    function jumpToNextPage(currentPage, charToInsert = null) {
+        const allPages = Array.from(document.querySelectorAll('.paper'));
+        const pageIndex = allPages.indexOf(currentPage);
+        let targetPage;
 
-            if (pageIndex !== -1 && pageIndex < allPages.length - 1) {
-                const nextPage = allPages[pageIndex + 1];
-                nextPage.focus();
-                setCursorAtStart(nextPage);
-                activePage = nextPage;
-            } else {
-                addNewPage();
-            }
+        if (pageIndex !== -1 && pageIndex < allPages.length - 1) {
+            targetPage = allPages[pageIndex + 1];
+        } else {
+            targetPage = document.createElement('div');
+            targetPage.className = 'paper';
+            targetPage.setAttribute('contenteditable', 'true');
+            targetPage.innerHTML = '<p><br></p>';
+            document.getElementById('pages-wrapper').appendChild(targetPage);
+            
+            bindPaperEvents();
+            updatePageNumbers();
         }
+
+        targetPage.focus();
+        setCursorAtStart(targetPage);
+        activePage = targetPage;
+        
+        // Carry the keystroke over cleanly to the new page
+        if (charToInsert && charToInsert.length === 1) {
+            document.execCommand('insertText', false, charToInsert);
+        }
+        
+        autoSave();
     }
 
     function setCursorAtStart(el) {
@@ -431,7 +473,7 @@
         const newPage = document.createElement('div');
         newPage.className = 'paper';
         newPage.setAttribute('contenteditable', 'true');
-        newPage.innerText = '';
+        newPage.innerHTML = '<p><br></p>';
         
         wrapper.appendChild(newPage);
         bindPaperEvents();
