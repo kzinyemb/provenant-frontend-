@@ -352,33 +352,6 @@
         }
     };
 
-    // Safe workspace click handler
-    document.getElementById('workspace-container').addEventListener('click', function(e) {
-        if (e.target.id === 'workspace-container' || e.target.id === 'pages-wrapper') {
-            const pages = document.querySelectorAll('.paper');
-            if (pages.length > 0) {
-                const target = activePage || pages[pages.length - 1];
-                target.focus();
-                setCursorAtEnd(target);
-            }
-        }
-    });
-
-    // Helper: Smart check to see if cursor is at the very end of the visible text
-    function isCursorAtEnd(el) {
-        try {
-            const sel = window.getSelection();
-            if (!sel.rangeCount) return false;
-            const range = sel.getRangeAt(0);
-            const testRange = document.createRange();
-            testRange.selectNodeContents(el);
-            testRange.setStart(range.endContainer, range.endOffset);
-            return testRange.toString().trim() === '';
-        } catch (e) {
-            return false;
-        }
-    }
-
     function bindPaperEvents() {
         const pages = document.querySelectorAll('.paper');
         
@@ -394,8 +367,8 @@
                 autoSave();
                 calculateTrustScore();
                 
-                // Only automatically jump to next page if they are actively typing at the end of the document
-                if (isCursorAtEnd(this) && this.scrollHeight > this.clientHeight + 15 && e.inputType && !e.inputType.includes('delete')) {
+                // Only automatically jump to next page if text pushes past physical boundary 
+                if (this.scrollHeight > this.clientHeight + 25 && e.inputType && !e.inputType.includes('delete')) {
                      jumpToNextPage(this);
                 }
             });
@@ -403,26 +376,10 @@
             page.addEventListener('keydown', function(e) {
                 if (!startTime) startTime = Date.now(); 
                 log.push({ k: e.key, t: Date.now() - startTime });
-
-                const allowedKeys = ['Backspace', 'Delete', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Shift', 'Control', 'Alt', 'Meta'];
-                
-                // Only enforce a boundary lock if the user's cursor is AT THE END of the text
-                if (isCursorAtEnd(this)) {
-                    // Check if they are pressing Enter explicitly near the bottom OR overflowing
-                    if (e.key === 'Enter' && this.scrollHeight > this.clientHeight - 40) {
-                        e.preventDefault();
-                        jumpToNextPage(this);
-                    } else if (e.key.length === 1 && this.scrollHeight > this.clientHeight + 15) {
-                        if (allowedKeys.includes(e.key)) return;
-                        e.preventDefault();
-                        jumpToNextPage(this, e.key);
-                    }
-                }
             });
 
             page.addEventListener('click', function(e) {
                 activePage = this;
-                // Allow the browser to naturally position the cursor here
                 e.stopPropagation();
             });
         });
@@ -474,15 +431,6 @@
         const sel = window.getSelection();
         range.setStart(el, 0);
         range.collapse(true);
-        sel.removeAllRanges();
-        sel.addRange(range);
-    }
-
-    function setCursorAtEnd(el) {
-        const range = document.createRange();
-        const sel = window.getSelection();
-        range.selectNodeContents(el);
-        range.collapse(false);
         sel.removeAllRanges();
         sel.addRange(range);
     }
