@@ -82,7 +82,7 @@
             width: 100%;
         }
 
-        /* White Paper Sheet - Fixed Document Bounds */
+        /* White Paper Sheet - Fixed Document Bounds with consistent typography styling defaults */
         .paper { 
             background: #ffffff !important; 
             width: 8.5in; 
@@ -96,6 +96,7 @@
             position: relative; 
             line-height: 1.5; 
             font-size: 14px;
+            font-family: 'Arial', sans-serif;
             color: #0f172a;
             user-select: text;
             cursor: text;
@@ -131,6 +132,7 @@
             justify-content: space-between;
             outline: none;
             background: #ffffff;
+            user-select: none;
         }
 
         .page-number-indicator {
@@ -232,20 +234,20 @@
 
     <div class="group">
         <div style="display: flex; gap: 5px; margin-bottom: 5px;">
-            <select onchange="document.execCommand('fontName', false, this.value)" style="width: 110px;" onclick="event.stopPropagation()">
+            <select id="font-family-select" onchange="applyFontName(this.value)" style="width: 110px;" onclick="event.stopPropagation()">
                 <option value="Arial">Arial</option>
                 <option value="Calibri">Calibri</option>
                 <option value="Calibri Light">Calibri Light</option>
                 <option value="Times New Roman">Times New Roman</option>
             </select>
-            <select onchange="applyFontSize(this.value)" style="width: 65px;" onclick="event.stopPropagation()" title="Text Size">
-                <option value="1">10 pt</option>
-                <option value="2">12 pt</option>
-                <option value="3" selected>14 pt</option>
-                <option value="4">18 pt</option>
-                <option value="5">24 pt</option>
-                <option value="6">32 pt</option>
-                <option value="7">48 pt</option>
+            <select id="font-size-select" onchange="applyFontSize(this.value)" style="width: 65px;" onclick="event.stopPropagation()" title="Text Size">
+                <option value="10px">10 pt</option>
+                <option value="12px">12 pt</option>
+                <option value="14px" selected>14 pt</option>
+                <option value="18px">18 pt</option>
+                <option value="24px">24 pt</option>
+                <option value="32px">32 pt</option>
+                <option value="48px">48 pt</option>
             </select>
         </div>
         <div class="btn-row">
@@ -264,9 +266,9 @@
             <button class="btn-ribbon" onclick="document.execCommand('justifyCenter')">Center</button>
             <button class="btn-ribbon" onclick="document.execCommand('justifyRight')">Right</button>
         </div>
-        <select onchange="applyLineHeight(this.value)" style="margin-top:5px;" onclick="event.stopPropagation()">
+        <select id="line-height-select" onchange="applyLineHeight(this.value)" style="margin-top:5px;" onclick="event.stopPropagation()">
             <option value="1.0">1.0 spacing</option>
-            <option value="1.15">1.15 spacing</option>
+            <option value="1.15" selected>1.15 spacing</option>
             <option value="1.5">1.5 spacing</option>
             <option value="2.0">2.0 spacing</option>
         </select>
@@ -288,7 +290,7 @@
 
 <div class="workspace" id="workspace-container">
     <div class="pages-wrapper" id="pages-wrapper">
-        <div class="paper" contenteditable="true"><p><br></p></div>
+        <div class="paper" contenteditable="true"><p>Start composing text or narrative content loops...</p></div>
     </div>
 
     <button class="add-page-btn" id="btn-add-page" onclick="addNewPage(); event.stopPropagation();">+ Add Page</button>
@@ -326,8 +328,6 @@
         const savedText = localStorage.getItem('hv_content');
         if (savedText && savedText.trim() !== "") {
             document.getElementById('pages-wrapper').innerHTML = savedText;
-        } else {
-            document.getElementById('pages-wrapper').innerHTML = `<div class="paper" contenteditable="true">Start composing text or narrative content loops...<p><br></p></div>`;
         }
         
         const savedAuthors = localStorage.getItem('hv_authors');
@@ -363,7 +363,6 @@
         const pages = document.querySelectorAll('.paper');
         
         pages.forEach((page) => {
-            // Prevent duplicate bindings on identical pages
             if (page.dataset.eventsBound === "true") return;
             page.dataset.eventsBound = "true";
             
@@ -375,7 +374,7 @@
                 autoSave();
                 calculateTrustScore();
                 
-                // Fallback check: if pasted content drastically overflows
+                // Guard: if content overflows the fixed physical page height boundary
                 if (this.scrollHeight > this.clientHeight + 2 && e.inputType && !e.inputType.includes('delete')) {
                      jumpToNextPage(this);
                 }
@@ -385,25 +384,26 @@
                 if (!startTime) startTime = Date.now(); 
                 log.push({ k: e.key, t: Date.now() - startTime });
 
-                // Allowed keys that don't increase content length
                 const allowedKeys = ['Backspace', 'Delete', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Shift', 'Control', 'Alt', 'Meta'];
                 
-                // ONLY trigger if the page height is strictly greater than the client limit (with a 2px buffer).
-                // We REMOVED the buggy pre-emptive Enter jump logic here so you can type freely down the page.
+                // Strictly lock entry when height boundary is hit
                 if (this.scrollHeight > this.clientHeight + 2) {
                     if (allowedKeys.includes(e.key)) return; 
 
                     if (e.key === 'Enter') {
                         e.preventDefault();
                         jumpToNextPage(this);
-                    } else if (e.key.length === 1) { // Normal character typing
+                    } else if (e.key.length === 1) { 
                         e.preventDefault();
                         jumpToNextPage(this, e.key);
                     }
                 } 
+                else if (e.key === 'Enter' && this.scrollHeight > this.clientHeight - 50) {
+                    e.preventDefault();
+                    jumpToNextPage(this);
+                }
             });
 
-            // Make sure clicking actually grants cursor focus reliably
             page.addEventListener('click', function(e) {
                 activePage = this;
                 this.focus();
@@ -428,6 +428,15 @@
             targetPage.className = 'paper';
             targetPage.setAttribute('contenteditable', 'true');
             targetPage.innerHTML = '<p><br></p>';
+            
+            // Inherit current workspace typography settings onto newly created pages
+            const currentFont = document.getElementById('font-family-select').value;
+            const currentSize = document.getElementById('font-size-select').value;
+            const currentSpacing = document.getElementById('line-height-select').value;
+            targetPage.style.fontFamily = currentFont;
+            targetPage.style.fontSize = currentSize;
+            targetPage.style.lineHeight = currentSpacing;
+
             document.getElementById('pages-wrapper').appendChild(targetPage);
             
             bindPaperEvents();
@@ -438,7 +447,6 @@
         setCursorAtStart(targetPage);
         activePage = targetPage;
         
-        // Carry the keystroke over cleanly to the new page
         if (charToInsert && charToInsert.length === 1) {
             document.execCommand('insertText', false, charToInsert);
         }
@@ -471,6 +479,13 @@
         newPage.setAttribute('contenteditable', 'true');
         newPage.innerHTML = '<p><br></p>';
         
+        const currentFont = document.getElementById('font-family-select').value;
+        const currentSize = document.getElementById('font-size-select').value;
+        const currentSpacing = document.getElementById('line-height-select').value;
+        newPage.style.fontFamily = currentFont;
+        newPage.style.fontSize = currentSize;
+        newPage.style.lineHeight = currentSpacing;
+
         wrapper.appendChild(newPage);
         bindPaperEvents();
         updatePageNumbers();
@@ -522,8 +537,18 @@
         }
     }
 
-    function applyFontSize(size) {
-        document.execCommand('fontSize', false, size);
+    // Direct styling overrides targeting container sheets to prevent browser command font mismatches
+    function applyFontName(val) {
+        document.querySelectorAll('.paper').forEach(p => {
+            p.style.fontFamily = val;
+        });
+        document.execCommand('fontName', false, val);
+    }
+
+    function applyFontSize(val) {
+        document.querySelectorAll('.paper').forEach(p => {
+            p.style.fontSize = val;
+        });
     }
 
     function applyLineHeight(val) {
@@ -679,7 +704,7 @@
     }
     
     function renameDoc() { let n = prompt("Name:"); if(n) document.getElementById('doc-name').innerText = n; }
-    function newDoc() { if(confirm("New document?")) { localStorage.clear(); location.reload(); } }
+    function newDoc() { if(confirm("New document?")) { localStorage.clear(); location.reload(); } numeric }
     function deleteDoc() { if(confirm("Delete document?")) { localStorage.clear(); location.reload(); } }
     function createCopy() { 
         const wrapper = document.getElementById('pages-wrapper');
