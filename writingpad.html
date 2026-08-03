@@ -177,7 +177,6 @@
         #citation-view { display: none; width: 8.5in; background: #ffffff; padding: 1in; box-shadow: 0 4px 20px rgba(0,0,0,0.15); font-family: 'Times New Roman', serif; color: #0f172a; user-select: text; box-sizing: border-box; }
     </style>
 </head>
-<!-- Removed conflicting body onclick handler -->
 <body>
 
 <div class="quick-access">
@@ -365,6 +364,21 @@
         }
     });
 
+    // Helper: Smart check to see if cursor is at the very end of the visible text
+    function isCursorAtEnd(el) {
+        try {
+            const sel = window.getSelection();
+            if (!sel.rangeCount) return false;
+            const range = sel.getRangeAt(0);
+            const testRange = document.createRange();
+            testRange.selectNodeContents(el);
+            testRange.setStart(range.endContainer, range.endOffset);
+            return testRange.toString().trim() === '';
+        } catch (e) {
+            return false;
+        }
+    }
+
     function bindPaperEvents() {
         const pages = document.querySelectorAll('.paper');
         
@@ -380,8 +394,8 @@
                 autoSave();
                 calculateTrustScore();
                 
-                // Generous +25 margin handles invisible bounding boxes to prevent early pagination
-                if (this.scrollHeight > this.clientHeight + 25 && e.inputType && !e.inputType.includes('delete')) {
+                // Only automatically jump to next page if they are actively typing at the end of the document
+                if (isCursorAtEnd(this) && this.scrollHeight > this.clientHeight + 15 && e.inputType && !e.inputType.includes('delete')) {
                      jumpToNextPage(this);
                 }
             });
@@ -392,23 +406,23 @@
 
                 const allowedKeys = ['Backspace', 'Delete', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Shift', 'Control', 'Alt', 'Meta'];
                 
-                // Allow user to use Enter freely unless the page boundary is truly exceeded
-                if (this.scrollHeight > this.clientHeight + 25) {
-                    if (allowedKeys.includes(e.key)) return; 
-
-                    if (e.key === 'Enter') {
+                // Only enforce a boundary lock if the user's cursor is AT THE END of the text
+                if (isCursorAtEnd(this)) {
+                    // Check if they are pressing Enter explicitly near the bottom OR overflowing
+                    if (e.key === 'Enter' && this.scrollHeight > this.clientHeight - 40) {
                         e.preventDefault();
                         jumpToNextPage(this);
-                    } else if (e.key.length === 1) { 
+                    } else if (e.key.length === 1 && this.scrollHeight > this.clientHeight + 15) {
+                        if (allowedKeys.includes(e.key)) return;
                         e.preventDefault();
                         jumpToNextPage(this, e.key);
                     }
-                } 
+                }
             });
 
             page.addEventListener('click', function(e) {
                 activePage = this;
-                // DO NOT call this.focus() here. The browser naturally places the cursor where clicked.
+                // Allow the browser to naturally position the cursor here
                 e.stopPropagation();
             });
         });
