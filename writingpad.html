@@ -388,7 +388,8 @@
                 // Allowed keys that don't increase content length
                 const allowedKeys = ['Backspace', 'Delete', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Shift', 'Control', 'Alt', 'Meta'];
                 
-                // ONLY trigger if the page height is strictly greater than the client limit (with a 2px buffer)
+                // ONLY trigger if the page height is strictly greater than the client limit (with a 2px buffer).
+                // We REMOVED the buggy pre-emptive Enter jump logic here so you can type freely down the page.
                 if (this.scrollHeight > this.clientHeight + 2) {
                     if (allowedKeys.includes(e.key)) return; 
 
@@ -400,11 +401,6 @@
                         jumpToNextPage(this, e.key);
                     }
                 } 
-                // Pre-emptive page jump if Enter is pressed at the bottom margin edge
-                else if (e.key === 'Enter' && this.scrollHeight > this.clientHeight - 40) {
-                    e.preventDefault();
-                    jumpToNextPage(this);
-                }
             });
 
             // Make sure clicking actually grants cursor focus reliably
