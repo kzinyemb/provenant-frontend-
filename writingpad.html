@@ -78,13 +78,21 @@
             position: relative; 
         }
 
-        /* Standard 8.5 x 11 Layout Controls */
+        /* --- VISUAL PAGINATION HYBRID ENGINE --- */
+        .paper-wrapper {
+            position: relative;
+            width: 8.5in;
+            margin: 0 auto;
+        }
+
         #editor-container { 
-            background: #ffffff !important; 
             width: 8.5in; 
             min-height: 11in; 
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); 
-            border-radius: 4px;
+            /* The visual hack: repeating gradient simulating physical 8.5x11 sheets separated by 40px gaps */
+            background: linear-gradient(to bottom, #ffffff 0px, #ffffff 1056px, transparent 1056px, transparent 1096px) !important;
+            background-size: 100% 1096px !important;
+            /* Drop shadow applies only to the solid white background parts, making pages look distinct */
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.25)); 
             border: none;
             margin: 0 auto;
         }
@@ -99,29 +107,50 @@
             overflow-y: visible; 
         }
 
-        /* Visual Page Break Component */
+        /* Custom Page Break Blot - Re-engineered for structural pushing */
         .vh-page-break {
-            page-break-after: always;
-            page-break-inside: avoid;
-            break-after: page;
-            text-align: center;
-            margin: 40px -1in;
+            display: block;
+            width: 100%;
             user-select: none;
             position: relative;
+            /* The JS engine will dynamically assign 'height' to this element to force the next line to the next page */
         }
         
-        .vh-page-break-line {
-            border: none;
+        .pb-indicator {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
             border-top: 2px dashed #94a3b8;
-            background: var(--bg-workspace);
-            padding: 10px;
-            color: #64748b;
+            text-align: center;
             font-size: 10px;
-            font-weight: 800;
+            color: #64748b;
+            padding-top: 4px;
             text-transform: uppercase;
             letter-spacing: 2px;
             cursor: default;
         }
+
+        /* Absolute Header & Footer Overlays */
+        #hf-overlays {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Let clicks pass straight through to the text editor */
+            z-index: 5;
+        }
+        .doc-overlay {
+            position: absolute;
+            left: 1in;
+            right: 1in;
+            font-size: 11px;
+            color: #94a3b8;
+            text-align: center;
+        }
+        .doc-header { border-bottom: 1px dashed #e2e8f0; padding-bottom: 4px; }
+        .doc-footer { border-top: 1px dashed #e2e8f0; padding-top: 4px; }
 
         /* Bottom Action Button */
         .add-page-btn {
@@ -151,7 +180,7 @@
         /* Header / Footer Modal Setup */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: white; padding: 30px; border-radius: 12px; width: 400px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
-        .modal-content h3 { margin-bottom: 15px; color: var(--brand-dark); }
+        .modal-content h3 { margin-bottom: 5px; color: var(--brand-dark); }
         .modal-content input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; margin-bottom: 15px; font-family: inherit; }
         .modal-buttons { display: flex; justify-content: flex-end; gap: 10px; }
         .modal-btn { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
@@ -163,14 +192,6 @@
         #citation-view { display: none; width: 8.5in; background: #ffffff; padding: 1in; box-shadow: 0 4px 20px rgba(0,0,0,0.15); font-family: 'Times New Roman', serif; color: #0f172a; box-sizing: border-box; margin: 0 auto; }
         
         .vh-badge { margin-top: 40px; border: 2px solid #00b894; padding: 18px; border-radius: 12px; width: 340px; background: #f8fafc; font-family: 'Inter', sans-serif; }
-
-        /* Print Media Queries for PDF Formatting */
-        @media print {
-            .vh-page-break-line { display: none !important; }
-            .ql-editor { padding: 0 !important; }
-            .workspace { padding: 0 !important; background: transparent !important; }
-            #editor-container { box-shadow: none !important; }
-        }
     </style>
 </head>
 <body>
@@ -301,10 +322,15 @@
 <!-- WORKSPACE CONTAINER -->
 <div class="workspace" id="workspace-container">
     
-    <!-- Editor Engine -->
-    <div id="editor-container"></div>
+    <!-- Central Wrapper allowing overlays without interfering with the Quill engine -->
+    <div class="paper-wrapper">
+        <!-- Editor Engine -->
+        <div id="editor-container"></div>
+        <!-- Headers & Footers Output Overlay -->
+        <div id="hf-overlays"></div>
+    </div>
     
-    <!-- Add Page Button explicitly under the document body -->
+    <!-- Add Page Button positioned logically at the bottom of the document -->
     <button class="add-page-btn" id="btn-add-page" onclick="insertPageBreak(); event.stopPropagation();">+ Add Page Break</button>
     
     <!-- Forensics View -->
@@ -335,9 +361,9 @@
 <div class="modal-overlay" id="hf-modal">
     <div class="modal-content">
         <h3>Document Header & Footer</h3>
-        <p style="font-size: 12px; color: #64748b; margin-bottom: 10px;">These will appear on every printed/exported PDF page.</p>
-        <input type="text" id="header-input" placeholder="Document Header Text...">
-        <input type="text" id="footer-input" placeholder="Document Footer Text...">
+        <p style="font-size: 12px; color: #64748b; margin-bottom: 20px;">These will appear visually over your workspace and natively inject onto every exported PDF page.</p>
+        <input type="text" id="header-input" placeholder="Global Document Header Text...">
+        <input type="text" id="footer-input" placeholder="Global Document Footer Text...">
         <div class="modal-buttons">
             <button class="modal-btn modal-cancel" onclick="document.getElementById('hf-modal').style.display='none'">Cancel</button>
             <button class="modal-btn modal-save" onclick="saveHeaderFooter()">Save Details</button>
@@ -350,7 +376,7 @@
     let authors = [];
     let docConfig = { header: "", footer: "", showPageNumbers: true };
     
-    // --- 1. Quill Initialization & Custom Blots ---
+    // --- 1. Quill Initialization & Custom Pagination Blots ---
     const SizeStyle = Quill.import('attributors/style/size');
     SizeStyle.whitelist = ['10px', '12px', '14px', '18px', '24px', '32px'];
     Quill.register(SizeStyle, true);
@@ -359,13 +385,14 @@
     FontStyle.whitelist = ['Arial', 'Calibri', 'Times New Roman'];
     Quill.register(FontStyle, true);
 
-    // Create a Custom Page Break Blot
+    // Create a Custom Page Break Blot - This will dynamically stretch to push content to the next physical sheet!
     const BlockEmbed = Quill.import('blots/block/embed');
     class PageBreak extends BlockEmbed {
         static create(value) {
             const node = super.create(value);
             node.setAttribute('class', 'vh-page-break');
-            node.innerHTML = '<div class="vh-page-break-line" contenteditable="false">--- Page Break ---</div>';
+            node.setAttribute('contenteditable', 'false');
+            node.innerHTML = '<div class="pb-indicator">--- Page Break ---</div>';
             return node;
         }
     }
@@ -402,10 +429,54 @@
         }
         
         renderAuthors();
+        adjustPageBreaksAndOverlays();
         updateStats();
     };
 
-    // --- 3. Custom Google Docs Layout Features ---
+    // --- 3. Dynamic Visual Layout & Google Docs Feel Features ---
+    function adjustPageBreaksAndOverlays() {
+        // Adjust page breaks to stretch across remaining space on the current "page"
+        const breaks = document.querySelectorAll('.vh-page-break');
+        breaks.forEach(pb => {
+            const offsetTop = pb.offsetTop; 
+            const pageIndex = Math.floor(offsetTop / 1096); // 1096px = 11in (1056px) + 40px gap
+            // Target the next printed page 1 inch (96px) from the absolute top boundary
+            const targetNextPageY = (pageIndex + 1) * 1096 + 96; 
+            const requiredHeight = Math.max(40, targetNextPageY - offsetTop);
+            pb.style.height = requiredHeight + 'px';
+        });
+
+        // Re-render Overlays
+        const editor = document.querySelector('.ql-editor');
+        const container = document.getElementById('hf-overlays');
+        container.innerHTML = '';
+        
+        const totalHeight = editor.scrollHeight;
+        const totalPages = Math.max(1, Math.ceil(totalHeight / 1096));
+        
+        for (let i = 0; i < totalPages; i++) {
+            if (docConfig.header) {
+                const headerEl = document.createElement('div');
+                headerEl.className = 'doc-overlay doc-header';
+                headerEl.style.top = (i * 1096 + 48) + 'px'; // 0.5in down from top margin
+                headerEl.innerText = docConfig.header;
+                container.appendChild(headerEl);
+            }
+            
+            let footerText = docConfig.footer || '';
+            if (docConfig.showPageNumbers) {
+                footerText += (footerText ? ' | ' : '') + `Page ${i + 1} of ${totalPages}`;
+            }
+            if (footerText) {
+                const footerEl = document.createElement('div');
+                footerEl.className = 'doc-overlay doc-footer';
+                footerEl.style.top = (i * 1096 + 1056 - 48) + 'px'; // 0.5in up from bottom
+                footerEl.innerText = footerText;
+                container.appendChild(footerEl);
+            }
+        }
+    }
+
     function insertPageBreak() {
         const range = quill.getSelection(true);
         quill.insertText(range.index, '\n', Quill.sources.USER);
@@ -413,7 +484,6 @@
         quill.insertText(range.index + 2, '\n', Quill.sources.USER);
         quill.setSelection(range.index + 3, Quill.sources.SILENT);
         
-        // Scroll the viewport to the newly created page area
         document.querySelector('.workspace').scrollTop += 150;
     }
 
@@ -428,6 +498,7 @@
         docConfig.footer = document.getElementById('footer-input').value.trim();
         localStorage.setItem('hv_doc_config', JSON.stringify(docConfig));
         document.getElementById('hf-modal').style.display = 'none';
+        adjustPageBreaksAndOverlays();
         manualSave();
     }
 
@@ -435,15 +506,28 @@
         docConfig.showPageNumbers = !docConfig.showPageNumbers;
         document.getElementById('num-status').innerText = docConfig.showPageNumbers ? "ON" : "OFF";
         localStorage.setItem('hv_doc_config', JSON.stringify(docConfig));
+        adjustPageBreaksAndOverlays();
         manualSave();
     }
 
-    // Custom PDF Exporter utilizing html2pdf with page number logic
+    // Custom PDF Exporter handling Native Headers and true Pagination Cuts
     function exportPDF() { 
         const editorContent = document.querySelector('.ql-editor');
-        
+        const editorContainer = document.getElementById('editor-container');
+        const overlays = document.getElementById('hf-overlays');
+        const breaks = document.querySelectorAll('.vh-page-break');
+
+        // Pre-export configuration
+        editorContainer.style.background = '#ffffff'; // Disable gradient
+        editorContainer.style.filter = 'none';
+        overlays.style.display = 'none'; // Disable visual overlays to allow precise jsPDF string injection
+        breaks.forEach(b => {
+            b.dataset.oldHeight = b.style.height;
+            b.style.height = '0px'; // Allow natural html2pdf cutting
+        });
+
         const pdfOptions = {
-            margin:       [docConfig.header ? 0.8 : 0.5, 0.5, docConfig.footer ? 0.8 : 0.5, 0.5], // Dynamic margins based on headers
+            margin:       [docConfig.header ? 0.8 : 0.5, 0.5, (docConfig.footer || docConfig.showPageNumbers) ? 0.8 : 0.5, 0.5],
             filename:     'VerifyHuman_Manuscript.pdf',
             image:        { type: 'jpeg', quality: 0.98 },
             html2canvas:  { scale: 2, useCORS: true },
@@ -451,29 +535,26 @@
             pagebreak:    { mode: 'css', after: '.vh-page-break' }
         };
 
-        // Attach header/footer data to PDF generation loop
         html2pdf().from(editorContent).set(pdfOptions).toPdf().get('pdf').then(function (pdf) {
             const totalPages = pdf.internal.getNumberOfPages();
-            
             for (let i = 1; i <= totalPages; i++) {
                 pdf.setPage(i);
                 pdf.setFontSize(10);
                 pdf.setTextColor(150);
                 
-                // Header Injection
-                if (docConfig.header) {
-                    pdf.text(docConfig.header, 0.5, 0.4);
-                }
+                if (docConfig.header) pdf.text(docConfig.header, 0.5, 0.4);
                 
-                // Footer & Page Number Injection
-                if (docConfig.footer) {
-                    pdf.text(docConfig.footer, 0.5, 10.6);
-                }
-                if (docConfig.showPageNumbers) {
-                    pdf.text(`Page ${i} of ${totalPages}`, 7.0, 10.6);
-                }
+                let footerText = docConfig.footer || '';
+                if (docConfig.showPageNumbers) footerText += (footerText ? ' | ' : '') + `Page ${i} of ${totalPages}`;
+                if (footerText) pdf.text(footerText, 0.5, 10.6);
             }
-        }).save();
+        }).save().then(() => {
+            // Restore original Google-Docs simulated layout
+            editorContainer.style.background = '';
+            editorContainer.style.filter = '';
+            overlays.style.display = 'block';
+            breaks.forEach(b => b.style.height = b.dataset.oldHeight);
+        });
     }
 
     // --- 4. Wire Ribbon Commands to Quill API ---
@@ -502,6 +583,7 @@
     });
 
     quill.on('text-change', function(delta, oldDelta, source) {
+        adjustPageBreaksAndOverlays(); // Maintain perfect page scaling as user types
         if (source === 'user') {
             updateStats();
             calculateTrustScore();
@@ -594,7 +676,7 @@
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.getElementById('citation-view').style.display = 'none';
         
-        const editorWrapper = document.getElementById('editor-container');
+        const editorWrapper = document.querySelector('.paper-wrapper');
         const dataView = document.getElementById('data-view-container');
         const addPageBtn = document.getElementById('btn-add-page');
 
@@ -615,7 +697,7 @@
 
     function toggleCitations() {
         const cv = document.getElementById('citation-view');
-        const editorWrapper = document.getElementById('editor-container');
+        const editorWrapper = document.querySelector('.paper-wrapper');
         const addPageBtn = document.getElementById('btn-add-page');
         const isVisible = (cv.style.display === 'block');
         
