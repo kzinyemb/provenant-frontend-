@@ -105,6 +105,10 @@
             word-break: break-word;
             overflow: hidden; 
         }
+        
+        /* Prevent browser margins from creating fake overflow bounds */
+        .paper p { margin: 0 0 0.5em 0; }
+        .paper div { margin: 0; }
 
         /* Header / Footer / Page Number Indicators */
         .page-header-region {
@@ -398,10 +402,7 @@
                         jumpToNextPage(this, e.key);
                     }
                 } 
-                else if (e.key === 'Enter' && this.scrollHeight > this.clientHeight - 50) {
-                    e.preventDefault();
-                    jumpToNextPage(this);
-                }
+                // Removed the false positive "else if" that was continuously firing early jumps
             });
 
             page.addEventListener('click', function(e) {
@@ -543,18 +544,21 @@
             p.style.fontFamily = val;
         });
         document.execCommand('fontName', false, val);
+        if (activePage) activePage.focus(); // Retain focus after dropdown select
     }
 
     function applyFontSize(val) {
         document.querySelectorAll('.paper').forEach(p => {
             p.style.fontSize = val;
         });
+        if (activePage) activePage.focus(); // Retain focus after dropdown select
     }
 
     function applyLineHeight(val) {
         document.querySelectorAll('.paper').forEach(p => {
             p.style.lineHeight = val;
         });
+        if (activePage) activePage.focus(); // Retain focus after dropdown select
     }
 
     function renderAuthors() {
@@ -704,7 +708,7 @@
     }
     
     function renameDoc() { let n = prompt("Name:"); if(n) document.getElementById('doc-name').innerText = n; }
-    function newDoc() { if(confirm("New document?")) { localStorage.clear(); location.reload(); } numeric }
+    function newDoc() { if(confirm("New document?")) { localStorage.clear(); location.reload(); } }
     function deleteDoc() { if(confirm("Delete document?")) { localStorage.clear(); location.reload(); } }
     function createCopy() { 
         const wrapper = document.getElementById('pages-wrapper');
