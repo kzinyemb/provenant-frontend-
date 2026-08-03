@@ -82,7 +82,7 @@
             width: 100%;
         }
 
-        /* White Paper Sheet - Flexible Bounds to Avoid Lock-ups */
+        /* White Paper Sheet - 11in Minimum with Safe Word-Break */
         .paper { 
             background: #ffffff !important; 
             width: 8.5in; 
@@ -389,7 +389,9 @@
     }
 
     function checkOverflowAndPaginate(page) {
-        if (page.scrollHeight > 1000) {
+        // 11 inches at standard 96 DPI equals 1056 pixels.
+        // Threshold set to 1060px so empty/normal pages do not trigger infinite loops or focus jumps.
+        if (page.scrollHeight > 1060) {
             const allPages = Array.from(document.querySelectorAll('.paper'));
             const pageIndex = allPages.indexOf(page);
 
